@@ -7,7 +7,7 @@ Conception comes first (UML-first): code conforms to this dossier, never the rev
 - UML 2.5 for every diagram, written in Mermaid (docs-as-code). Use cases follow Cockburn's goal-level rules. Mermaid cannot draw native UML use-case shapes: actors are rectangles tagged «actor», use cases are circles, include and extend are dashed arrows labelled with guillemets.
 - Layout inspired by arc42 and the C4 model (context, containers, components, code). Decisions recorded as MADR files under `decisions/`.
 - Every choice between solutions is analysed with an MCDA matrix (weights /100, scores 0–5, total /500, sensitivity check), recorded in the matching ADR.
-- Every study is reviewed at least twice before it is considered stable. Review logs live in `reviews/`: pass 1 checks UML and method conformance, pass 2 checks traceability and coverage against the product decisions. A study is "validated" only after both passes have no open Must Have and the owner has approved it.
+- Every study is reviewed at least twice before it is considered stable. Review logs live in `reviews/`: pass 1 checks UML and method conformance, pass 2 checks traceability and coverage against the product decisions. Every diagram is also rendered (`mmdc`) and inspected visually before each commit: overlapping titles, unreadable labels and crossing arrows are defects. A study is "validated" only after both passes have no open Must Have and the owner has approved it.
 - Language: English.
 
 ## Design principles (binding, owner rule 2026-10-20)

@@ -15,7 +15,7 @@ Shows what the Learner wants to achieve in the learning domain. It does not show
 flowchart LR
   Learner["«actor» Learner - child using the app"]
   subgraph SYSTEM ["Learn To Earn"]
-    subgraph Session ["Learning domain - session"]
+    subgraph Session ["Session"]
       L1(("UC-L1 Complete a learning session"))
       L2(("UC-L2 Answer an exercise"))
       L3(("UC-L3 Listen to an exercise statement"))
@@ -23,7 +23,7 @@ flowchart LR
       L5(("UC-L5 Rework an earlier skill"))
       L6(("UC-L6 Take on a challenge exercise"))
     end
-    subgraph Self ["Learning domain - self-knowledge and personalisation"]
+    subgraph Self ["Self and companion"]
       L7(("UC-L7 Calibrate keypad comfort"))
       L8(("UC-L8 Check progress and the screen-time gauge"))
       L9(("UC-L9 Customise the companion"))

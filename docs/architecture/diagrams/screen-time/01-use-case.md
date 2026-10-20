@@ -17,14 +17,14 @@ flowchart LR
   Guardian["«actor» Guardian - parent"]
   DeviceOS["«actor» DeviceOS - Android, V2"]
   subgraph SYSTEM ["Learn To Earn"]
-    subgraph ST ["Screen-time domain"]
+    subgraph ST ["Screen time"]
       S1(("UC-S1 Request screen time"))
       S2(("UC-S2 Approve a screen-time request"))
       S3(("UC-S3 Use approved screen time"))
       S4(("UC-S4 Enforce the end of screen time on the device"))
       S5(("UC-S5 Configure screen-time rules"))
     end
-    subgraph PS ["Parent space (see its diagram)"]
+    subgraph PS ["Parent space"]
       P1(("UC-P1 Unlock the parent space"))
     end
   end

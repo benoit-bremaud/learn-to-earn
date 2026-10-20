@@ -15,24 +15,24 @@ Everything the Guardian does inside the PIN-protected parent space. Approving a 
 flowchart LR
   Guardian["«actor» Guardian - parent"]
   subgraph SYSTEM ["Learn To Earn"]
-    subgraph Access ["Parent-space domain - access and set-up"]
+    subgraph Access ["Access"]
       P14(("UC-P14 Set up the app for a child"))
       P12(("UC-P12 Set the parent PIN"))
       P1(("UC-P1 Unlock the parent space"))
       P10(("UC-P10 Change the PIN"))
     end
-    subgraph Plan ["Parent-space domain - learning plan"]
+    subgraph Plan ["Learning plan"]
       P2(("UC-P2 Create the child profile"))
       P3(("UC-P3 Set the class calendar ceiling"))
       P4(("UC-P4 Allow skills beyond the class period"))
       P7(("UC-P7 Send the child back to an earlier skill"))
       P13(("UC-P13 Request keypad re-calibration"))
     end
-    subgraph Monitor ["Parent-space domain - monitoring"]
+    subgraph Monitor ["Monitoring"]
       P5(("UC-P5 Review the traffic-light dashboard"))
       P6(("UC-P6 Review alerts and the to-do-together list"))
     end
-    subgraph Data ["Parent-space domain - data and privacy"]
+    subgraph Data ["Data"]
       P8(("UC-P8 Export the child's data"))
       P9(("UC-P9 Erase all data"))
       P11(("UC-P11 Choose anonymous crash reporting"))
