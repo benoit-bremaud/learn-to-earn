@@ -32,16 +32,19 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 5 | Use-case diagram, parent-space | [diagrams/parent-space/01-use-case.md](diagrams/parent-space/01-use-case.md) | reviewed twice, awaiting owner validation |
 | 6 | Traceability matrix | [traceability-matrix.md](traceability-matrix.md) | started (use cases only) |
 | 7 | Reviews | [reviews/](reviews/) | see log |
-| 8 | Sequence, component, class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
+| 8 | Domain model, sequence, component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
 | 9 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
 
 ## Planned studies (order)
 
-1. Use cases (this study).
-2. Sequence diagrams for non-trivial flows only: learning session with adaptive choice, screen-time request and approval, remediation walk-back, anti-cheat confidence scoring.
-3. Component diagram (containers and boundaries: UI, engine, storage, parent space, OS bridge).
-4. Class diagram (domain: Skill, Exercise, Attempt, MasteryScore, ConfidenceScore, Reserve, Request).
-5. State diagrams (session, screen-time request, reserve lifecycle).
-6. Data-flow diagram with sensitive fields flagged (privacy review).
-7. User stories for V0 and V1.0, derived from the use cases, with Given/When/Then acceptance criteria (they become the engine's TDD tests), reviewed twice. Stories of later versions are written just before each version (owner decision 2026-10-20, MCDA 460/500).
-8. GitHub issues (one per story or brick) and the project board, then V0 code.
+Order follows Larman (Unified Process) and ICONIX: an analysis-level domain model fixes the vocabulary before the sequences, and the design class diagram comes after them (owner decision 2026-10-20, MCDA 500/500).
+
+1. Use cases (done, in review).
+2. Domain model: analysis class diagram, concepts, attributes, associations, multiplicities, no methods (Skill, Exercise, Attempt, MasteryScore, ConfidenceScore, Reserve, ScreenTimeRequest, ChildProfile…).
+3. Sequence diagrams for non-trivial flows only: learning session with adaptive choice, screen-time request and approval, remediation walk-back, confidence scoring.
+4. Component diagram (layers and boundaries: UI, application, domain, adapters for storage, clock, TTS, OS).
+5. Design class diagram: operations, ports and adapters, dependencies, generalization where real.
+6. State diagrams (session, screen-time request, reserve lifecycle).
+7. Data-flow diagram with sensitive fields flagged (privacy review).
+8. User stories for V0 and V1.0, derived from the use cases, with Given/When/Then acceptance criteria (they become the engine's TDD tests), reviewed twice. Stories of later versions are written just before each version (owner decision 2026-10-20, MCDA 460/500).
+9. GitHub issues (one per story or brick) and the project board, then V0 code.
