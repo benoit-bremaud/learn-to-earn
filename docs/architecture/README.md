@@ -15,7 +15,7 @@ Conception comes first (UML-first): code conforms to this dossier, never the rev
 | # | Item | Location | Status |
 |---|---|---|---|
 | 1 | Use-case modelling approach | [decisions/0001-use-case-modelling.md](decisions/0001-use-case-modelling.md) | proposed |
-| 2 | Use-case specifications (27 use cases) | [specs/use-cases.md](specs/use-cases.md) | draft, in review |
+| 2 | Use-case specifications (29 use cases) | [specs/use-cases.md](specs/use-cases.md) | draft, in review |
 | 3 | Use-case diagram, learning | [diagrams/learning/01-use-case.md](diagrams/learning/01-use-case.md) | draft, in review |
 | 4 | Use-case diagram, screen-time | [diagrams/screen-time/01-use-case.md](diagrams/screen-time/01-use-case.md) | draft, in review |
 | 5 | Use-case diagram, parent-space | [diagrams/parent-space/01-use-case.md](diagrams/parent-space/01-use-case.md) | draft, in review |

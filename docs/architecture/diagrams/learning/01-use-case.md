@@ -3,7 +3,7 @@
 > **Feature**: learning domain of Learn To Earn (child side)
 > **Source specs**: `docs/architecture/specs/use-cases.md` (UC-L1 to UC-L9)
 > **Related ADRs**: ADR-0001
-> **Decisions captured**: M1–M4, C1, C3, C4, R4, T1, E1–E4
+> **Decisions captured**: M1–M4, C1, C3, C4, R4, T1, T2, E1–E4, Conversion
 
 ## Context
 

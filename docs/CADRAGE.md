@@ -82,7 +82,7 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 |---|---|
 | V0 | Repository, CI, Expo structure, UML validated, exercise generator + mastery engine unit-tested without UI |
 | V1.0 | Profiles + PIN, framed session, simple addition/subtraction, free numeric entry (no multiple choice), simple minimum-time rule, mastery score, points and reserve, parent validation + timer, minimal traffic-light view, local storage |
-| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score |
+| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score, calendar ceiling, alerts, opt-in anonymous crash reports |
 | V1.2 | Keypad comfort + driven format, light companion, audio, effort-first feedback |
 | V1.5 | Sync across devices, keypad mini-games, hidden control questions |
 | V2 | Android automatic blocking, automatic difficulty recalibration, reading |

@@ -17,12 +17,14 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - **Reserve**: earned screen-time minutes saved, capped, expiring after 7 days (dec. Q4).
 - **Ceiling**: the school period (1–5) the class is at, set by the Guardian (dec. C1).
 - **Skill**: a node of the prerequisite graph (`docs/curriculum/CE1-maths.md`).
+- **Difficulty level**: Easy, Medium, Hard, Very hard (dec. D1, C4).
 - **Level**: Cockburn goal level, *user goal* or *subfunction* (a step reused by other goals, kept as a use case because it traces to its own product decision).
 
 ## Conventions
 
 - Every use case of the parent space except UC-P1 and UC-P12 has the precondition **parent space unlocked (UC-P1)**.
-- Versions follow the roadmap (`docs/CADRAGE.md` §5).
+- Versions follow the roadmap (`docs/CADRAGE.md` §5). A step or extension that ships later than its use case is tagged inline, for example *(V1.1)*.
+- Moving between profiles (dec. P0): a parent entry point is visible on every child screen and leads to UC-P1. Leaving the parent space, or 2 minutes without activity, locks it and returns to the child profile. Setting up an Android user or an Ubuntu session for the child is done outside the app and is not a use case.
 - An extension has a direct actor link in the diagrams only if the actor can start it on their own (ADR-0001 D2).
 
 ---
@@ -30,7 +32,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 ## Learning domain
 
 ### UC-L1 — Complete a learning session
-- Level: user goal. Primary actor: Learner. Version: V1.0. Decisions: M3, M4, E3, C1, C4.
+- Level: user goal. Primary actor: Learner. Version: V1.0. Decisions: E3, M3, M4, C1, C3, C4, T2, Conversion.
 - Stakeholders: Guardian wants real progress, Learner wants a short fair session.
 - Preconditions: a child profile exists.
 - Minimal guarantee: answers already given are kept and no points are removed.
@@ -39,37 +41,40 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   1. Learner starts a session.
   2. The app proposes an easy warm-up exercise.
   3. Learner answers it (include UC-L2).
-  4. The app repeats steps 2–3 following the 70 % acquiring / 20 % review / 10 % challenge mix (dec. M3), with the base level of each skill (dec. C4) under the ceiling (dec. C1).
-  5. At the challenge slot the app offers a challenge exercise (extension point `challenge slot offered`).
+  4. The app repeats steps 2–3 on the V1.0 skill set (dec. C3). *(V1.1)* Exercises follow the 70 % acquiring / 20 % review / 10 % challenge mix (dec. M3), the base difficulty level of each skill (dec. C4) and the ceiling (dec. C1). In V1.0 there is no ceiling: the fixed skill set stands in for it.
+  5. *(V1.1)* At the challenge slot the app offers a challenge exercise (extension point `challenge slot offered`).
   6. The app shows the recap and the earned minutes, and credits the reserve.
 - Extensions:
-  - 4a. A weak prerequisite is detected (3 errors in a row, or a failed review): the app lowers the level, raises an alert for the Guardian (read in UC-P6) and continues with UC-L5 (extension point `weak prerequisite detected`).
-  - 4b. The Guardian scheduled a skill through UC-P7: the app continues with UC-L5 (same extension point).
-  - 4c. The confidence score falls below 0.3: the app pauses for 2 minutes and leaves a neutral note for the Guardian (dec. T2).
+  - 4a. *(V1.1)* A weak prerequisite is detected (3 errors in a row, or a failed review): the app lowers the level, raises an alert for the Guardian (read in UC-P6) and continues with UC-L5 (extension point `weak prerequisite detected`).
+  - 4b. *(V1.1)* The Guardian scheduled a skill through UC-P7: the app continues with UC-L5 (same extension point).
+  - 4c. *(V1.1)* The confidence score falls below 0.3: the app pauses for 2 minutes and leaves a neutral note for the Guardian (dec. T2).
   - 5a. Learner accepts the offer: UC-L6. 5b. Learner declines: the session goes on to step 6.
   - *a. Learner stops early: the partial recap is shown and minutes for the work done are credited.
+  - *b. The session is interrupted (app closed, call, battery): answers are kept. On the next launch the app offers to resume or shows the partial recap.
+- Business rule: minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap.
 - Extension points: `weak prerequisite detected`, `challenge slot offered`.
 - Postcondition: mastery scores updated, reserve credited.
 - Relationships: «include» UC-L2. «extend» from UC-L5 and UC-L6.
 
 ### UC-L2 — Answer an exercise
-- Level: subfunction (included by UC-L1). Primary actor: Learner. Version: V1.0. Decisions: M1, M2, T2, E2.
+- Level: subfunction (included by UC-L1). Primary actor: Learner. Version: V1.0. Decisions: M1, M2, T1, T2, E2.
 - Preconditions: an exercise is displayed.
 - Success guarantee: the answer is recorded (correctness, response time) and effort-first feedback is shown.
 - Main success scenario:
   1. The app shows a statement and a numeric keypad (free numeric entry in V1.0).
   2. Learner types an answer and confirms it.
-  3. The app records correctness and time and updates the mastery and confidence scores.
-  4. The app shows encouraging feedback with progress.
+  3. The app records correctness and time and updates the mastery score. In V1.0 a simple minimum-time rule applies. *(V1.1)* The confidence score is updated. *(V1.2)* Keypad signals are recorded (dec. T1).
+  4. The app shows feedback. *(V1.2)* Feedback is effort-first with progress (dec. E2).
 - Extensions:
   - 1a. Learner taps the read-aloud button: UC-L3 (extension point `statement shown`).
   - 3a. The answer is wrong: UC-L4 (extension point `wrong answer`).
-  - 3b. The answer is faster than 40 % of her own average and under 1.5 s: the confidence score drops and no message accuses the child.
+  - 3b. *(V1.1)* The answer is faster than 40 % of her own average and under 1.5 s: the confidence score drops and no message accuses the child.
+  - 3c. *(V1.1)* The confidence score is below 0.6: points are multiplied by the confidence, the next exercise is easier, and a neutral message is shown.
 - Extension points: `statement shown`, `wrong answer`.
 - Relationships: «extend» from UC-L3 and UC-L4.
 
 ### UC-L3 — Listen to an exercise statement
-- Level: subfunction. Primary actor: Learner. Version: V1.2. Decision: E4.
+- Level: subfunction. Primary actor: Learner. Version: V1.2. Decisions: E4, V4.
 - Preconditions: an exercise is displayed and a French voice is available.
 - Success guarantee: the statement is read aloud with the local voice, nothing leaves the device (dec. V4).
 - Main success scenario:
@@ -85,7 +90,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Main success scenario:
   1. The app shows a hint (concrete, then picture, then symbol).
   2. Learner tries again (back to UC-L2 step 2).
-- Extensions: 2a. Three errors in a row: UC-L1 extension 4a.
+- Extensions: 2a. *(V1.1)* Three errors in a row: UC-L1 extension 4a.
 - Business rule: no harsh red, no punishing sound.
 
 ### UC-L5 — Rework an earlier skill
@@ -108,6 +113,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   2. The app proposes an exercise one notch higher, possibly a prudent look-ahead probe of a later period.
   3. Learner answers it (UC-L2).
 - Extensions: 3a. Look-ahead probes succeed repeatedly: a neutral note for the Guardian is created, never a label.
+- Business rule: the child chooses only within the challenge share; the engine picks every other exercise (dec. D1).
 
 ### UC-L7 — Calibrate keypad comfort
 - Level: user goal. Primary actor: Learner. Version: V1.2. Decision: T1.
@@ -122,11 +128,13 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 ### UC-L8 — Check progress and the screen-time gauge
 - Level: user goal. Primary actor: Learner. Version: V1.0. Decisions: E1, Q4.
-- Success guarantee: the Learner sees reserve, streak and earned time, never another child, never red.
+- Success guarantee: the Learner sees the reserve and earned time, never another child, never red.
 - Main success scenario:
   1. Learner opens the progress view.
-  2. The app shows the gauge, the streak and the recent progress.
+  2. The app shows the gauge and the recent progress. *(V1.1)* Personal fluence records are shown, with no countdown. *(V1.2)* The day streak is shown.
+  3. *(V1.1)* Minutes expiring within 2 days are shown neutrally ("use them before Sunday").
 - Extensions: 2a. No session yet: the app invites the Learner to start one.
+- Business rule: a broken streak is never shown as a loss.
 
 ### UC-L9 — Customise the companion
 - Level: user goal. Primary actor: Learner. Version: V1.2. Decision: E1.
@@ -144,12 +152,13 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Success guarantee: a pending request exists and nothing is spent.
 - Main success scenario:
   1. Learner opens the screen-time request.
-  2. Learner picks a duration up to the reserve.
+  2. Learner picks a duration up to the smaller of the reserve and the daily cap left today.
   3. Learner taps "Ask".
   4. The app records a pending request for the Guardian.
 - Extensions:
   - 2a. Reserve is 0: the app suggests starting a session (UC-L1) and no request is created.
   - 2b. The daily cap (30 min of screen) is reached: the app says "enough for today".
+- Business rule: later sessions the same day keep crediting the reserve up to its cap, but spending is limited by the daily cap.
 
 ### UC-S2 — Approve a screen-time request
 - Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: P1, P3.
@@ -163,7 +172,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   4. Guardian approves.
   5. The timer is ready for UC-S3.
 - Extensions: 4a. Guardian refuses: the reserve is unchanged and the Learner sees a neutral message.
-- Business rule: wrong-PIN handling is owned by UC-P1.
+- Business rules: wrong-PIN handling is owned by UC-P1. One pending request at a time. A request not answered expires at the end of the day, with no debit.
 - Relationships: «include» UC-P1. V2 note: approval on the parent's phone is open (OQ-2).
 
 ### UC-S3 — Use approved screen time
@@ -175,10 +184,10 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   2. Learner plays or watches in another app.
   3. The app warns 5 minutes before the end.
   4. The timer ends with an alarm (extension point `timer ended`).
-- Extensions: 2a. Learner stops early: only the time used is debited.
+- Extensions: 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian in the history (UC-P6).
 - Extension points: `timer ended`.
 - Postcondition: the reserve is debited.
-- Business rule: in V1 the app cannot block other apps (declarative, dec. Q1).
+- Business rule: in V1 the app cannot block other apps (declarative, dec. Q1). The child could stop the timer and keep playing: this residual risk is accepted in V1 and removed by UC-S4 in V2.
 - Relationships: «extend» from UC-S4.
 
 ### UC-S4 — Enforce the end of screen time on the device
@@ -202,14 +211,14 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 ## Parent-space domain
 
 ### UC-P1 — Unlock the parent space
-- Level: subfunction (included by UC-S2). Primary actor: Guardian. Version: V1.0. Decision: P1.
+- Level: user goal (also included by UC-S2). Primary actor: Guardian. Version: V1.0. Decision: P1.
 - Preconditions: a PIN exists (UC-P12).
 - Success guarantee: the parent space is open for a short session.
 - Main success scenario:
   1. Guardian enters the 6-digit PIN.
   2. The app opens the parent space.
 - Extensions: 1a. Wrong PIN: progressive lockout.
-- Business rule: no biometrics (the tablet is the child's).
+- Business rules: no biometrics (the tablet is the child's). The parent space locks after 2 minutes without activity and when the Guardian leaves it.
 - Open question OQ-1: recovery when the PIN is forgotten, without letting the child reset it.
 
 ### UC-P2 — Create the child profile
@@ -248,7 +257,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Main success scenario:
   1. Guardian opens the dashboard.
   2. The app shows green (80 % or more, stable), orange (50–79 %) or red (below 50 % or falling) per skill.
-  3. The app shows the fluence milestones next to the personal records.
+  3. *(V1.1)* The app shows the fluence milestones next to the personal records.
 - Extensions: 2a. No data yet: the app explains that results appear after the first sessions.
 
 ### UC-P6 — Review alerts and the to-do-together list
@@ -270,7 +279,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   3. The app schedules it.
 
 ### UC-P8 — Export the child's data
-- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, V3.
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, §4 privacy baseline.
 - Preconditions: parent space unlocked.
 - Success guarantee: a complete file the Guardian can keep.
 - Main success scenario:
@@ -280,11 +289,11 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Extensions: 2a. Export fails: nothing is changed and the app says so.
 
 ### UC-P9 — Erase all data
-- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, V1.
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, V1, §4 privacy baseline.
 - Preconditions: parent space unlocked.
 - Success guarantee: all child data is deleted.
 - Main success scenario:
-  1. Guardian asks to erase everything.
+  1. Guardian asks to erase everything. The app offers an export first (UC-P8).
   2. Guardian confirms in one PIN-protected gesture.
   3. The app deletes all data and shows a confirmation.
 - Extensions: 2a. Guardian cancels: nothing is deleted.
@@ -293,9 +302,9 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Level: user goal. Primary actor: Guardian. Version: V1.0. Decision: P1.
 - Preconditions: parent space unlocked.
 - Main success scenario:
-  1. Guardian enters the new PIN twice.
+  1. Guardian enters the current PIN, then the new PIN twice.
   2. The app stores it hashed.
-- Extensions: 1a. The two entries differ: the app asks again.
+- Extensions: 1a. The current PIN is wrong or the two new entries differ: the app asks again.
 
 ### UC-P11 — Choose anonymous crash reporting
 - Level: user goal. Primary actor: Guardian. Version: V1.1. Decision: V4.
@@ -320,6 +329,47 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Main success scenario:
   1. Guardian asks for a re-test.
   2. The app marks the next launch to run UC-L7. The two use cases are linked by data, not by a UML relationship.
+
+### UC-P14 — Set up the app for a child
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: P0, P1, V3, V4, §4 parental consent.
+- Preconditions: first launch.
+- Success guarantee: a PIN, a child profile and the privacy defaults exist. The app opens on the child profile.
+- Main success scenario:
+  1. The app explains what it stores, that nothing leaves the device, and asks the Guardian to confirm they are the child's parent or legal guardian.
+  2. Guardian sets the PIN (include UC-P12).
+  3. Guardian creates the child profile (include UC-P2).
+  4. The app sets crash reports to off (changeable in UC-P11).
+  5. *(V1.2)* The app proposes the keypad calibration (UC-L7) for the child.
+- Extensions: 1a. Guardian declines: the app stays closed and stores nothing.
+- Relationships: «include» UC-P12, UC-P2.
+
+### UC-P15 — Restore the child's data from a file
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decision: S1.
+- Preconditions: parent space unlocked, an export file from UC-P8.
+- Success guarantee: the data from the file replaces the current data, or nothing changes.
+- Main success scenario:
+  1. Guardian chooses an export file.
+  2. The app checks the file and shows what it contains.
+  3. Guardian confirms with the PIN.
+  4. The app replaces the data.
+- Extensions: 2a. The file is invalid or from a newer version: the app refuses and nothing changes.
+
+## Covered elsewhere (not use cases)
+
+| Decision or rule | Where it lives |
+|---|---|
+| D1 multipliers, 70 % level unlock, D1 empirical recalibration (V2) | Engine rules, class and sequence diagrams |
+| T2 hidden control questions (V1.5) | Future extension of UC-L2 |
+| T1 keypad mini-games (V1.5) | Future use case, learning domain |
+| S1 sync across devices (V1.5) | Future use case, parent-space domain |
+| Q3 reading (V2) | Same use cases with a new skill strand |
+| V1 90-day retention, weekly aggregates | Background behaviour (ADR-0001 D4), state and data-flow diagrams |
+| Q4 7-day expiry | Background behaviour (ADR-0001 D4), reserve state diagram |
+| No LLM receives child data | Business rule for the whole system, data-flow diagram |
+
+## Cross-cutting business rules
+
+- Timers, expiry and the daily cap use elapsed time measured by the app, not the wall clock alone. A backwards change of the device clock freezes expiry and the daily cap and creates a neutral note for the Guardian.
 
 ## Open questions
 

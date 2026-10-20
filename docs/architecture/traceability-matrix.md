@@ -4,8 +4,8 @@ Proves coverage: every use case traces to product decisions, a diagram and a roa
 
 | UC | Goal | Actor | Version | CADRAGE decisions | Use-case diagram | Sequence | Component | Class | State | Data-flow |
 |---|---|---|---|---|---|---|---|---|---|---|
-| UC-L1 | Complete a learning session | Learner | V1.0 | M3, M4, E3, C1, C4 | learning | — | — | — | — | — |
-| UC-L2 | Answer an exercise | Learner | V1.0 | M1, M2, T2, E2 | learning | — | — | — | — | — |
+| UC-L1 | Complete a learning session | Learner | V1.0 | E3, M3, M4, C1, C3, C4, T2, Conversion | learning | — | — | — | — | — |
+| UC-L2 | Answer an exercise | Learner | V1.0 | M1, M2, T1, T2, E2 | learning | — | — | — | — | — |
 | UC-L3 | Listen to an exercise statement | Learner | V1.2 | E4, V4 | learning | — | — | — | — | — |
 | UC-L4 | Retry with a hint | Learner | V1.0 | M4, E2 | learning | — | — | — | — | — |
 | UC-L5 | Rework an earlier skill | Learner | V1.1 | R4, M4, C3 | learning | — | — | — | — | — |
@@ -25,9 +25,11 @@ Proves coverage: every use case traces to product decisions, a diagram and a roa
 | UC-P5 | Review the traffic-light dashboard | Guardian | V1.0 | P2, C2 | parent-space | — | — | — | — | — |
 | UC-P6 | Review alerts and the to-do-together list | Guardian | V1.1 | P2, M4, T1, C1 | parent-space | — | — | — | — | — |
 | UC-P7 | Send the child back to an earlier skill | Guardian | V1.1 | R4 | parent-space | — | — | — | — | — |
-| UC-P8 | Export the child's data | Guardian | V1.0 | S1, V3 | parent-space | — | — | — | — | — |
-| UC-P9 | Erase all data | Guardian | V1.0 | S1, V1 | parent-space | — | — | — | — | — |
+| UC-P8 | Export the child's data | Guardian | V1.0 | S1, §4 | parent-space | — | — | — | — | — |
+| UC-P9 | Erase all data | Guardian | V1.0 | S1, V1, §4 | parent-space | — | — | — | — | — |
 | UC-P10 | Change the PIN | Guardian | V1.0 | P1 | parent-space | — | — | — | — | — |
 | UC-P11 | Choose anonymous crash reporting | Guardian | V1.1 | V4 | parent-space | — | — | — | — | — |
 | UC-P12 | Set the parent PIN | Guardian | V1.0 | P1 | parent-space | — | — | — | — | — |
 | UC-P13 | Request keypad re-calibration | Guardian | V1.2 | T1 | parent-space | — | — | — | — | — |
+| UC-P14 | Set up the app for a child | Guardian | V1.0 | P0, P1, V3, V4, §4 | parent-space | — | — | — | — | — |
+| UC-P15 | Restore the child's data from a file | Guardian | V1.0 | S1 | parent-space | — | — | — | — | — |

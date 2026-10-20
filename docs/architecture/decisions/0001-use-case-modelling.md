@@ -14,14 +14,14 @@ Scores: 0–5 per criterion, weights sum to 100, total out of 500. Scores are ou
 
 | Criterion (weight) | A. One global diagram | B. One diagram per domain (3) | C. One diagram per actor |
 |---|---|---|---|
-| Readability, about 27 use cases (30) | 1 | 5 | 4 |
+| Readability, about 29 use cases (30) | 1 | 5 | 4 |
 | UML orthodoxy: group by domain, not by actor or backend (25) | 3 | 5 | 2 |
 | Traceability to spec and later diagrams (20) | 4 | 4 | 3 |
 | Maintainability (15) | 4 | 3 | 3 |
 | Reviewability (10) | 1 | 4 | 3 |
 | **Total /500** | 255 | **440** | 305 |
 
-B vs A: A puts 27 ovals and 2 actors in one picture, which nobody can review. B vs C: C regroups by actor, which hides the domain boundaries (the Learner appears in two domains).
+B vs A: A puts 29 ovals and 2 actors in one picture, which nobody can review. B vs C: C regroups by actor, which hides the domain boundaries (the Learner appears in two domains).
 Sensitivity (other weights rescaled proportionally): A overtakes B only if maintainability carries about 70 % of the total weight. B stays first for any realistic weighting.
 **Decision: B.** Folders `learning/`, `screen-time/`, `parent-space/`, each with `01-use-case.md`.
 
@@ -68,16 +68,17 @@ The following are triggers or behaviours inside scenarios, never ovals (UML 2.5,
 | Not a use case | Where it lives instead |
 |---|---|
 | Receive a parent alert after 3 errors | Extension 4a of UC-L1; read by the Guardian in UC-P6 |
-| Pause after a low confidence score | Extension in UC-L2; note read through UC-P6 |
+| Pause after a low confidence score | Extension 4c of UC-L1; note read in UC-P6 |
 | 5-minute warning, end-of-time alarm | Steps of UC-S3 |
 | Debit the reserve | Postcondition of UC-S3 |
-| Drop one difficulty level after 3 errors | Step of UC-L1 (engine behaviour, sequence diagram later) |
+| Drop one difficulty level after 3 errors | Extension 4a of UC-L1 (engine behaviour, sequence diagram later) |
+| Expire minutes older than 7 days | Background behaviour, reserve state diagram |
 | Weekly aggregation of old answers | Background behaviour (component and state diagrams later) |
 | Send crash report | Consequence of UC-P11, never an actor goal |
 
 ## D5 — Goal level
 
-Each use case states its Cockburn level. *Subfunction* use cases (UC-L2, UC-L3, UC-L4, UC-P1) are kept as ovals only because each traces to its own product decision (answering, read-aloud E4, hints M4, PIN P1) and is reused or extended. All others are user goals, or conditional goal segments inheriting the actor of their base (UC-L5, UC-S4).
+Each use case states its Cockburn level. *Subfunction* use cases (UC-L2, UC-L3, UC-L4) are kept as ovals only because each traces to its own product decision (answering, read-aloud E4, hints M4). UC-P1 is a user goal (entering the parent space) that UC-S2 also includes and is reused or extended. All others are user goals, or conditional goal segments inheriting the actor of their base (UC-L5, UC-S4).
 
 ## D6 — Version tags
 
