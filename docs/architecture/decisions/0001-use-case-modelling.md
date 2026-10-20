@@ -84,9 +84,24 @@ Each use case states its Cockburn level. *Subfunction* use cases (UC-L2, UC-L3, 
 
 Each use case carries the roadmap version where it ships (V1.0, V1.1, V1.2, V2). Diagrams show all use cases; versions appear in the textual spec and the traceability matrix.
 
+## D7 — Generalization (inheritance)
+
+UML allows actor generalization (a child actor inherits all goals of its parent) and use-case generalization (a child use case specialises an abstract one and stays substitutable).
+
+| Criterion (weight) | A. None, shared steps as a spec rule | B. Abstract "Change a parent setting" with UC-P3, UC-P4, UC-P11, UC-S5 | C. Parent actor "User" |
+|---|---|---|---|
+| UML correctness, substitutability (35) | 4 | 4 | 1 |
+| Information added (25) | 2 | 4 | 1 |
+| Readability (20) | 5 | 3 | 3 |
+| YAGNI, simplicity (20) | 5 | 3 | 2 |
+| **Total /500** | **390** | 360 | 160 |
+
+C violates UML: Learner and Guardian share no goal. Sensitivity: with information 40, readability 15, YAGNI 10, B wins (375 vs 345). The owner chose A on 2026-10-20.
+**Decision: A.** No generalization in the use-case model. The shared settings flow is the cross-cutting rule "Parent settings" in the spec. Inheritance is studied again in the class diagram (exercise generators, adapters).
+
 ## Decision outcome
 
-D1 = B (440), D2 = A (410), D3 = C (430), D4 = table above, D5 = levels as stated, D6 = versions in specs and matrix.
+D1 = B (440), D2 = A (410), D3 = C (430), D4 = table above, D5 = levels as stated, D6 = versions in specs and matrix, D7 = A (390, owner choice).
 
 ## Consequences
 

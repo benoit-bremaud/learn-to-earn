@@ -369,6 +369,8 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 ## Cross-cutting business rules
 
+- Parent settings (UC-P3, UC-P4, UC-P11, UC-S5) share one flow: open, edit, check bounds, save. The parent-space auto-lock applies. Not modelled as a generalization (ADR-0001 D7).
+
 - Timers, expiry and the daily cap use elapsed time measured by the app, not the wall clock alone. A backwards change of the device clock freezes expiry and the daily cap and creates a neutral note for the Guardian.
 
 ## Open questions
