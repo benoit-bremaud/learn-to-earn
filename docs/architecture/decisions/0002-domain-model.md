@@ -34,8 +34,8 @@ Sensitivity: A stays first unless simplicity carries more than about 80 % of the
 | **Total /500** | **435** | 280 | 365 |
 
 With a single balance, a credit earned on Monday cannot expire on the next Monday. The event log stores more than needed.
-Sensitivity: B wins only if expiry is dropped, which contradicts decision Q4.
-**Decision: A.** The balance is derived (`/balanceMinutes`), never stored twice (DRY). Expired minutes are consumed oldest first.
+Sensitivity: A stays first for any expiry weight; with expiry at 0 and the other weights scaled, A ≈ 400 and B ≈ 377.
+**Decision: A.** The balance is derived (`/balanceMinutes` = sum of the non-expired credits' `/remainingMinutes`), never stored twice (DRY). Each use records the credits it draws from, oldest first.
 
 ## D3 — Scope of the confidence score
 
@@ -49,7 +49,7 @@ Sensitivity: B wins only if expiry is dropped, which contradicts decision Q4.
 
 Repeated low-confidence sessions already reach the Guardian through notes, so A loses little detection power.
 Sensitivity: C overtakes A only if detection power weighs more than about 48 % (others scaled: A = 500 − 2d, C ≈ 312 + 1.9d).
-**Decision: A.**
+**Decision: A.** At analysis level the score is a session attribute `confidence` (a one-attribute class would be YAGNI); it exists from V1.1.
 
 ## D4 — How the prerequisite graph is modelled
 
@@ -62,6 +62,7 @@ Sensitivity: C overtakes A only if detection power weighs more than about 48 % (
 | **Total /500** | **460** | 370 | 230 |
 
 The acyclic constraint is written as an OCL-style note: `{acyclic}`. An edge class is added only if edges get attributes one day.
+Sensitivity: B overtakes A only if extensibility weighs more than about 45 %.
 **Decision: A.**
 
 ## D5 — What is stored about the Guardian
@@ -75,11 +76,12 @@ The acyclic constraint is written as an OCL-style note: `{acyclic}`. An edge cla
 | **Total /500** | **470** | 320 | 340 |
 
 C hides the lockout state the domain needs; the storage of the hash itself is an adapter concern (component diagram).
+Sensitivity: B overtakes A only if future remote approval weighs more than about 51 %.
 **Decision: A.** The Guardian stays an actor, not a persisted person.
 
 ## D6 — How the diagram is split
 
-| Criterion (weight) | A. One diagram, about 22 classes | B. Three diagrams by area with shared stubs | C. One diagram per class cluster of 3–4 |
+| Criterion (weight) | A. One diagram, about 22 classes | B. One diagram per area with shared stubs | C. One diagram per class cluster of 3–4 |
 |---|---|---|---|
 | Readability (35) | 1 | 5 | 4 |
 | Overall coherence (25) | 5 | 4 | 2 |
@@ -87,14 +89,31 @@ C hides the lockout state the domain needs; the storage of the hash itself is an
 | Reviewability (20) | 2 | 5 | 3 |
 | **Total /500** | 280 | **455** | 290 |
 
-**Decision: B.** Areas: curriculum and progress, practice, rewards and parent space. A class shared by two areas (ChildProfile, Skill, Session) appears as a stub without attributes outside its home area.
+Sensitivity: A overtakes B only if overall coherence weighs more than about 73 %.
+**Decision: B.** Four areas: curriculum and progress, practice, rewards, parent space (rewards and parent space were split after the render check showed a tangled layout). A class shared by two areas (ChildProfile, Skill, Strand, Session) appears as a stub without attributes outside its home area.
+
+## D7 — Generalization in the reserve ledger
+
+Credit (minutes added) and ScreenTimeUse (minutes removed) are both movements of the same reserve, each with an amount and a time. The owner rule asks to model inheritance where it really exists.
+
+| Criterion (weight) | A. No generalization | B. Abstract ReserveEntry, Credit and ScreenTimeUse inherit | C. One Entry class with a kind enum |
+|---|---|---|---|
+| Faithful to the domain: a credit and a use are both movements (30) | 3 | 5 | 3 |
+| Simplicity, YAGNI (25) | 5 | 4 | 4 |
+| DRY: amount and time defined once (20) | 3 | 5 | 5 |
+| Owner rule: inheritance where it really exists (25) | 1 | 5 | 2 |
+| **Total /500** | 300 | **475** | 340 |
+
+C hides that only a credit expires and only a use can stop early, so it needs optional attributes that depend on the kind.
+Sensitivity: A overtakes B only if simplicity weighs more than about 73 %.
+**Decision: B.** No other real generalization exists in the domain: Skill, Exercise and the notes have no sub-kinds with their own attributes today.
 
 ## Decision outcome
 
-D1 = A (475), D2 = A (435), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455).
+D1 = A (475), D2 = A (435), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = B (475).
 
 ## Consequences
 
 - These classes form the pure domain layer: no Expo, storage or OS type may appear in them.
 - Thresholds (80 % success zone, 0.6 / 0.3 confidence, 70 % unlock, caps) stay in configuration, not as class constants.
-- Operations, ports and generalization are decided in the design class diagram, after the sequences.
+- Operations, ports and design-level generalizations (generators, adapters) are decided in the design class diagram, after the sequences.

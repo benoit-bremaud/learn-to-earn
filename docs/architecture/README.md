@@ -30,17 +30,19 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 3 | Use-case diagram, learning | [diagrams/learning/01-use-case.md](diagrams/learning/01-use-case.md) | reviewed twice, awaiting owner validation |
 | 4 | Use-case diagram, screen-time | [diagrams/screen-time/01-use-case.md](diagrams/screen-time/01-use-case.md) | reviewed twice, awaiting owner validation |
 | 5 | Use-case diagram, parent-space | [diagrams/parent-space/01-use-case.md](diagrams/parent-space/01-use-case.md) | reviewed twice, awaiting owner validation |
-| 6 | Traceability matrix | [traceability-matrix.md](traceability-matrix.md) | started (use cases only) |
+| 6 | Traceability matrix | [traceability-matrix.md](traceability-matrix.md) | use cases and classes |
 | 7 | Reviews | [reviews/](reviews/) | see log |
-| 8 | Domain model, sequence, component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
-| 9 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
+| 8 | Domain model approach | [decisions/0002-domain-model.md](decisions/0002-domain-model.md) | proposed |
+| 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed twice, awaiting owner validation |
+| 10 | Sequence, component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
+| 11 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
 
 ## Planned studies (order)
 
 Order follows Larman (Unified Process) and ICONIX: an analysis-level domain model fixes the vocabulary before the sequences, and the design class diagram comes after them (owner decision 2026-10-20, MCDA 500/500).
 
 1. Use cases (done, in review).
-2. Domain model: analysis class diagram, concepts, attributes, associations, multiplicities, no methods (Skill, Exercise, Attempt, MasteryScore, ConfidenceScore, Reserve, ScreenTimeRequest, ChildProfile…).
+2. Domain model: analysis class diagram, concepts, attributes, associations, multiplicities, no methods (done, in review).
 3. Sequence diagrams for non-trivial flows only: learning session with adaptive choice, screen-time request and approval, remediation walk-back, confidence scoring.
 4. Component diagram (layers and boundaries: UI, application, domain, adapters for storage, clock, TTS, OS).
 5. Design class diagram: operations, ports and adapters, dependencies, generalization where real.
