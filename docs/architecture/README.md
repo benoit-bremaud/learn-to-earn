@@ -43,3 +43,5 @@ Every diagram and every line of code must respect these principles. Reviews chec
 4. Class diagram (domain: Skill, Exercise, Attempt, MasteryScore, ConfidenceScore, Reserve, Request).
 5. State diagrams (session, screen-time request, reserve lifecycle).
 6. Data-flow diagram with sensitive fields flagged (privacy review).
+7. User stories for V0 and V1.0, derived from the use cases, with Given/When/Then acceptance criteria (they become the engine's TDD tests), reviewed twice. Stories of later versions are written just before each version (owner decision 2026-10-20, MCDA 460/500).
+8. GitHub issues (one per story or brick) and the project board, then V0 code.
