@@ -24,7 +24,7 @@ flowchart LR
       S4(("UC-S4 Enforce the end of screen time on the device"))
       S5(("UC-S5 Configure screen-time rules"))
     end
-    subgraph PS ["Parent-space domain - defined in its own diagram"]
+    subgraph PS ["Parent space (see its diagram)"]
       P1(("UC-P1 Unlock the parent space"))
     end
   end
