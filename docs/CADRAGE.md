@@ -6,6 +6,8 @@ Status: brainstorming complete on 2026-10-20, UML-first design is the next step.
 
 A mobile/web app that helps a CE1 child (7–8 years old) master reading, writing and arithmetic. The app adapts to the child (correctness + response speed), insists on weak skills, and converts good work into earned screen time (YouTube, Roblox…). Merit-based: the better you work, the more you may watch or play. The app also limits screen time (declarative in V1, automatic blocking on Android in V2).
 
+Guiding principle (owner, 2026-10-20): effort first, comfort after. The name says it: the child learns that screen time is earned by work, never given up front. Every flow (session, reserve, validation, wording) must respect that order.
+
 Primary user: the owner's daughter (CE1). Secondary: other parents, later (distribution decision deferred).
 
 ## 2. Decision log
