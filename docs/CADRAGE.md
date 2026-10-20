@@ -1,4 +1,4 @@
-# Project brief — earn-your-screen-time learning app (working title TBD)
+# Project brief — Learn To Earn
 
 Status: brainstorming complete on 2026-10-20, UML-first design is the next step. Every decision below comes from an MCDA matrix (weights /100, scores 0–5, total /500) validated by the owner.
 
@@ -41,6 +41,8 @@ Primary user: the owner's daughter (CE1). Secondary: other parents, later (distr
 | R1 | Slicing | Minimal vertical slice first | 435 |
 | R2 | Order | V1.1 complete engine + anti-cheat together, then V1.2 experience | 420 |
 | R3 | Tests | TDD for the engine (pure domain), test-after for the UI | 435 |
+
+Name: **Learn To Earn**, validated by the owner on 2026-10-20 (same as the repository name).
 
 ### Curriculum alignment (2026-10-20)
 
@@ -85,7 +87,6 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 
 ## 6. Open questions
 
-- Project name (candidates floated: Mérite, Sablier, Pépite). The repository uses a provisional name and can be renamed later (GitHub redirects the old URL).
 - Making the app official later (children's-data regulation, GDPR, store rules): deliberately postponed by the owner until the family-first phase has proven the concept (S2).
 - Device where she plays Roblox (decides the V2 blocking target); no official Linux Roblox client to my knowledge, to be checked.
 - Tablet model (Android multi-user support varies).
@@ -94,6 +95,5 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 
 ## 7. Next steps
 
-1. Choose the name, create the repository folder, move this file in.
-2. UML-first: use-case, sequence, component, class, state and data-flow diagrams (Mermaid) under `docs/architecture/diagrams/<feature>/`.
-3. Validate diagrams, then start V0.
+1. UML-first: use-case, sequence, component, class, state and data-flow diagrams (Mermaid) under `docs/architecture/diagrams/<feature>/`.
+2. Validate diagrams, then start V0.
