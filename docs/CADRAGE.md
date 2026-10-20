@@ -60,6 +60,10 @@ Details in `docs/curriculum/CE1-maths.md`.
 
 Multiplication is core CE1 content; two-step problems are CE1 content (corrected).
 
+### Architecture principles (owner rule 2026-10-20)
+
+Clean Architecture (dependency rule, proportional layering), SOLID, no anti-patterns, DRY and YAGNI are binding. Detail in `docs/architecture/README.md`.
+
 ## 3. Engine rules (all values configurable)
 
 Difficulty score = operation (+0, −1, ×3) + size of largest number (≤20: 0, ≤100: 2, ≤1000: 3) + 1 per carry/borrow/tens crossing + 2 per extra step − 1 for round numbers.
@@ -82,7 +86,7 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 |---|---|
 | V0 | Repository, CI, Expo structure, UML validated, exercise generator + mastery engine unit-tested without UI |
 | V1.0 | Profiles + PIN, framed session, simple addition/subtraction, free numeric entry (no multiple choice), simple minimum-time rule, mastery score, points and reserve, parent validation + timer, minimal traffic-light view, local storage |
-| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score, calendar ceiling, alerts, opt-in anonymous crash reports |
+| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score, calendar ceiling, alerts, warning before reserve minutes expire, opt-in anonymous crash reports |
 | V1.2 | Keypad comfort + driven format, light companion, audio, effort-first feedback |
 | V1.5 | Sync across devices, keypad mini-games, hidden control questions |
 | V2 | Android automatic blocking, automatic difficulty recalibration, reading |

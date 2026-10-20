@@ -78,7 +78,7 @@ The following are triggers or behaviours inside scenarios, never ovals (UML 2.5,
 
 ## D5 — Goal level
 
-Each use case states its Cockburn level. *Subfunction* use cases (UC-L2, UC-L3, UC-L4) are kept as ovals only because each traces to its own product decision (answering, read-aloud E4, hints M4). UC-P1 is a user goal (entering the parent space) that UC-S2 also includes and is reused or extended. All others are user goals, or conditional goal segments inheriting the actor of their base (UC-L5, UC-S4).
+Each use case states its Cockburn level. *Subfunction* use cases (UC-L2, UC-L3, UC-L4) are kept as ovals only because each traces to its own product decision (answering, read-aloud E4, hints M4). UC-P1 is a user goal (entering the parent space) that UC-S2 also includes. UC-P14 includes UC-P12 and UC-P2 at first launch. All others are user goals, or conditional goal segments inheriting the actor of their base (UC-L5, UC-S4).
 
 ## D6 — Version tags
 

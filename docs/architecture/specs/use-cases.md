@@ -22,7 +22,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 ## Conventions
 
-- Every use case of the parent space except UC-P1 and UC-P12 has the precondition **parent space unlocked (UC-P1)**.
+- Every use case of the parent space except UC-P1, UC-P12 and UC-P14 has the precondition **parent space unlocked (UC-P1)**. UC-P2 also runs without unlock when UC-P14 includes it at first launch.
 - Versions follow the roadmap (`docs/CADRAGE.md` §5). A step or extension that ships later than its use case is tagged inline, for example *(V1.1)*.
 - Moving between profiles (dec. P0): a parent entry point is visible on every child screen and leads to UC-P1. Leaving the parent space, or 2 minutes without activity, locks it and returns to the child profile. Setting up an Android user or an Ubuntu session for the child is done outside the app and is not a use case.
 - An extension has a direct actor link in the diagrams only if the actor can start it on their own (ADR-0001 D2).
@@ -113,7 +113,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   2. The app proposes an exercise one notch higher, possibly a prudent look-ahead probe of a later period.
   3. Learner answers it (UC-L2).
 - Extensions: 3a. Look-ahead probes succeed repeatedly: a neutral note for the Guardian is created, never a label.
-- Business rule: the child chooses only within the challenge share; the engine picks every other exercise (dec. D1).
+- Business rule: the child chooses only within the challenge share; the engine picks every other exercise (`docs/CADRAGE.md` §3).
 
 ### UC-L7 — Calibrate keypad comfort
 - Level: user goal. Primary actor: Learner. Version: V1.2. Decision: T1.
@@ -184,7 +184,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   2. Learner plays or watches in another app.
   3. The app warns 5 minutes before the end.
   4. The timer ends with an alarm (extension point `timer ended`).
-- Extensions: 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian in the history (UC-P6).
+- Extensions: 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian *(V1.1)* in the alerts history (UC-P6).
 - Extension points: `timer ended`.
 - Postcondition: the reserve is debited.
 - Business rule: in V1 the app cannot block other apps (declarative, dec. Q1). The child could stop the timer and keep playing: this residual risk is accepted in V1 and removed by UC-S4 in V2.

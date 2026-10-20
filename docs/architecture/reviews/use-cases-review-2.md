@@ -38,3 +38,15 @@
 | 31 | Nice | No export prompt before erase | Fixed: UC-P9 step 1 |
 
 The reviewer found no wording that shames the child or diagnoses anything.
+
+## Re-check (commit 386d931)
+
+The same reviewer re-read the study: 30 findings resolved, #12 partly (residual V1 risk accepted and documented). Four new small inconsistencies were found and fixed in the next commit:
+
+- N1 (Should): UC-P14 and UC-P2 at first launch were missing from the unlock exemption. Fixed in the spec conventions.
+- N2 (Should): UC-S3 2a pointed to a V1.1 history from a V1.0 use case. Fixed with a V1.1 tag.
+- N3 (Nice): garbled ADR D5 sentence. Fixed, UC-P14 includes added.
+- N4 (Nice): expiry warning missing from the V1.1 roadmap. Added in CADRAGE.
+- Finding 30 cited the wrong source: now CADRAGE §3.
+
+Verdict after re-check: no open Must Have. Ready for owner validation.
