@@ -27,6 +27,9 @@ Render check: all five diagrams re-rendered with `mmdc` and inspected after the 
 | Remediation closed on `target` | End rule reads the mastery of `current`, the skill practised (C4) |
 | Fractional weighted minutes in integer amounts | Reserve amounts are Real, display rounds down (C10) |
 | Credit expiring under an approved request | Balance re-checked at use start, IN_USE request held in the replay, unstarted APPROVED request expires with its day (C11) |
-| Second Codex pass: interrupted session could credit attempts twice | `Session.creditedWeightedMinutes` checkpoint persisted (C7) |
+| Second Codex pass: interrupted session could credit attempts twice | Checkpoint first on Session, then moved into ReserveCredit (`sourceSession`, `weightedUpTo`) by the third pass |
 | Second Codex pass: credit expiry by day, retroactive `expiryDays` | `ReserveCredit.expiresAt` frozen at creation (C10) |
 | Second Codex pass: integer `usedMinutes` on early stop | `ScreenTimeUse.endedAt`, `usedMinutes : Real` (C11) |
+| Third Codex pass: crediting not idempotent across aggregates | Checkpoint carried by ReserveCredit, one write in the Reserve, unique `(sourceSession, weightedUpTo)` (C7) |
+| Third Codex pass: active hold opened room under the reserve cap | Cap headroom ignores IN_USE holds (C10) |
+| Third Codex pass: session crossing midnight credited to one day | Uncredited attempts split by the day of `answeredAt`, one credit per day (C7) |
