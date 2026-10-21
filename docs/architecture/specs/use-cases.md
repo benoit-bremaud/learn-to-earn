@@ -51,7 +51,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   - 5a. Learner accepts the offer: UC-L6. 5b. Learner declines: the session goes on to step 6.
   - *a. Learner stops early: the partial recap is shown and minutes for the work done are credited.
   - *b. The session is interrupted (app closed, call, battery): answers are kept. On the next launch the app offers to resume or shows the partial recap.
-- Business rule: minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap. The 20-minute threshold counts the work of the whole day, across sessions, so splitting the work into several sessions never changes the minutes earned.
+- Business rule: only correct answers earn work minutes, weighted by difficulty and confidence, and a skill whose mastery rises during the session adds a progress bonus (owner 2026-10-21: the goal is learning results that are good and rising, not time spent). Minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap. The 20-minute threshold counts the work of the whole day, across sessions, so splitting the work into several sessions never changes the minutes earned.
 - Extension points: `weak prerequisite detected`, `challenge slot offered`.
 - Postcondition: mastery scores updated, reserve credited.
 - Relationships: «include» UC-L2. «extend» from UC-L5 and UC-L6.
@@ -204,7 +204,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Preconditions: parent space unlocked.
 - Main success scenario:
   1. Guardian opens the rules.
-  2. Guardian edits conversion rate, daily cap, reserve cap or expiry (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, reserve cap 120 min, 7 days; the V1.0 engine uses these defaults before this screen exists).
+  2. Guardian edits conversion rate, daily cap, reserve cap or expiry (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, reserve cap 60 min, 7 days; the V1.0 engine uses these defaults before this screen exists).
   3. The app saves the rules.
 - Extensions: 2a. A value is outside safe bounds: the app refuses and explains.
 
