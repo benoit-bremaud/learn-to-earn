@@ -11,7 +11,7 @@ Analysis level: concepts, attributes, associations, multiplicities and constrain
 
 - Diagram 1, curriculum and progress: Strand, Skill, FluenceBenchmark, ChildProfile, SkillProgress, FluenceRecord, Remediation, KeypadProfile, WeeklyAggregate.
 - Diagram 2, practice: Session, Exercise, Attempt.
-- Diagram 3, rewards: Reserve, ReserveBucket, ScreenTimeRequest, ScreenTimeUse, ScreenTimeRules.
+- Diagram 3, rewards: Reserve, ReserveCredit, ScreenTimeRequest, ScreenTimeUse, ScreenTimeRules.
 - Diagram 3b, companion: Streak, CompanionItem.
 - Diagram 4, parent space and installation: Installation, LearningPlan, ParentNote, ParentCredential, PrivacySettings, TimeGuard.
 
@@ -47,6 +47,7 @@ classDiagram
     trend : Trend
     averageTimeMs : Integer
     personalRecordMs : Integer
+    highestPassedLevel : DifficultyLevel [0..1]
     /unlockedLevel : DifficultyLevel
     lastPractisedAt : Instant
     nextReviewAt : Instant [0..1]
@@ -191,13 +192,13 @@ classDiagram
   class Installation
   class ChildProfile
   class Reserve {
-    /balanceMinutes : Integer
+    /balanceMinutes : Real
   }
-  class ReserveBucket {
+  class ReserveCredit {
     day : LocalDay
-    creditedMinutes : Integer
-    remainingMinutes : Integer
-    forfeitedMinutes : Integer
+    creditedAt : Instant
+    minutes : Real
+    forfeitedMinutes : Real
   }
   class ScreenTimeRequest {
     day : LocalDay
@@ -227,11 +228,11 @@ classDiagram
     EXPIRED
   }
   ChildProfile "1" *-- "1" Reserve : owns
-  Reserve "1" *-- "*" ReserveBucket : holds
+  Reserve "1" *-- "*" ReserveCredit : holds
   Reserve "1" *-- "*" ScreenTimeRequest : receives
   ScreenTimeRequest "1" *-- "0..1" ScreenTimeUse : grants
   Installation "1" *-- "1" ScreenTimeRules : configuredBy
-  note for ReserveBucket "C10"
+  note for ReserveCredit "C10"
   note for Reserve "C11"
   note for ScreenTimeRequest "{at most one open request} C12"
 ```
@@ -320,16 +321,16 @@ classDiagram
 Referenced from the diagrams by number (Mermaid notes stay short to keep the diagrams readable).
 
 - C1. SkillProgress is a reified association class, one per child and skill. `mastery` is a Real from 0 to 100, rounded only for display.
-- C2. `/unlockedLevel` is the level after the highest one already passed; a level is passed when the skill mastery reaches 70 % (ADR-0002 D9). It is never below `Skill.baseLevel`.
+- C2. A level is passed when the skill mastery reaches 70 % while practising at that level (ADR-0002 D9); `highestPassedLevel` records it at that moment, so the unlock survives the folding of attempts. `/unlockedLevel` is the level after `highestPassedLevel`, or `Skill.baseLevel` when none is passed yet.
 - C3. `averageTimeMs` counts correct answers only (M2). `trend` and `averageTimeMs` are stored on purpose, because attempts are folded after 90 days.
-- C4. Remediation: `current` is a prerequisite, direct or indirect, of `target`. Origin GUARDIAN is the "go back to X" button (UC-P7), AUTO comes from the 3-error rule (UC-L5). An AUTO remediation closes by itself once the mastery of `target` is back at the threshold. A GUARDIAN remediation closes at the same threshold and raises a REMEDIATION_COMPLETED note, so the Guardian knows the request was met.
+- C4. Remediation: `current` is a prerequisite, direct or indirect, of `target`. Origin GUARDIAN is the "go back to X" button (UC-P7), AUTO comes from the 3-error rule (UC-L5). Exercises during a remediation practise `current`, so the end rule reads the mastery of `current`: an AUTO remediation closes by itself once that mastery is back at the threshold, and practice returns to `target`. A GUARDIAN remediation closes at the same threshold and raises a REMEDIATION_COMPLETED note, so the Guardian knows the request was met.
 - C5. FluenceRecord is the association class child × benchmark. It is measured on a timed window, with no visible countdown.
 - C6. `confidence` is a Real from 0 to 1, starts at 1.0 in every session, from V1.1 (ADR-0002 D3). `workedSeconds` accumulates only while RUNNING. `/weightedMinutes` is the sum of the attempts' `weightedMinutes`.
-- C7. PAUSED is the confidence pause (UC-L1 4c), INTERRUPTED means the app was closed and the session can resume, STOPPED_EARLY means the child ended it. Each interruption credits the weighted minutes earned so far to the current day's bucket; a resumed session keeps accumulating and credits the rest at its end. An interrupted session untouched for a day becomes STOPPED_EARLY.
+- C7. PAUSED is the confidence pause (UC-L1 4c), INTERRUPTED means the app was closed and the session can resume, STOPPED_EARLY means the child ended it. Each interruption records a ReserveCredit for the weighted minutes earned so far, on the current day; a resumed session keeps accumulating and credits the rest at its end. An interrupted session untouched for a day becomes STOPPED_EARLY.
 - C8. `difficultyScore` is the skill base level plus the modifiers (C4 of CADRAGE); the level is mapped from it in configuration. `hints` lists the stages already shown, in order, never repeated. `isLookAhead` is a snapshot taken at generation (skill period above the ceiling).
 - C9. `correct` is derived: the answer equals `expectedAnswer`. `confidenceAtAnswer` and `weightedMinutes` are frozen at answer time (ADR-0002 D8): response time × difficulty multiplier × confidence factor, values in configuration. Attempts are kept 90 days with their session and exercises, then folded into WeeklyAggregate. `AnswerFormat` gets further values with UC-L7 (V1.2).
-- C10. One ReserveBucket per day on which minutes were earned. It expires `expiryDays` after its day and whatever remains is lost. `creditedMinutes` is cut by `reserveCapMinutes`; the cut part is recorded in `forfeitedMinutes`. Uses debit the oldest unexpired bucket first (ADR-0002 D2).
-- C11. `/balanceMinutes` is the sum of `remainingMinutes` of the unexpired buckets. At approval, `request.minutes` must not exceed the balance. Rule changes (UC-S5) apply to new movements only.
+- C10. A ReserveCredit is recorded at each session end or interruption (C7). It expires `expiryDays` after its `day`. `minutes` is cut by `reserveCapMinutes`; the cut part is recorded in `forfeitedMinutes`, not lost silently. Amounts are Real so no earned fraction is lost; only display rounds, down to the whole minute.
+- C11. `/balanceMinutes` is replayed (ADR-0002 D2): uses and the open IN_USE request consume the unexpired credits oldest first; what an expired credit still held is lost. At approval and again when the use starts, `request.minutes` must not exceed the balance. From its start, an IN_USE request holds its full `minutes` in the replay, so a credit expiring during the use cannot make the balance negative; at the end only `usedMinutes` stays consumed. An APPROVED request not started by the end of its `day` becomes EXPIRED. Rule changes (UC-S5) apply to new movements only.
 - C12. At most one request is PENDING, APPROVED or IN_USE. The day's used minutes plus its open approved minutes never exceed `dailyCapMinutes`. A USED request has exactly one use, and `usedMinutes` never exceeds `request.minutes`.
 - C13. CompanionItem is a static catalogue. An item is unlocked when `Streak.bestDays` reaches `requiredStreakDays`, so a broken streak never locks an item again.
 - C14. The skill the Guardian wants first is a Remediation with origin GUARDIAN (C4).
@@ -349,7 +350,7 @@ Referenced from the diagrams by number (Mermaid notes stay short to keep the dia
 | KeypadProfile | Statistics from calibration and daily use, never a diagnosis; time of the re-calibration request | T1, UC-L7, UC-P13 | V1.2 |
 | WeeklyAggregate | Folded answers of one child on one skill after 90 days | V1 | V1.0 |
 | Session, Exercise, Attempt | One framed session, its ordered exercises (with the hints shown) and the answers | E3, M3, M4, D1, D2, UC-L1, UC-L2, UC-L4 | V1.0 (confidence, REVIEW and CHALLENGE slots, look-ahead V1.1) |
-| Reserve, ReserveBucket | Screen-time minutes earned per day, each day expiring after `expiryDays` (default 7) | Q4, P3, ADR-0002 D2 | V1.0 |
+| Reserve, ReserveCredit | Screen-time minutes earned, each credit expiring after `expiryDays` (default 7), balance replayed oldest first | Q4, P3, ADR-0002 D2 | V1.0 |
 | ScreenTimeRequest, ScreenTimeUse | A request the Guardian approves or refuses, and its use | P3, UC-S1, UC-S2 | V1.0 |
 | ScreenTimeRules | Conversion, daily cap, reserve cap, expiry | Conversion, UC-S5 | V1.0 defaults, editing V1.1 |
 | Streak, CompanionItem | Day streak and the companion catalogue it unlocks | E1, UC-L9 | V1.2 |
@@ -367,7 +368,7 @@ Each aggregate is loaded and saved as one unit. Aggregates refer to each other b
 |---|---|---|
 | Practice | Session, its Exercises and Attempts | one answer updates the attempt, the session confidence and the worked time |
 | Progress | SkillProgress and its WeeklyAggregates, Remediation, FluenceRecord | mastery, trend and unlocked level of a skill |
-| Reserve | Reserve, its buckets, requests and uses | balance, daily cap, one open request |
+| Reserve | Reserve, its credits, requests and uses | balance, daily cap, one open request |
 | Child | ChildProfile identity, Streak, KeypadProfile | identity, streak and keypad statistics |
 | LearningPlan | LearningPlan | ceiling and strands, changed by the Guardian only |
 | ParentNote | one ParentNote | each note is written on its own by the engine and read by the Guardian |
@@ -379,14 +380,14 @@ Between aggregates the consistency is eventual: closing a session credits the re
 
 - No operations on purpose: responsibilities are assigned in the sequence diagrams, then drawn in the design class diagram.
 - Composition (filled diamond) means the part dies with the whole. Skill, Strand and CompanionItem are static data and survive an erase.
-- No generalization remains in the model (ADR-0002 D7): the reserve is now a set of day buckets, so credits and uses are no longer two kinds of the same thing.
+- No generalization in the model (ADR-0002 D7): credits and uses are both reserve movements, but they share no rule (a credit expires and is capped, a use is bounded by its request), so no common superclass.
 - Derived attributes (`/`) are computed, never stored (DRY). Frozen snapshots taken at event time (confidence at answer, weighted minutes, isLookAhead) are stored on purpose, because their inputs change afterwards.
-- Currency (ADR-0002 D8): one quantity feeds the reserve, the weighted minutes. Per attempt: response time x difficulty multiplier x confidence factor. At each session end or interruption, the day's weighted minutes are converted at the full rate up to `fullRateMinutes` per day, then at `reducedRatio` (OQ-4, decided per day), and credited to the bucket of that day within the reserve cap.
-- Day: `LocalDay` is the local calendar day computed from the trusted time (TimeGuard). It is used by the daily cap, the buckets, the streak and the conversion threshold.
+- Currency (ADR-0002 D8): one quantity feeds the reserve, the weighted minutes. Per attempt: response time x difficulty multiplier x confidence factor. At each session end or interruption, the day's weighted minutes are converted at the full rate up to `fullRateMinutes` per day, then at `reducedRatio` (OQ-4, decided per day), and recorded as a ReserveCredit of that day within the reserve cap.
+- Day: `LocalDay` is the local calendar day computed from the trusted time (TimeGuard). It is used by the daily cap, credit expiry, the streak and the conversion threshold.
 - Value types: `SkillId`, `Ratio` (0 to 1), `Hash`, `Instant`, `Date`, `LocalDay` are primitive value types, not entities.
 - `GradeLevel.CYCLE1` names a cycle, not a class level; a child profile only uses CP or CE1.
 - Navigability is left out at analysis level; it is decided in the design class diagram. `{ordered}` and `{unique}` are drawn as association labels because Mermaid cannot place a constraint at an association end.
 - Thresholds and multipliers live in configuration, not in these classes.
 - Not in the model: the exported file (an adapter artefact), the clock and TTS (adapters), the OS (external).
 - Known limits, accepted (YAGNI): `answer` is an integer (fractions come later); a Strand has no subject until reading arrives in V2.
-- Open question OQ-5: does UC-P9 (erase) also remove the PIN, the consent and the rules, or only the child's data? And a restore (UC-P15) of an old export would bring back minutes already spent: the sequence study must decide the guard (refuse an export older than the current data, or recompute the buckets against TimeGuard).
+- Open question OQ-5: does UC-P9 (erase) also remove the PIN, the consent and the rules, or only the child's data? And a restore (UC-P15) of an old export would bring back minutes already spent: the sequence study must decide the guard (refuse an export older than the current data, or replay the balance against TimeGuard).

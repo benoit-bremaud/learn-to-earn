@@ -34,11 +34,11 @@ Revised after the adversarial review (docs/architecture/reviews/domain-model-rev
 | Auditability for the Guardian (15) | 5 | 2 | 4 |
 | Data minimisation (15) | 3 | 5 | 5 |
 | Testability of the engine (15) | 4 | 5 | 3 |
-| **Total /500** | 375 | **440** | 430 |
+| **Total /500** | 380 | 425 | **430** |
 
 B expires a whole day at once (day granularity instead of the minute), which is invisible for a 7-day rule. Uses are still recorded, so the Guardian sees what was watched; only the per-credit allocation disappears.
-Sensitivity: C overtakes B only if auditability weighs more than about 24 % (others scaled); A never leads.
-**Decision (owner, 2026-10-21): B.** The balance is derived (`/balanceMinutes` = sum of the unexpired buckets' `remainingMinutes`). Minutes cut by the reserve cap are recorded in `forfeitedMinutes`, not lost silently.
+Sensitivity (totals recomputed after review of PR #3; the first version read 375 / 440 / 430 by mistake): C leads by 5 points, a near tie. B wins if simplicity weighs at least 29 %, testability at least 18 %, auditability at most 12 % or exact expiry at most 26 % (others scaled); A never leads.
+**Decision (owner, 2026-10-21, revised after the corrected totals): C.** The first decision (B) rested on the wrong totals. The model keeps ReserveCredit and ScreenTimeUse; `/balanceMinutes` is replayed oldest first over the unexpired credits. Minutes cut by the reserve cap are recorded in `forfeitedMinutes`, not lost silently.
 
 ## D3 — Scope of the confidence score
 
@@ -107,7 +107,7 @@ The first version of this decision (abstract ReserveEntry over Credit and Screen
 | Owner rule: inheritance where it really exists (15) | 4 | 2 |
 | **Total /500** | **460** | 205 |
 
-With the day buckets of D2, credits and uses are no longer two kinds of one thing: a bucket holds remaining minutes, a use is a use. No rule is shared.
+With D2 = C, credits and uses are both reserve movements, but they share no rule: a credit is capped and expires, a use is bounded by its request. A common superclass would carry no behaviour.
 **Decision: A, no generalization in the domain.** Inheritance will be re-examined in the design class diagram (generators, adapters), where it may be real.
 
 ## D8 — Which quantity feeds the reserve (owner, 2026-10-21)
@@ -147,7 +147,7 @@ With the day buckets of D2, credits and uses are no longer two kinds of one thin
 
 ## Decision outcome
 
-D1 = A (475), D2 = B (440), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380).
+D1 = A (475), D2 = C (430), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380).
 
 Honest limits found by the adversarial review: D1 option C, D3 option B and D5 option C were weak alternatives (D3 B contradicts CADRAGE and should have been excluded, not scored); D6 is a layout choice that did not need a matrix. They do not change their outcomes. Aggregate boundaries, the time policy and the retention scopes are now part of the model (see "Aggregates" in the diagram file) and should get their own ADR when the component diagram fixes the storage boundary.
 

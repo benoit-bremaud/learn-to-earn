@@ -9,7 +9,7 @@
 |---|---|---|---|
 | A-M1 | Must | Points and minutes were two disconnected currencies | ADR-0002 D8: one currency, weighted minutes |
 | A-M2 | Must | `/points` not derivable, confidence moves during a session | `Attempt.confidenceAtAnswer` and `weightedMinutes` stored as frozen snapshots |
-| A-M3 / R-S1 | Must | Use-to-credit allocation without amounts | ADR-0002 D2 revised: day buckets (B, 440); no allocation needed |
+| A-M3 / R-S1 | Must | Use-to-credit allocation without amounts | ADR-0002 D2 revised: day buckets (B); later corrected to C (430) after the PR #3 review |
 | A-M4 | Must | No day concept, request lifecycle could break the daily cap | `LocalDay`, full `RequestStatus`, constraint C12 |
 | A-M5 | Must | Clock-change rule not expressible | `TimeGuard` (C16) |
 | A-M6 | Must | 70 % unlock rule had no per-level mastery | ADR-0002 D9: rule restated per skill, `/unlockedLevel` derived (C2), CADRAGE §3 edited |

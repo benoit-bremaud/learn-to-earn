@@ -4,18 +4,18 @@ Proves coverage: every use case traces to product decisions, a diagram and a roa
 
 | UC | Goal | Actor | Version | CADRAGE decisions | Use-case diagram | Sequence | Component | Class | State | Data-flow |
 |---|---|---|---|---|---|---|---|---|---|---|
-| UC-L1 | Complete a learning session | Learner | V1.0 | E3, M3, M4, C1, C3, C4, T2, Conversion | learning | — | — | Session, Exercise, SkillProgress, Skill, LearningPlan, Reserve, ReserveBucket, ScreenTimeRules, ParentNote, TimeGuard | — | — |
+| UC-L1 | Complete a learning session | Learner | V1.0 | E3, M3, M4, C1, C3, C4, T2, Conversion | learning | — | — | Session, Exercise, SkillProgress, Skill, LearningPlan, Reserve, ReserveCredit, ScreenTimeRules, ParentNote, TimeGuard | — | — |
 | UC-L2 | Answer an exercise | Learner | V1.0 | M1, M2, T1, T2, E2 | learning | — | — | Exercise, Attempt, Session, SkillProgress, KeypadProfile (V1.2) | — | — |
 | UC-L3 | Listen to an exercise statement | Learner | V1.2 | E4, V4 | learning | — | — | Exercise (statement; TTS is an adapter) | — | — |
 | UC-L4 | Retry with a hint | Learner | V1.0 | M4, E2 | learning | — | — | Exercise (hints), Attempt | — | — |
 | UC-L5 | Rework an earlier skill | Learner | V1.1 | R4, M4, C3 | learning | — | — | Remediation, Skill (requires), SkillProgress, Exercise, ParentNote | — | — |
 | UC-L6 | Take on a challenge exercise | Learner | V1.1 | M3, C1 | learning | — | — | Exercise (isLookAhead), LearningPlan, ParentNote | — | — |
 | UC-L7 | Calibrate keypad comfort | Learner | V1.2 | T1 | learning | — | — | KeypadProfile | — | — |
-| UC-L8 | Check progress and the screen-time gauge | Learner | V1.0 | E1, Q4 | learning | — | — | Reserve, ReserveBucket, SkillProgress, FluenceRecord (V1.1), FluenceBenchmark (V1.1), Streak (V1.2) | — | — |
+| UC-L8 | Check progress and the screen-time gauge | Learner | V1.0 | E1, Q4 | learning | — | — | Reserve, ReserveCredit, SkillProgress, FluenceRecord (V1.1), FluenceBenchmark (V1.1), Streak (V1.2) | — | — |
 | UC-L9 | Customise the companion | Learner | V1.2 | E1 | learning | — | — | CompanionItem, Streak | — | — |
-| UC-S1 | Request screen time | Learner | V1.0 | Q1, P3, Conversion | screen-time | — | — | ScreenTimeRequest, Reserve, ReserveBucket, ScreenTimeRules, ScreenTimeUse | — | — |
+| UC-S1 | Request screen time | Learner | V1.0 | Q1, P3, Conversion | screen-time | — | — | ScreenTimeRequest, Reserve, ReserveCredit, ScreenTimeRules, ScreenTimeUse | — | — |
 | UC-S2 | Approve a screen-time request | Guardian | V1.0 | P1, P3 | screen-time | — | — | ScreenTimeRequest, Reserve, ParentCredential | — | — |
-| UC-S3 | Use approved screen time | Learner | V1.0 | Q1, P3 | screen-time | — | — | ScreenTimeUse, ScreenTimeRequest, ReserveBucket, ParentNote | — | — |
+| UC-S3 | Use approved screen time | Learner | V1.0 | Q1, P3 | screen-time | — | — | ScreenTimeUse, ScreenTimeRequest, ReserveCredit, ParentNote | — | — |
 | UC-S4 | Enforce the end of screen time on the device | Learner (inherited), DeviceOS | V2 | Q1, P0 | screen-time | — | — | ScreenTimeUse | — | — |
 | UC-S5 | Configure screen-time rules | Guardian | V1.1 | Q4, Conversion | screen-time | — | — | ScreenTimeRules | — | — |
 | UC-P1 | Unlock the parent space | Guardian | V1.0 | P1 | parent-space, screen-time | — | — | ParentCredential | — | — |

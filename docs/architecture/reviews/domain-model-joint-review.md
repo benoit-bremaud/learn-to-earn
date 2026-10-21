@@ -11,9 +11,19 @@
 | 2 | `TimeGuard` as a domain class | Keep | — |
 | 3 | `SlotKind` naming | Improve | Literal renamed `CORE` (was ambiguous with the ACQUIRING trend) |
 | 4 | Aggregate boundaries | Improve | Child aggregate split: Child (identity, Streak, KeypadProfile), LearningPlan, ParentNote |
-| 5 | `ReserveBucket.forfeitedMinutes` | Keep | — |
+| 5 | `forfeitedMinutes` (then on ReserveBucket, now on ReserveCredit) | Keep | — |
 | 6 | Frozen snapshots (`confidenceAtAnswer`, `weightedMinutes`) | Keep both | — |
 | 7 | Remediation end rule | Improve | C4/C14: AUTO closes by itself at the threshold; GUARDIAN closes at the threshold and raises a `REMEDIATION_COMPLETED` note |
-| 8 | Interrupted session crediting | Improve | C6/C7: each interruption credits the earned weighted minutes to the current day's bucket; a resumed session credits the rest at its end |
+| 8 | Interrupted session crediting | Improve | C6/C7: each interruption credits the earned weighted minutes as a credit of the current day; a resumed session credits the rest at its end |
 
 Render check: all five diagrams re-rendered with `mmdc` and inspected after the changes.
+
+## Follow-up after the Codex review of PR #3
+
+| Finding | Resolution |
+|---|---|
+| D2 totals wrong (375 / 440 / 430 instead of 380 / 425 / 430) | Recomputed; owner re-voted C (credits and uses, balance replayed). ReserveBucket replaced by ReserveCredit; all matrices re-checked by script |
+| `/unlockedLevel` not derivable after folding | `SkillProgress.highestPassedLevel` stored (C2) |
+| Remediation closed on `target` | End rule reads the mastery of `current`, the skill practised (C4) |
+| Fractional weighted minutes in integer amounts | Reserve amounts are Real, display rounds down (C10) |
+| Credit expiring under an approved request | Balance re-checked at use start, IN_USE request held in the replay, unstarted APPROVED request expires with its day (C11) |
