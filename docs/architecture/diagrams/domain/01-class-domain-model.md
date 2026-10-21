@@ -156,7 +156,7 @@ classDiagram
   class SlotKind {
     <<enumeration>>
     WARM_UP
-    ACQUIRING
+    CORE
     REVIEW
     CHALLENGE
   }
@@ -297,6 +297,7 @@ classDiagram
     EARLY_STOP
     CLOCK_CHANGED
     PREREQUISITE_STILL_WEAK
+    REMEDIATION_COMPLETED
   }
   Installation "1" *-- "1..*" ChildProfile : serves
   Installation "1" *-- "1" ParentCredential : securedBy
@@ -321,10 +322,10 @@ Referenced from the diagrams by number (Mermaid notes stay short to keep the dia
 - C1. SkillProgress is a reified association class, one per child and skill. `mastery` is a Real from 0 to 100, rounded only for display.
 - C2. `/unlockedLevel` is the level after the highest one already passed; a level is passed when the skill mastery reaches 70 % (ADR-0002 D9). It is never below `Skill.baseLevel`.
 - C3. `averageTimeMs` counts correct answers only (M2). `trend` and `averageTimeMs` are stored on purpose, because attempts are folded after 90 days.
-- C4. Remediation: `current` is a prerequisite, direct or indirect, of `target`. Origin GUARDIAN is the "go back to X" button (UC-P7), AUTO comes from the 3-error rule (UC-L5). It is removed once the mastery of `target` is back at the threshold.
+- C4. Remediation: `current` is a prerequisite, direct or indirect, of `target`. Origin GUARDIAN is the "go back to X" button (UC-P7), AUTO comes from the 3-error rule (UC-L5). An AUTO remediation closes by itself once the mastery of `target` is back at the threshold. A GUARDIAN remediation closes at the same threshold and raises a REMEDIATION_COMPLETED note, so the Guardian knows the request was met.
 - C5. FluenceRecord is the association class child × benchmark. It is measured on a timed window, with no visible countdown.
 - C6. `confidence` is a Real from 0 to 1, starts at 1.0 in every session, from V1.1 (ADR-0002 D3). `workedSeconds` accumulates only while RUNNING. `/weightedMinutes` is the sum of the attempts' `weightedMinutes`.
-- C7. PAUSED is the confidence pause (UC-L1 4c), INTERRUPTED means the app was closed and the session can resume, STOPPED_EARLY means the child ended it. An interrupted session untouched for a day becomes STOPPED_EARLY.
+- C7. PAUSED is the confidence pause (UC-L1 4c), INTERRUPTED means the app was closed and the session can resume, STOPPED_EARLY means the child ended it. Each interruption credits the weighted minutes earned so far to the current day's bucket; a resumed session keeps accumulating and credits the rest at its end. An interrupted session untouched for a day becomes STOPPED_EARLY.
 - C8. `difficultyScore` is the skill base level plus the modifiers (C4 of CADRAGE); the level is mapped from it in configuration. `hints` lists the stages already shown, in order, never repeated. `isLookAhead` is a snapshot taken at generation (skill period above the ceiling).
 - C9. `correct` is derived: the answer equals `expectedAnswer`. `confidenceAtAnswer` and `weightedMinutes` are frozen at answer time (ADR-0002 D8): response time × difficulty multiplier × confidence factor, values in configuration. Attempts are kept 90 days with their session and exercises, then folded into WeeklyAggregate. `AnswerFormat` gets further values with UC-L7 (V1.2).
 - C10. One ReserveBucket per day on which minutes were earned. It expires `expiryDays` after its day and whatever remains is lost. `creditedMinutes` is cut by `reserveCapMinutes`; the cut part is recorded in `forfeitedMinutes`. Uses debit the oldest unexpired bucket first (ADR-0002 D2).
@@ -367,7 +368,9 @@ Each aggregate is loaded and saved as one unit. Aggregates refer to each other b
 | Practice | Session, its Exercises and Attempts | one answer updates the attempt, the session confidence and the worked time |
 | Progress | SkillProgress and its WeeklyAggregates, Remediation, FluenceRecord | mastery, trend and unlocked level of a skill |
 | Reserve | Reserve, its buckets, requests and uses | balance, daily cap, one open request |
-| Child | ChildProfile identity, Streak, KeypadProfile, LearningPlan, ParentNote | identity and plan |
+| Child | ChildProfile identity, Streak, KeypadProfile | identity, streak and keypad statistics |
+| LearningPlan | LearningPlan | ceiling and strands, changed by the Guardian only |
+| ParentNote | one ParentNote | each note is written on its own by the engine and read by the Guardian |
 | Installation | Installation, ParentCredential, PrivacySettings, ScreenTimeRules, TimeGuard | PIN lockout, clock trust, rules |
 
 Between aggregates the consistency is eventual: closing a session credits the reserve afterwards, a stopped-early use may raise a note afterwards. Erasing a child (UC-P9) cascades over every aggregate that carries its identifier.
@@ -378,7 +381,7 @@ Between aggregates the consistency is eventual: closing a session credits the re
 - Composition (filled diamond) means the part dies with the whole. Skill, Strand and CompanionItem are static data and survive an erase.
 - No generalization remains in the model (ADR-0002 D7): the reserve is now a set of day buckets, so credits and uses are no longer two kinds of the same thing.
 - Derived attributes (`/`) are computed, never stored (DRY). Frozen snapshots taken at event time (confidence at answer, weighted minutes, isLookAhead) are stored on purpose, because their inputs change afterwards.
-- Currency (ADR-0002 D8): one quantity feeds the reserve, the weighted minutes. Per attempt: response time x difficulty multiplier x confidence factor. At the end of a session, the day's weighted minutes are converted at the full rate up to `fullRateMinutes` per day, then at `reducedRatio` (OQ-4, decided per day), and credited to the bucket of that day within the reserve cap.
+- Currency (ADR-0002 D8): one quantity feeds the reserve, the weighted minutes. Per attempt: response time x difficulty multiplier x confidence factor. At each session end or interruption, the day's weighted minutes are converted at the full rate up to `fullRateMinutes` per day, then at `reducedRatio` (OQ-4, decided per day), and credited to the bucket of that day within the reserve cap.
 - Day: `LocalDay` is the local calendar day computed from the trusted time (TimeGuard). It is used by the daily cap, the buckets, the streak and the conversion threshold.
 - Value types: `SkillId`, `Ratio` (0 to 1), `Hash`, `Instant`, `Date`, `LocalDay` are primitive value types, not entities.
 - `GradeLevel.CYCLE1` names a cycle, not a class level; a child profile only uses CP or CE1.

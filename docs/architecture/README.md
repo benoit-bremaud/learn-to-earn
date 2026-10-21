@@ -35,7 +35,7 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 6 | Traceability matrix | [traceability-matrix.md](traceability-matrix.md) | use cases and classes |
 | 7 | Reviews | [reviews/](reviews/) | see log |
 | 8 | Domain model approach | [decisions/0002-domain-model.md](decisions/0002-domain-model.md) | proposed |
-| 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed three times (incl. adversarial), joint review pending |
+| 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed three times (incl. adversarial) and jointly with the owner |
 | 10 | Sequence, component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
 | 11 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
 
