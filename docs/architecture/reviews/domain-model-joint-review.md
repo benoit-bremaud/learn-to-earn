@@ -27,3 +27,6 @@ Render check: all five diagrams re-rendered with `mmdc` and inspected after the 
 | Remediation closed on `target` | End rule reads the mastery of `current`, the skill practised (C4) |
 | Fractional weighted minutes in integer amounts | Reserve amounts are Real, display rounds down (C10) |
 | Credit expiring under an approved request | Balance re-checked at use start, IN_USE request held in the replay, unstarted APPROVED request expires with its day (C11) |
+| Second Codex pass: interrupted session could credit attempts twice | `Session.creditedWeightedMinutes` checkpoint persisted (C7) |
+| Second Codex pass: credit expiry by day, retroactive `expiryDays` | `ReserveCredit.expiresAt` frozen at creation (C10) |
+| Second Codex pass: integer `usedMinutes` on early stop | `ScreenTimeUse.endedAt`, `usedMinutes : Real` (C11) |

@@ -133,6 +133,7 @@ classDiagram
     startedAt : Instant
     endedAt : Instant [0..1]
     workedSeconds : Integer
+    creditedWeightedMinutes : Real
     status : SessionStatus
     confidence : Real
     /weightedMinutes : Real
@@ -197,6 +198,7 @@ classDiagram
   class ReserveCredit {
     day : LocalDay
     creditedAt : Instant
+    expiresAt : Instant
     minutes : Real
     forfeitedMinutes : Real
   }
@@ -208,7 +210,8 @@ classDiagram
   }
   class ScreenTimeUse {
     startedAt : Instant
-    usedMinutes : Integer
+    endedAt : Instant [0..1]
+    usedMinutes : Real
     stoppedEarly : Boolean
   }
   class ScreenTimeRules {
@@ -326,11 +329,11 @@ Referenced from the diagrams by number (Mermaid notes stay short to keep the dia
 - C4. Remediation: `current` is a prerequisite, direct or indirect, of `target`. Origin GUARDIAN is the "go back to X" button (UC-P7), AUTO comes from the 3-error rule (UC-L5). Exercises during a remediation practise `current`, so the end rule reads the mastery of `current`: an AUTO remediation closes by itself once that mastery is back at the threshold, and practice returns to `target`. A GUARDIAN remediation closes at the same threshold and raises a REMEDIATION_COMPLETED note, so the Guardian knows the request was met.
 - C5. FluenceRecord is the association class child × benchmark. It is measured on a timed window, with no visible countdown.
 - C6. `confidence` is a Real from 0 to 1, starts at 1.0 in every session, from V1.1 (ADR-0002 D3). `workedSeconds` accumulates only while RUNNING. `/weightedMinutes` is the sum of the attempts' `weightedMinutes`.
-- C7. PAUSED is the confidence pause (UC-L1 4c), INTERRUPTED means the app was closed and the session can resume, STOPPED_EARLY means the child ended it. Each interruption records a ReserveCredit for the weighted minutes earned so far, on the current day; a resumed session keeps accumulating and credits the rest at its end. An interrupted session untouched for a day becomes STOPPED_EARLY.
+- C7. PAUSED is the confidence pause (UC-L1 4c), INTERRUPTED means the app was closed and the session can resume, STOPPED_EARLY means the child ended it. Each interruption records a ReserveCredit for `/weightedMinutes − creditedWeightedMinutes`, on the current day, then sets `creditedWeightedMinutes` to `/weightedMinutes`; this checkpoint is persisted, so a resumed session (even after the app was closed) credits only the rest at its next interruption or end, never the same attempts twice. An interrupted session untouched for a day becomes STOPPED_EARLY.
 - C8. `difficultyScore` is the skill base level plus the modifiers (C4 of CADRAGE); the level is mapped from it in configuration. `hints` lists the stages already shown, in order, never repeated. `isLookAhead` is a snapshot taken at generation (skill period above the ceiling).
 - C9. `correct` is derived: the answer equals `expectedAnswer`. `confidenceAtAnswer` and `weightedMinutes` are frozen at answer time (ADR-0002 D8): response time × difficulty multiplier × confidence factor, values in configuration. Attempts are kept 90 days with their session and exercises, then folded into WeeklyAggregate. `AnswerFormat` gets further values with UC-L7 (V1.2).
-- C10. A ReserveCredit is recorded at each session end or interruption (C7). It expires `expiryDays` after its `day`. `minutes` is cut by `reserveCapMinutes`; the cut part is recorded in `forfeitedMinutes`, not lost silently. Amounts are Real so no earned fraction is lost; only display rounds, down to the whole minute.
-- C11. `/balanceMinutes` is replayed (ADR-0002 D2): uses and the open IN_USE request consume the unexpired credits oldest first; what an expired credit still held is lost. At approval and again when the use starts, `request.minutes` must not exceed the balance. From its start, an IN_USE request holds its full `minutes` in the replay, so a credit expiring during the use cannot make the balance negative; at the end only `usedMinutes` stays consumed. An APPROVED request not started by the end of its `day` becomes EXPIRED. Rule changes (UC-S5) apply to new movements only.
+- C10. A ReserveCredit is recorded at each session end or interruption (C7). `expiresAt` is frozen at creation (`creditedAt` + `expiryDays`), so each credit expires at its own instant and a later change of `expiryDays` never touches it. `minutes` is cut by `reserveCapMinutes`; the cut part is recorded in `forfeitedMinutes`, not lost silently. Amounts are Real so no earned fraction is lost; only display rounds, down to the whole minute.
+- C11. `/balanceMinutes` is replayed (ADR-0002 D2): uses and the open IN_USE request consume the unexpired credits oldest first; what an expired credit still held is lost. At approval and again when the use starts, `request.minutes` must not exceed the balance. From its start, an IN_USE request holds its full `minutes` in the replay, so a credit expiring during the use cannot make the balance negative; at the end only `usedMinutes` stays consumed, computed as the running time between `startedAt` and `endedAt` in Real minutes, so an early stop is debited exactly. An APPROVED request not started by the end of its `day` becomes EXPIRED. Rule changes (UC-S5) apply to new movements only.
 - C12. At most one request is PENDING, APPROVED or IN_USE. The day's used minutes plus its open approved minutes never exceed `dailyCapMinutes`. A USED request has exactly one use, and `usedMinutes` never exceeds `request.minutes`.
 - C13. CompanionItem is a static catalogue. An item is unlocked when `Streak.bestDays` reaches `requiredStreakDays`, so a broken streak never locks an item again.
 - C14. The skill the Guardian wants first is a Remediation with origin GUARDIAN (C4).
