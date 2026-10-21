@@ -51,7 +51,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   - 5a. Learner accepts the offer: UC-L6. 5b. Learner declines: the session goes on to step 6.
   - *a. Learner stops early: the partial recap is shown and minutes for the work done are credited.
   - *b. The session is interrupted (app closed, call, battery): answers are kept. On the next launch the app offers to resume or shows the partial recap.
-- Business rule: minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap.
+- Business rule: only correct answers earn work minutes, weighted by difficulty and confidence, and a skill whose mastery rises during the session adds a progress bonus (owner 2026-10-21: the goal is learning results that are good and rising, not time spent). Minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap. The 20-minute threshold counts the work of the whole day, across sessions, so splitting the work into several sessions never changes the minutes earned.
 - Extension points: `weak prerequisite detected`, `challenge slot offered`.
 - Postcondition: mastery scores updated, reserve credited.
 - Relationships: «include» UC-L2. «extend» from UC-L5 and UC-L6.
@@ -63,7 +63,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Main success scenario:
   1. The app shows a statement and a numeric keypad (free numeric entry in V1.0).
   2. Learner types an answer and confirms it.
-  3. The app records correctness and time and updates the mastery score. In V1.0 a simple minimum-time rule applies. *(V1.1)* The confidence score is updated. *(V1.2)* Keypad signals are recorded (dec. T1).
+  3. The app records correctness and time and updates the mastery score. Speed counts only after a correct answer and never removes points (dec. M2): a wrong or slow answer never lowers the timing part of mastery. In V1.0 a simple minimum-time rule applies. *(V1.1)* The confidence score is updated. *(V1.2)* Keypad signals are recorded (dec. T1).
   4. The app shows feedback. *(V1.2)* Feedback is effort-first with progress (dec. E2).
 - Extensions:
   - 1a. Learner taps the read-aloud button: UC-L3 (extension point `statement shown`).
@@ -172,7 +172,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   4. Guardian approves.
   5. The timer is ready for UC-S3.
 - Extensions: 4a. Guardian refuses: the reserve is unchanged and the Learner sees a neutral message.
-- Business rules: wrong-PIN handling is owned by UC-P1. One pending request at a time. A request not answered expires at the end of the day, with no debit.
+- Business rules: wrong-PIN handling is owned by UC-P1. One open request at a time (pending, approved or in use), so an approved request cannot be followed by a second one against the same reserve. From its start, the timer holds the requested minutes, so an expiry during the timer cannot lower them. A request not answered, or approved but not started, expires at the end of the day, with no debit.
 - Relationships: «include» UC-P1. V2 note: approval on the parent's phone is open (OQ-2).
 
 ### UC-S3 — Use approved screen time
@@ -182,7 +182,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Main success scenario:
   1. Learner starts the timer.
   2. Learner plays or watches in another app.
-  3. The app warns 5 minutes before the end.
+  3. For a timer longer than 5 minutes, the app warns 5 minutes before the end; a shorter timer has no warning.
   4. The timer ends with an alarm (extension point `timer ended`).
 - Extensions: 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian *(V1.1)* in the alerts history (UC-P6).
 - Extension points: `timer ended`.
@@ -204,7 +204,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Preconditions: parent space unlocked.
 - Main success scenario:
   1. Guardian opens the rules.
-  2. Guardian edits conversion rate, daily cap, reserve cap or expiry (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, 7 days).
+  2. Guardian edits conversion rate, daily cap, reserve cap or expiry (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, reserve cap 60 min, 7 days; the V1.0 engine uses these defaults before this screen exists).
   3. The app saves the rules.
 - Extensions: 2a. A value is outside safe bounds: the app refuses and explains.
 

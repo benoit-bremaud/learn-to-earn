@@ -18,7 +18,7 @@ Primary user: the owner's daughter (CE1). Secondary: other parents, later (distr
 | Q2 | Platform | Expo (React Native): Android, iOS, web (Ubuntu PC runs the web build) | 440 |
 | Q3 | V1 subject | Arithmetic (CE1). Reading comes in V2 on the same engine | 460 |
 | Q4 | Points | Capped savings, weekly expiry (7 days) | 450 |
-| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day | 430 |
+| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day, reserve cap 60 min (owner 2026-10-21: work, not stored screen time; MCDA 60 min 400 = 120 min 400 > 210 min 320, 60 min chosen as incentive to work weighs ≥ 35 %). Only correct answers earn minutes, plus a bonus when mastery rises (owner 2026-10-21, MCDA 380 vs progress only 345 vs time spent 330) | 430 |
 | M1 | Mastery | 0–100 % score per skill, weighted moving average (correctness + speed) | 400 |
 | M2 | Response time | Compared with the child's own average on that skill; only after a correct answer; never removes points | 450 |
 | M3 | Next exercise | 70 % skills being acquired (~80 % success zone), 20 % spaced review, 10 % challenge | 450 |
