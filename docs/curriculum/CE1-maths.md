@@ -54,6 +54,26 @@ The skill graph is a DAG of prerequisites that goes down through CP to cycle 1 (
 2. CP: addition facts to 20, subtraction, tens and units, doubles and halves, first tables intuition.
 3. CE1: +/- with carries, tables, two-step problems.
 
+V1.0 nodes and prerequisite edges (stable IDs; a node is reached only after its prerequisites; R4 walks these edges back):
+
+| ID | Skill | Grade | Prerequisites |
+|---|---|---|---|
+| `c1.count` | Count and compare collections up to 10 | Cycle 1 | — |
+| `c1.decompose10` | Compose and decompose numbers up to 10 | Cycle 1 | `c1.count` |
+| `cp.add10` | Addition facts up to 10 | CP | `c1.decompose10` |
+| `cp.sub10` | Subtraction facts up to 10 | CP | `c1.decompose10` |
+| `cp.tens` | Tens and units | CP | `c1.count` |
+| `cp.skipcount` | Count by 2, 5 and 10 | CP | `cp.tens` |
+| `cp.doubles` | Doubles and halves | CP | `cp.add10` |
+| `cp.add20` | Addition facts up to 20 | CP | `cp.add10`, `cp.tens` |
+| `cp.sub20` | Subtraction facts up to 20 | CP | `cp.sub10`, `cp.tens` |
+| `ce1.mental-addsub` | Mental +/- with small numbers | CE1 | `cp.add20`, `cp.sub20` |
+| `ce1.table2` | Table x2 | CE1 | `cp.doubles`, `cp.skipcount` |
+| `ce1.table5` | Table x5 | CE1 | `cp.skipcount` |
+| `ce1.table10` | Table x10 | CE1 | `cp.tens`, `cp.skipcount` |
+
+Later nodes (posed calculation with carries, other tables, two-step problems) are added with their edges by the skill-node procedure, in V1.1+.
+
 The programme asks for revision "as you go, only for pupils who need it", and for problems whose wording does not match the operation (for example "de plus" hiding a subtraction). Hints go concrete, then pictorial, then symbolic.
 
 ## Consequences for the engine
