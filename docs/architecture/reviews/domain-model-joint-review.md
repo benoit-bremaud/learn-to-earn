@@ -36,3 +36,4 @@ Render check: all five diagrams re-rendered with `mmdc` and inspected after the 
 | Fourth Codex pass: PENDING request never expired | PENDING and APPROVED both expire at day end (C11) |
 | Fourth Codex pass: timer debit from wall clock | `ScreenTimeUse.elapsedSeconds` monotonic, `/usedMinutes` derived (C11) |
 | Fourth Codex pass: no level after VERY_HARD | `/unlockedLevel` capped at VERY_HARD (C2) |
+| Fifth Codex pass: split credits expired from the crediting time | `expiresAt` from the latest `answeredAt` of the credit's attempts (C10) |
