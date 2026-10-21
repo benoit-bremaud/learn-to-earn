@@ -41,8 +41,10 @@ class MatrixTest(unittest.TestCase):
     def test_ragged_table_is_an_error(self):
         self.assertEqual(self.check(GOOD.replace("| 340 | 280 |", "| 340 |")), ["a.md:5: rows and total have different option counts"])
 
-    def test_text_between_tables_resets_rows(self):
-        self.assertEqual(self.check("| Old (50) | 1 | 1 |\n\nprose\n" + GOOD), [])
+    def test_matrix_without_total_is_an_error(self):
+        text = GOOD.replace("| **Total /500** | 340 | 280 |\n", "")
+        self.assertEqual(self.check(text + "\nprose\n"), ["a.md:5: matrix without a Total /500 row"])
+        self.assertEqual(self.check(text), ["a.md:end: matrix without a Total /500 row"])
 
 
 class LinkAndTreeTest(unittest.TestCase):
@@ -72,8 +74,11 @@ class LinkAndTreeTest(unittest.TestCase):
         (self.root / "bad.md").write_text("[a](nope.md)", encoding="utf-8")
         self.assertEqual(check_docs.main(self.root), 1)
 
-    def test_tree_uses_git_tracked_files(self):
-        self.assertTrue(all(p.suffix == ".md" for p in check_docs.markdown_files(check_docs.ROOT)))
+    def test_tree_uses_git_tracked_files_with_spaces(self):
+        import subprocess
+        subprocess.run(["git", "init", "-q"], cwd=self.root, check=True)
+        subprocess.run(["git", "add", "my target.md"], cwd=self.root, check=True)
+        self.assertEqual(check_docs.markdown_files(self.root), [self.root / "my target.md"])
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -60,8 +60,14 @@ def check_matrices(path, text):
         elif parse_row(line):
             rows.append(parse_row(line))
         elif not line.startswith("|"):
+            errors += missing_total(path, number, rows)
             rows = []
-    return errors
+    return errors + missing_total(path, "end", rows)
+
+
+def missing_total(path, where, rows):
+    """A matrix that ends without its "Total /500" row is an error."""
+    return [f"{path}:{where}: matrix without a Total /500 row"] if rows else []
 
 
 def check_links(path, text, root):
@@ -77,9 +83,9 @@ def check_links(path, text, root):
 
 
 def markdown_files(root):
-    listed = subprocess.run(["git", "ls-files", "*.md"], cwd=root, capture_output=True, text=True)
+    listed = subprocess.run(["git", "ls-files", "-z", "*.md"], cwd=root, capture_output=True, text=True)
     if listed.returncode == 0:
-        return [root / name for name in listed.stdout.split()]
+        return [root / name for name in listed.stdout.split("\0") if name]
     return sorted(root.glob("**/*.md"))
 
 
