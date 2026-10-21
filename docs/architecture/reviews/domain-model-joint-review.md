@@ -33,3 +33,6 @@ Render check: all five diagrams re-rendered with `mmdc` and inspected after the 
 | Third Codex pass: crediting not idempotent across aggregates | Checkpoint carried by ReserveCredit, one write in the Reserve, unique `(sourceSession, weightedUpTo)` (C7) |
 | Third Codex pass: active hold opened room under the reserve cap | Cap headroom ignores IN_USE holds (C10) |
 | Third Codex pass: session crossing midnight credited to one day | Uncredited attempts split by the day of `answeredAt`, one credit per day (C7) |
+| Fourth Codex pass: PENDING request never expired | PENDING and APPROVED both expire at day end (C11) |
+| Fourth Codex pass: timer debit from wall clock | `ScreenTimeUse.elapsedSeconds` monotonic, `/usedMinutes` derived (C11) |
+| Fourth Codex pass: no level after VERY_HARD | `/unlockedLevel` capped at VERY_HARD (C2) |

@@ -212,7 +212,8 @@ classDiagram
   class ScreenTimeUse {
     startedAt : Instant
     endedAt : Instant [0..1]
-    usedMinutes : Real
+    elapsedSeconds : Real
+    /usedMinutes : Real
     stoppedEarly : Boolean
   }
   class ScreenTimeRules {
@@ -325,7 +326,7 @@ classDiagram
 Referenced from the diagrams by number (Mermaid notes stay short to keep the diagrams readable).
 
 - C1. SkillProgress is a reified association class, one per child and skill. `mastery` is a Real from 0 to 100, rounded only for display.
-- C2. A level is passed when the skill mastery reaches 70 % while practising at that level (ADR-0002 D9); `highestPassedLevel` records it at that moment, so the unlock survives the folding of attempts. `/unlockedLevel` is the level after `highestPassedLevel`, or `Skill.baseLevel` when none is passed yet.
+- C2. A level is passed when the skill mastery reaches 70 % while practising at that level (ADR-0002 D9); `highestPassedLevel` records it at that moment, so the unlock survives the folding of attempts. `/unlockedLevel` is the level after `highestPassedLevel`, capped at VERY_HARD (passing VERY_HARD keeps it unlocked), or `Skill.baseLevel` when none is passed yet.
 - C3. `averageTimeMs` counts correct answers only (M2). `trend` and `averageTimeMs` are stored on purpose, because attempts are folded after 90 days.
 - C4. Remediation: `current` is a prerequisite, direct or indirect, of `target`. Origin GUARDIAN is the "go back to X" button (UC-P7), AUTO comes from the 3-error rule (UC-L5). Exercises during a remediation practise `current`, so the end rule reads the mastery of `current`: an AUTO remediation closes by itself once that mastery is back at the threshold, and practice returns to `target`. A GUARDIAN remediation closes at the same threshold and raises a REMEDIATION_COMPLETED note, so the Guardian knows the request was met.
 - C5. FluenceRecord is the association class child × benchmark. It is measured on a timed window, with no visible countdown.
@@ -334,8 +335,8 @@ Referenced from the diagrams by number (Mermaid notes stay short to keep the dia
 - C8. `difficultyScore` is the skill base level plus the modifiers (C4 of CADRAGE); the level is mapped from it in configuration. `hints` lists the stages already shown, in order, never repeated. `isLookAhead` is a snapshot taken at generation (skill period above the ceiling).
 - C9. `correct` is derived: the answer equals `expectedAnswer`. `confidenceAtAnswer` and `weightedMinutes` are frozen at answer time (ADR-0002 D8): response time × difficulty multiplier × confidence factor, values in configuration. Attempts are kept 90 days with their session and exercises, then folded into WeeklyAggregate. `AnswerFormat` gets further values with UC-L7 (V1.2).
 - C10. A ReserveCredit is recorded at each session end or interruption (C7). `expiresAt` is frozen at creation (`creditedAt` + `expiryDays`), so each credit expires at its own instant and a later change of `expiryDays` never touches it. `minutes` is cut by `reserveCapMinutes`, the headroom being computed on the unexpired credits' remaining minutes without subtracting an IN_USE hold, so releasing the unused part of a hold can never lift the balance above the cap; the cut part is recorded in `forfeitedMinutes`, not lost silently. Amounts are Real so no earned fraction is lost; only display rounds, down to the whole minute.
-- C11. `/balanceMinutes` is replayed (ADR-0002 D2): uses and the open IN_USE request consume the unexpired credits oldest first; what an expired credit still held is lost. At approval and again when the use starts, `request.minutes` must not exceed the balance. From its start, an IN_USE request holds its full `minutes` in the replay, so a credit expiring during the use cannot make the balance negative; at the end only `usedMinutes` stays consumed, computed as the running time between `startedAt` and `endedAt` in Real minutes, so an early stop is debited exactly. An APPROVED request not started by the end of its `day` becomes EXPIRED. Rule changes (UC-S5) apply to new movements only.
-- C12. At most one request is PENDING, APPROVED or IN_USE. The day's used minutes plus its open approved minutes never exceed `dailyCapMinutes`. A USED request has exactly one use, and `usedMinutes` never exceeds `request.minutes`.
+- C11. `/balanceMinutes` is replayed (ADR-0002 D2): uses and the open IN_USE request consume the unexpired credits oldest first; what an expired credit still held is lost. At approval and again when the use starts, `request.minutes` must not exceed the balance. From its start, an IN_USE request holds its full `minutes` in the replay, so a credit expiring during the use cannot make the balance negative; at the end only `/usedMinutes` stays consumed, derived from `elapsedSeconds`, the monotonic elapsed app time accumulated while running (a clock change cannot alter it); `startedAt` and `endedAt` are audit timestamps only. An early stop is debited exactly. A PENDING or APPROVED request still open at the end of its `day` becomes EXPIRED (UC-S2), so it never blocks the next day's request. Rule changes (UC-S5) apply to new movements only.
+- C12. At most one request is PENDING, APPROVED or IN_USE. The day's used minutes plus its open approved minutes never exceed `dailyCapMinutes`. A USED request has exactly one use, and `/usedMinutes` never exceeds `request.minutes`.
 - C13. CompanionItem is a static catalogue. An item is unlocked when `Streak.bestDays` reaches `requiredStreakDays`, so a broken streak never locks an item again.
 - C14. The skill the Guardian wants first is a Remediation with origin GUARDIAN (C4).
 - C15. A note of kind EARLY_STOP has a ScreenTimeUse. Links to a session or a use are cleared when those are folded after 90 days.
