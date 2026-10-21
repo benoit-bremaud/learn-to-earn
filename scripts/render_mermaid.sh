@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 # Regression check: every Mermaid block in docs/ must render with mmdc.
 set -euo pipefail
-shopt -s nullglob
+command -v mmdc >/dev/null || { echo "mmdc is missing (npm i -g @mermaid-js/mermaid-cli)"; exit 1; }
+chrome="${PUPPETEER_EXECUTABLE_PATH:-$(command -v google-chrome || true)}"
+[ -n "$chrome" ] || { echo "Chrome is missing (set PUPPETEER_EXECUTABLE_PATH)"; exit 1; }
 out=$(mktemp -d)
 trap 'rm -rf "$out"' EXIT
+# --no-sandbox: Chrome only renders local repository content here.
 printf '{"args":["--no-sandbox","--disable-gpu"]}' > "$out/puppeteer.json"
-count=0
-while IFS= read -r file; do
-  python3 - "$file" "$out" <<'PY'
+python3 - "$out" <<'PY'
 import pathlib, re, sys
-src, out = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
-for i, block in enumerate(re.findall(r"```mermaid\n(.*?)```", src.read_text(), re.S), 1):
-    (out / f"{src.stem}-{i}.mmd").write_text(block)
+out = pathlib.Path(sys.argv[1])
+fence = re.compile(r"^[ \t]*```mermaid[ \t]*\r?\n(.*?)^[ \t]*```", re.M | re.S)
+for src in sorted(pathlib.Path("docs").glob("**/*.md")):
+    for i, block in enumerate(fence.findall(src.read_text(encoding="utf-8")), 1):
+        name = str(src.with_suffix("")).replace("/", "__")
+        (out / f"{name}-{i}.mmd").write_text(block, encoding="utf-8")
 PY
-done < <(grep -rl '```mermaid' docs || true)
+shopt -s nullglob
+count=0
 for mmd in "$out"/*.mmd; do
-  PUPPETEER_EXECUTABLE_PATH="${PUPPETEER_EXECUTABLE_PATH:-$(command -v google-chrome)}" \
-    mmdc -q -p "$out/puppeteer.json" -i "$mmd" -o "${mmd%.mmd}.svg" \
+  PUPPETEER_EXECUTABLE_PATH="$chrome" mmdc -q -p "$out/puppeteer.json" -i "$mmd" -o "${mmd%.mmd}.svg" \
     || { echo "render failed: $(basename "$mmd")"; exit 1; }
   count=$((count + 1))
 done
