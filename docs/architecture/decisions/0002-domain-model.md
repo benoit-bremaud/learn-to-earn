@@ -122,6 +122,21 @@ With D2 = C, credits and uses are both reserve movements, but they share no rule
 
 **Decision: A.** Each attempt stores two frozen snapshots, `confidenceAtAnswer` and `weightedMinutes`, because the confidence changes during the session (snapshots taken at event time are the stated exception to "derive, never store"). The conversion uses the weighted minutes of the day.
 
+## D11 — What earns screen time (owner, 2026-10-21)
+
+Raised by the owner after D8: the goal is to make the child work and learn, with learning results that are good and rising, not to pay time spent watching videos.
+
+| Criterion (weight) | A. Keep D8: response time x difficulty x confidence, wrong answers included | B. Correct answers only, plus a bonus when mastery rises | C. Mastery gain only |
+|---|---|---|---|
+| Learning results good and rising (35) | 2 | 4 | 5 |
+| Fair to a struggling child, effort rewarded (25) | 4 | 4 | 2 |
+| Resistance to gaming (20) | 3 | 4 | 4 |
+| Simplicity (20) | 5 | 3 | 2 |
+| **Total /500** | 330 | **380** | 345 |
+
+Sensitivity: C leads only if learning results weigh more than about 50 % (others scaled); a plateau would then earn nothing, against "effort first".
+**Decision (owner, 2026-10-21): B.** It refines D8 (one currency, weighted minutes): a wrong attempt earns 0, and at session end each skill whose mastery rose adds `progressBonusRatio` x the weighted minutes earned on it. The same day the owner set the default reserve cap to 60 min (60 min 400 = 120 min 400 > 210 min 320, tie broken by the incentive to work).
+
 ## D9 — Rule for unlocking a difficulty level (owner, 2026-10-21)
 
 | Criterion (weight) | A. Skill mastery at least 70 % unlocks the next level | B. Mastery tracked per level |
@@ -147,7 +162,7 @@ With D2 = C, credits and uses are both reserve movements, but they share no rule
 
 ## Decision outcome
 
-D1 = A (475), D2 = C (430), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380).
+D1 = A (475), D2 = C (430), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380), D11 = B (380).
 
 Honest limits found by the adversarial review: D1 option C, D3 option B and D5 option C were weak alternatives (D3 B contradicts CADRAGE and should have been excluded, not scored); D6 is a layout choice that did not need a matrix. They do not change their outcomes. Aggregate boundaries, the time policy and the retention scopes are now part of the model (see "Aggregates" in the diagram file) and should get their own ADR when the component diagram fixes the storage boundary.
 
