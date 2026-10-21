@@ -10,3 +10,4 @@
 
 - Owner decision (MCDA A 435 / CI job 405 / SonarCloud 340): project `learn-to-earn` on the shared local SonarQube instance, scanned from the dev machine with the global analysis token before every push and merge. A CI job is added when V0 code starts.
 - `sonar-project.properties` added; first scan auto-provisioned the project, quality gate PASSED.
+- Owner rule: every unit and regression test runs right before SonarQube. `make check` = unit tests with coverage (floor 80 %) → Mermaid render of every diagram → MCDA totals and link checks → gitleaks → SonarQube with the quality-gate wait. The MCDA check catches the ADR-0002 D2 error found by Codex on PR #3.

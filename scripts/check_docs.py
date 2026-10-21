@@ -9,8 +9,8 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-ROW = re.compile(r"\|\s*(.+?)\((\d+)\)\s*\|((?:\s*\d\s*\|)+)\s*$")
-LINK = re.compile(r"\]\(([^)#\s]+)(?:#[^)]*)?\)")
+ROW = re.compile(r"\|([^|]*)\((\d+)\)\s*\|([\d |]+)$")
+LINK = re.compile(r"\]\(([^)#\s]+)")
 
 
 def check_matrices(path, text):
@@ -43,18 +43,23 @@ def check_links(path, text):
     return errors
 
 
-def main():
+def check_tree(root):
     errors = []
-    for path in sorted(ROOT.glob("**/*.md")):
-        if ".claude" in path.parts:
+    for path in sorted(root.glob("**/*.md")):
+        if {".claude", ".venv"} & set(path.parts):
             continue
         text = path.read_text(encoding="utf-8")
-        errors += check_matrices(path.relative_to(ROOT), text) + check_links(path, text)
+        errors += check_matrices(path.relative_to(root), text) + check_links(path, text)
+    return errors
+
+
+def main(root=ROOT):
+    errors = check_tree(root)
     for error in errors:
         print(error)
     print(f"check_docs: {len(errors)} error(s)")
     return 1 if errors else 0
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     sys.exit(main())

@@ -1,11 +1,19 @@
 # Quality gate: tests first, SonarQube last (owner rule 2026-10-21).
-.PHONY: check test secrets sonar
+.PHONY: check test secrets sonar venv
+
+venv:
+	python3 -m venv .venv && .venv/bin/pip install -q -r requirements-dev.txt
 
 check: test secrets sonar
 
+PY := .venv/bin/python
+
 test:
+	$(PY) -m coverage run --source=scripts -m unittest discover -s scripts -v
+	$(PY) -m coverage xml -o coverage.xml
+	$(PY) -m coverage report --fail-under=80
 	./scripts/render_mermaid.sh
-	python3 scripts/check_docs.py
+	$(PY) scripts/check_docs.py
 
 secrets:
 	gitleaks git --log-opts="main..HEAD" --no-banner
