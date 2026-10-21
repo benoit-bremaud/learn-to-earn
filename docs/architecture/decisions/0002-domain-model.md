@@ -25,17 +25,20 @@ Sensitivity: A stays first unless simplicity carries more than about 80 % of the
 
 ## D2 — How the screen-time reserve is modelled
 
-| Criterion (weight) | A. Ledger: credits with expiry, debits as uses | B. Single balance number | C. Event log of every change |
-|---|---|---|---|
-| Supports 7-day expiry per credit (35) | 5 | 1 | 5 |
-| Simplicity (25) | 4 | 5 | 2 |
-| Auditability for the Guardian (20) | 4 | 1 | 5 |
-| Data minimisation (20) | 4 | 5 | 2 |
-| **Total /500** | **435** | 280 | 365 |
+Revised after the adversarial review (docs/architecture/reviews/domain-model-review-3.md): the first matrix compared a ledger with a single number and an event log, which is the same thing as the ledger. The real alternatives are below.
 
-With a single balance, a credit earned on Monday cannot expire on the next Monday. The event log stores more than needed.
-Sensitivity: A stays first for any expiry weight; with expiry at 0 and the other weights scaled, A ≈ 400 and B ≈ 377.
-**Decision: A.** The balance is derived (`/balanceMinutes` = sum of the non-expired credits' `/remainingMinutes`), never stored twice (DRY). Each use records the credits it draws from, oldest first.
+| Criterion (weight) | A. Credits and uses with an allocation class Draw | B. Remaining minutes per earning day (at most 7 buckets) | C. Credits and uses, balance replayed oldest first |
+|---|---|---|---|
+| Exact expiry of each earned minute (30) | 5 | 4 | 5 |
+| Simplicity (25) | 2 | 5 | 4 |
+| Auditability for the Guardian (15) | 5 | 2 | 4 |
+| Data minimisation (15) | 3 | 5 | 5 |
+| Testability of the engine (15) | 4 | 5 | 3 |
+| **Total /500** | 375 | **440** | 430 |
+
+B expires a whole day at once (day granularity instead of the minute), which is invisible for a 7-day rule. Uses are still recorded, so the Guardian sees what was watched; only the per-credit allocation disappears.
+Sensitivity: C overtakes B only if auditability weighs more than about 24 % (others scaled); A never leads.
+**Decision (owner, 2026-10-21): B.** The balance is derived (`/balanceMinutes` = sum of the unexpired buckets' `remainingMinutes`). Minutes cut by the reserve cap are recorded in `forfeitedMinutes`, not lost silently.
 
 ## D3 — Scope of the confidence score
 
@@ -90,30 +93,68 @@ Sensitivity: B overtakes A only if future remote approval weighs more than about
 | **Total /500** | 280 | **455** | 290 |
 
 Sensitivity: A overtakes B only if overall coherence weighs more than about 73 %.
-**Decision: B.** Four areas: curriculum and progress, practice, rewards, parent space (rewards and parent space were split after the render check showed a tangled layout). A class shared by two areas (ChildProfile, Skill, Strand, Session) appears as a stub without attributes outside its home area.
+**Decision: B.** Areas: curriculum and progress, practice, rewards, companion (3b), parent space and installation. Rewards, companion and parent space were split after render checks showed crossing lines; long constraints moved to a numbered list outside the diagrams. A class shared by two areas (ChildProfile, Skill, Strand, Session) appears as a stub without attributes outside its home area.
 
-## D7 — Generalization in the reserve ledger
+## D7 — Generalization in the reserve
 
-Credit (minutes added) and ScreenTimeUse (minutes removed) are both movements of the same reserve, each with an amount and a time. The owner rule asks to model inheritance where it really exists.
+The first version of this decision (abstract ReserveEntry over Credit and ScreenTimeUse, 475) used weights that rewarded the conclusion twice (faithfulness and the owner rule measured the same thing) and no rule used the supertype polymorphically. The test that counts is substitutability: does a rule treat both kinds uniformly?
 
-| Criterion (weight) | A. No generalization | B. Abstract ReserveEntry, Credit and ScreenTimeUse inherit | C. One Entry class with a kind enum |
+| Criterion (weight) | A. No generalization | B. Abstract ReserveEntry |
+|---|---|---|
+| A rule uses both kinds uniformly (substitutability) (40) | 5 | 1 |
+| Faithful to the domain (25) | 4 | 3 |
+| Simplicity, YAGNI (20) | 5 | 3 |
+| Owner rule: inheritance where it really exists (15) | 4 | 2 |
+| **Total /500** | **460** | 205 |
+
+With the day buckets of D2, credits and uses are no longer two kinds of one thing: a bucket holds remaining minutes, a use is a use. No rule is shared.
+**Decision: A, no generalization in the domain.** Inheritance will be re-examined in the design class diagram (generators, adapters), where it may be real.
+
+## D8 — Which quantity feeds the reserve (owner, 2026-10-21)
+
+| Criterion (weight) | A. Weighted minutes: response time x difficulty multiplier x confidence factor | B. Raw minutes only | C. Two currencies (points and minutes) |
 |---|---|---|---|
-| Faithful to the domain: a credit and a use are both movements (30) | 3 | 5 | 3 |
-| Simplicity, YAGNI (25) | 5 | 4 | 4 |
-| DRY: amount and time defined once (20) | 3 | 5 | 5 |
-| Owner rule: inheritance where it really exists (25) | 1 | 5 | 2 |
-| **Total /500** | 300 | **475** | 340 |
+| Consistent with CADRAGE D2, T2, Conversion (35) | 5 | 3 | 1 |
+| Simplicity (25) | 3 | 5 | 1 |
+| Real effect of effort and anti-cheat (25) | 5 | 1 | 3 |
+| Testability of the engine (15) | 4 | 5 | 2 |
+| **Total /500** | **435** | 330 | 165 |
 
-C hides that only a credit expires and only a use can stop early, so it needs optional attributes that depend on the kind.
-Sensitivity: A overtakes B only if simplicity weighs more than about 73 %.
-**Decision: B.** No other real generalization exists in the domain: Skill, Exercise and the notes have no sub-kinds with their own attributes today.
+**Decision: A.** Each attempt stores two frozen snapshots, `confidenceAtAnswer` and `weightedMinutes`, because the confidence changes during the session (snapshots taken at event time are the stated exception to "derive, never store"). The conversion uses the weighted minutes of the day.
+
+## D9 — Rule for unlocking a difficulty level (owner, 2026-10-21)
+
+| Criterion (weight) | A. Skill mastery at least 70 % unlocks the next level | B. Mastery tracked per level |
+|---|---|---|
+| Faithful to the text of CADRAGE (30) | 3 | 5 |
+| Simplicity, YAGNI (30) | 5 | 2 |
+| Testability (20) | 4 | 5 |
+| Data minimisation (20) | 5 | 3 |
+| **Total /500** | **420** | 370 |
+
+**Decision: A.** `unlockedLevel` becomes derived. CADRAGE §3 ("a level unlocks once the previous one reaches 70 % mastery") is restated as a skill-level rule and must be edited accordingly. Sensitivity: B overtakes A only if fidelity to the text weighs more than about 44 % (others scaled).
+
+## D10 — Scope of the full-rate threshold (OQ-4, owner, 2026-10-21)
+
+| Criterion (weight) | A. Per day | B. Per session |
+|---|---|---|
+| Resists splitting work into many sessions (40) | 5 | 2 |
+| Simplicity (30) | 3 | 5 |
+| Fairness for the child (30) | 3 | 4 |
+| **Total /500** | **380** | 350 |
+
+**Decision: A.** It adds the day notion (`LocalDay`, from the trusted time).
 
 ## Decision outcome
 
-D1 = A (475), D2 = A (435), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = B (475).
+D1 = A (475), D2 = B (440), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380).
+
+Honest limits found by the adversarial review: D1 option C, D3 option B and D5 option C were weak alternatives (D3 B contradicts CADRAGE and should have been excluded, not scored); D6 is a layout choice that did not need a matrix. They do not change their outcomes. Aggregate boundaries, the time policy and the retention scopes are now part of the model (see "Aggregates" in the diagram file) and should get their own ADR when the component diagram fixes the storage boundary.
 
 ## Consequences
 
 - These classes form the pure domain layer: no Expo, storage or OS type may appear in them.
-- Thresholds (80 % success zone, 0.6 / 0.3 confidence, 70 % unlock, caps) stay in configuration, not as class constants.
+- Thresholds (80 % success zone, 0.6 / 0.3 confidence, 70 % unlock, caps, multipliers) stay in configuration, not as class constants.
+- CADRAGE §3 must be edited for D9 and for the weighted-minutes currency (D8).
 - Operations, ports and design-level generalizations (generators, adapters) are decided in the design class diagram, after the sequences.
+- Open: OQ-5 (scope of erase and restore), recorded in the diagram notes.
