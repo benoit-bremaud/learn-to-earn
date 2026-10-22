@@ -22,6 +22,7 @@ Global rules apply first: `~/.claude/CLAUDE.md` and `~/.agent-rules/common.md`. 
 ## Workflow
 
 - Kanban: GitHub Project "learn-to-earn" (#65). Milestone: "V0 conception".
+- Reviewers: Codex (re-triggered with `@codex review` on each new head) plus the local gate (`review-local`, `make check`). No Copilot reviewer on this repo.
 - One issue per PR (`Closes #N`), one chat per issue, chat titled `#N <issue title>`.
 - Stacked PRs are kept in sync with plain merges of their base, never rebase or force-push.
 - `PROJECT_LOG.md` is updated after every merge.
