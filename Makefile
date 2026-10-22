@@ -3,6 +3,8 @@
 PY := .venv/bin/python
 
 .PHONY: check ci venv test secrets sonar
+# Tests must finish before SonarQube reads coverage.xml, even under make -j.
+.NOTPARALLEL:
 
 check: test secrets sonar
 
@@ -23,7 +25,7 @@ test:
 secrets:
 	gitleaks git --no-banner
 	gitleaks dir . --no-banner
-	@test -z "$$(git ls-files '.env*' | grep -v '\.env\.example$$')" || { echo "tracked .env file"; exit 1; }
+	@test -z "$$(git ls-files ':(glob)**/.env*' | grep -v '\.env\.example$$')" || { echo "tracked .env file"; exit 1; }
 
 sonar:
 	@test -n "$$SONAR_TOKEN" || { echo "SONAR_TOKEN is not set"; exit 1; }
