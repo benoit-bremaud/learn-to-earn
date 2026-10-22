@@ -28,3 +28,7 @@ Open at handover:
 - After #4 merges: run `make check` (incl. SonarQube) on #1, #2, #3 before each merge.
 - Still waiting for the owner: ADR-0001/0002 validation, OQ-1 to OQ-3, OQ-5 (erase scope, restore replay guard, for the sequence study).
 - Next study after the merges: sequence diagrams.
+
+## 2026-10-22 — GitHub Actions CI
+
+- Owner decision (MCDA B 440 / C CI + SonarCloud 410 / A local `make check` as CI 250): minimal workflow `.github/workflows/ci.yml` running `make ci` (unit tests with coverage, Mermaid render, MCDA and link checks, full-history gitleaks) on every push to main and every PR. SonarQube stays local through `make check`, so the merge question still needs a local gate run. Issue #5, delivered in PR #4.

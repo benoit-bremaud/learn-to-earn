@@ -2,9 +2,12 @@
 # Prerequisites: python3, gitleaks >= 8.19, mmdc + Chrome, sonar-scanner, SONAR_TOKEN.
 PY := .venv/bin/python
 
-.PHONY: check venv test secrets sonar
+.PHONY: check ci venv test secrets sonar
 
 check: test secrets sonar
+
+# GitHub Actions: everything but SonarQube (the instance is local).
+ci: test secrets
 
 venv:
 	python3 -m venv .venv && .venv/bin/pip install -q -r requirements-dev.txt
