@@ -12,9 +12,15 @@ python3 - "$out" <<'PY'
 import pathlib, re, sys
 out = pathlib.Path(sys.argv[1])
 fence = re.compile(r"^[ \t]*```mermaid[ \t]*\r?\n(.*?)^[ \t]*```", re.M | re.S)
+opening = re.compile(r"^[ \t]*```mermaid[ \t]*\r?$", re.M)
 # A running number keeps names unique; the source path is kept for messages.
 for n, src in enumerate(sorted(pathlib.Path("docs").glob("**/*.md"))):
-    for i, block in enumerate(fence.findall(src.read_text(encoding="utf-8")), 1):
+    text = src.read_text(encoding="utf-8")
+    blocks = fence.findall(text)
+    # An unclosed fence yields no block: fail instead of rendering nothing.
+    if len(blocks) != len(opening.findall(text)):
+        sys.exit(f"render_mermaid: unclosed mermaid fence in {src}")
+    for i, block in enumerate(blocks, 1):
         name = f"{n:04d}-{src.stem}-{i}"
         (out / f"{name}.mmd").write_text(block, encoding="utf-8")
         (out / f"{name}.src").write_text(f"{src} block {i}", encoding="utf-8")

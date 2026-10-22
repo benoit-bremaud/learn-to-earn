@@ -19,6 +19,7 @@ CODE = re.compile(r"```.*?```|`[^`\n]*`", re.S)
 
 
 def cells(line):
+    """Split a Markdown table line into its stripped cell texts."""
     return [c.strip() for c in line.strip().strip("|").split("|")]
 
 
@@ -52,6 +53,7 @@ def check_total(where, line, rows):
 
 
 def check_matrices(path, text):
+    """Check every MCDA matrix of one file: totals, weights, missing total rows."""
     errors, rows = [], []
     for number, line in enumerate(text.splitlines(), 1):
         if "Total /500" in line:
@@ -71,6 +73,7 @@ def missing_total(path, where, rows):
 
 
 def check_links(path, text, root):
+    """Report relative links (outside code spans) whose target file does not exist."""
     errors = []
     for target in LINK.findall(CODE.sub("", text)):
         target = urllib.parse.unquote(target.split("#")[0].split("?")[0])
@@ -83,6 +86,7 @@ def check_links(path, text, root):
 
 
 def markdown_files(root):
+    """List tracked Markdown files, falling back to a glob outside a git checkout."""
     listed = subprocess.run(["git", "ls-files", "-z", "*.md"], cwd=root, capture_output=True, text=True)
     if listed.returncode == 0:
         return [root / name for name in listed.stdout.split("\0") if name]
@@ -90,6 +94,7 @@ def markdown_files(root):
 
 
 def check_tree(root):
+    """Run the matrix and link checks on every Markdown file under root."""
     errors = []
     for path in markdown_files(root):
         text = path.read_text(encoding="utf-8")
@@ -98,6 +103,7 @@ def check_tree(root):
 
 
 def main(root=ROOT):
+    """Print every error and return the process exit code (1 when any error)."""
     errors = check_tree(root)
     for error in errors:
         print(error)
