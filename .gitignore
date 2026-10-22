@@ -8,3 +8,8 @@ coverage/
 !.env.example
 .DS_Store
 *.log
+.scannerwork/
+.venv/
+coverage.xml
+.coverage
+__pycache__/

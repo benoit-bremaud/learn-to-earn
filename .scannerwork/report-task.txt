@@ -1,6 +1,0 @@
-projectKey=learn-to-earn
-serverUrl=http://localhost:9000
-serverVersion=26.5.0.122743
-dashboardUrl=http://localhost:9000/dashboard?id=learn-to-earn
-ceTaskId=3915e793-1d8f-46c5-9680-bb9010ced522
-ceTaskUrl=http://localhost:9000/api/ce/task?id=3915e793-1d8f-46c5-9680-bb9010ced522
