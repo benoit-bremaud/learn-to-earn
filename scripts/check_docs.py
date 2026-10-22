@@ -94,7 +94,7 @@ def markdown_files(root):
 
 
 def check_tree(root):
-    """Run the matrix and link checks on every Markdown file under root."""
+    """Run the matrix and link checks on every tracked Markdown file under root."""
     errors = []
     for path in markdown_files(root):
         text = path.read_text(encoding="utf-8")

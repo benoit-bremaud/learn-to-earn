@@ -11,14 +11,15 @@ printf '{"args":["--no-sandbox","--disable-gpu"]}' > "$out/puppeteer.json"
 python3 - "$out" <<'PY'
 import pathlib, re, sys
 out = pathlib.Path(sys.argv[1])
-fence = re.compile(r"^[ \t]*```mermaid[ \t]*\r?\n(.*?)^[ \t]*```", re.M | re.S)
+fence = re.compile(r"^[ \t]*```mermaid[ \t]*\r?\n(.*?)^[ \t]*```[ \t]*\r?$", re.M | re.S)
 opening = re.compile(r"^[ \t]*```mermaid[ \t]*\r?$", re.M)
 # A running number keeps names unique; the source path is kept for messages.
 for n, src in enumerate(sorted(pathlib.Path("docs").glob("**/*.md"))):
     text = src.read_text(encoding="utf-8")
     blocks = fence.findall(text)
     # An unclosed fence yields no block: fail instead of rendering nothing.
-    if len(blocks) != len(opening.findall(text)):
+    inner = re.compile(r"^[ \t]*```", re.M)
+    if len(blocks) != len(opening.findall(text)) or any(inner.search(b) for b in blocks):
         sys.exit(f"render_mermaid: unclosed mermaid fence in {src}")
     for i, block in enumerate(blocks, 1):
         name = f"{n:04d}-{src.stem}-{i}"
