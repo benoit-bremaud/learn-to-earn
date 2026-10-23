@@ -6,6 +6,12 @@
 - Curriculum alignment added after the owner's request: skill graph derived from the 2025 CE1 livret d'accompagnement (programme of 22-10-2024). See `docs/curriculum/CE1-maths.md`.
 - Repository created public under a provisional name. Next: choose the name, then UML-first design.
 
+## 2026-10-20 — Curriculum decisions
+
+- Read the cycle 1, CP and CE1 programme texts. Decisions C1–C4 and R4 recorded in `docs/CADRAGE.md`; prerequisite graph and fluence figures in `docs/curriculum/CE1-maths.md`.
+- Corrections: multiplication and two-step problems are CE1 content.
+- Name validated: Learn To Earn (`docs/CADRAGE.md`). Next: UML-first design.
+
 ## 2026-10-21 — SonarQube quality gate
 
 - Owner decision (MCDA A 435 / CI job 405 / SonarCloud 340): project `learn-to-earn` on the shared local SonarQube instance, scanned from the dev machine with the global analysis token before every push and merge. A CI job is added when V0 code starts.
@@ -40,3 +46,4 @@ Open at handover:
 - Owner decision (MCDA A 450 / B 375 / C 195): one umbrella issue. GitHub Project "learn-to-earn" (#65), milestone "V0 conception", label `ci`, tracking issues #6-#8 for PRs #1-#3, Copilot review requested on #4.
 - This PR: project `CLAUDE.md`, Dependabot (github-actions, pip), dependency review workflow. Ruleset on main and LICENSE are separate owner decisions.
 - LICENSE: owner decision (MCDA A all rights reserved 445 / D PolyForm Noncommercial 385 / B MIT 320 / C AGPL-3.0 305), compatible with going private at the first production deployment.
+- Codex follow-up on #1 (owner MCDA A 480 / B 390 / C 270): base category scored Easy 0 / Medium 2 / Hard 3 / Very hard 5, Base column in the V1.0 graph; node IDs use the dotted `<grade>.<name>` format.

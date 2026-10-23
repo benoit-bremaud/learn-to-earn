@@ -1,10 +1,12 @@
-# Project brief — earn-your-screen-time learning app (working title TBD)
+# Project brief — Learn To Earn
 
 Status: brainstorming complete on 2026-10-20, UML-first design is the next step. Every decision below comes from an MCDA matrix (weights /100, scores 0–5, total /500) validated by the owner.
 
 ## 1. Vision
 
 A mobile/web app that helps a CE1 child (7–8 years old) master reading, writing and arithmetic. The app adapts to the child (correctness + response speed), insists on weak skills, and converts good work into earned screen time (YouTube, Roblox…). Merit-based: the better you work, the more you may watch or play. The app also limits screen time (declarative in V1, automatic blocking on Android in V2).
+
+Guiding principle (owner, 2026-10-20): effort first, comfort after. The name says it: the child learns that screen time is earned by work, never given up front. Every flow (session, reserve, validation, wording) must respect that order.
 
 Primary user: the owner's daughter (CE1). Secondary: other parents, later (distribution decision deferred).
 
@@ -42,14 +44,25 @@ Primary user: the owner's daughter (CE1). Secondary: other parents, later (distr
 | R2 | Order | V1.1 complete engine + anti-cheat together, then V1.2 experience | 420 |
 | R3 | Tests | TDD for the engine (pure domain), test-after for the UI | 435 |
 
-### Curriculum alignment (added 2026-10-20, decisions pending)
+Name: **Learn To Earn**, validated by the owner on 2026-10-20 (same as the repository name).
 
-The owner requires alignment with the French national curriculum. The CE1 mapping is in `docs/curriculum/CE1-maths.md`. Pending decisions: how skills unlock along the school calendar, which official fluence benchmarks define "automatised", the CE1 skill order for V1.0, and the revised difficulty scale.
+### Curriculum alignment (2026-10-20)
+
+Details in `docs/curriculum/CE1-maths.md`.
+
+| # | Topic | Decision | Score |
+|---|---|---|---|
+| C1 | Unlocking | Parent sets the calendar ceiling; mastery unlocks below it; prudent look-ahead probes in the challenge share; never label giftedness, neutral parent note only | 430 |
+| C2 | Fluence | Hybrid: score relative to the child using the app; official benchmarks as dashboard milestones | 480 |
+| C3 | V1.0 skills | Additive core + tables x2/x5/x10 + prerequisite graph down to cycle 1/CP | 400 |
+| C4 | Difficulty | Base level per skill (official table schedule) + modifiers | 425 |
+| R4 | Remediation | Reactive, inside the 20 % review share, plus parent "go back to X" button | 460 |
+
+Multiplication is core CE1 content; two-step problems are CE1 content (corrected).
 
 ## 3. Engine rules (all values configurable)
 
-Difficulty score = operation (+0, −1, ×3) + size of largest number (≤20: 0, ≤100: 2, ≤1000: 3) + 1 per carry/borrow/tens crossing + 2 per extra step − 1 for round numbers.
-Note (2026-10-20): this scale was drafted before the curriculum check. Multiplication is core CE1 content (all tables by period 5), so its difficulty must depend on the table rather than a flat +3, and the examples must follow `docs/curriculum/CE1-maths.md`. To be revised in the curriculum decisions below.
+Difficulty score = base level of the skill (C4, from `docs/curriculum/CE1-maths.md`) + size of largest number (≤20: 0, ≤100: 2, ≤1000: 3) + 1 per carry/borrow/tens crossing + 2 per extra step − 1 for round numbers. There is no operation term: the operation is already in the skill's base level (the former "+0, −1, ×3" term is removed, 2026-10-21).
 Levels: 0–1 Easy, 2 Medium, 3–4 Hard, 5+ Very hard. A level unlocks once the previous one reaches 70 % mastery. The engine picks the level, the child only picks within the 10 % challenge share.
 
 Confidence score (starts at 1.0): −0.2 answer faster than 40 % of her own average (and under 1.5 s); −0.2 three fast errors in a row; −0.2 repeated identical answer; −0.1 success on new but failure on review; +0.05 per plausible correct answer. Below 0.6: points × confidence, easier exercise, neutral message. Below 0.3: 2-minute pause and parent note. Slow is never a signal.
@@ -67,7 +80,7 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 | Version | Content |
 |---|---|
 | V0 | Repository, CI, Expo structure, UML validated, exercise generator + mastery engine unit-tested without UI |
-| V1.0 | Profiles + PIN, framed session, simple addition/subtraction, free numeric entry (no multiple choice), simple minimum-time rule, mastery score, points and reserve, parent validation + timer, minimal traffic-light view, local storage |
+| V1.0 | Profiles + PIN, framed session, mental additive core (decompositions to 10, facts to 20, +/- small numbers) and tables x2/x5/x10 (C3), prerequisite nodes of cycle 1 and CP, free numeric entry (no multiple choice), simple minimum-time rule, mastery score, points and reserve, parent validation + timer, minimal traffic-light view, local storage |
 | V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score |
 | V1.2 | Keypad comfort + driven format, light companion, audio, effort-first feedback |
 | V1.5 | Sync across devices, keypad mini-games, hidden control questions |
@@ -75,16 +88,13 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 
 ## 6. Open questions
 
-- Project name (candidates floated: Mérite, Sablier, Pépite). The repository uses a provisional name and can be renamed later (GitHub redirects the old URL).
 - Making the app official later (children's-data regulation, GDPR, store rules): deliberately postponed by the owner until the family-first phase has proven the concept (S2).
 - Device where she plays Roblox (decides the V2 blocking target); no official Linux Roblox client to my knowledge, to be checked.
 - Tablet model (Android multi-user support varies).
 - Success-rate hypotheses used in the multiplier simulation (95/80/65/40 %) and every threshold above are to be calibrated after one week of real use.
-- CE1 skill graph for V1.0 (which skills, which order).
 - Licence if open-sourced (MIT or AGPL).
 
 ## 7. Next steps
 
-1. Choose the name, create the repository folder, move this file in.
-2. UML-first: use-case, sequence, component, class, state and data-flow diagrams (Mermaid) under `docs/architecture/diagrams/<feature>/`.
-3. Validate diagrams, then start V0.
+1. UML-first: use-case, sequence, component, class, state and data-flow diagrams (Mermaid) under `docs/architecture/diagrams/<feature>/`.
+2. Validate diagrams, then start V0.
