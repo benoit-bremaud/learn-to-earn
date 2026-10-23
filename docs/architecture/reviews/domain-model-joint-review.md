@@ -35,6 +35,7 @@ Render check: all five diagrams re-rendered with `mmdc` and inspected after the 
 | Third Codex pass: session crossing midnight credited to one day | Uncredited attempts split by the day of `answeredAt`, one credit per day (C7) |
 | Fourth Codex pass: PENDING request never expired | PENDING and APPROVED both expire at day end (C11) |
 | Fourth Codex pass: timer debit from wall clock | `ScreenTimeUse.elapsedSeconds` monotonic, `/usedMinutes` derived (C11) |
+| 2026-10-23 owner decision on UC-S3 *a (MCDA D 455) | Supersedes the row above: `elapsedSeconds` removed, `/usedMinutes` from device time since `startedAt`, full debit on a backwards clock (C11, C16) |
 | Fourth Codex pass: no level after VERY_HARD | `/unlockedLevel` capped at VERY_HARD (C2) |
 | Fifth Codex pass: split credits expired from the crediting time | `expiresAt` from the latest `answeredAt` of the credit's attempts (C10) |
 | Owner, 2026-10-21: reward learning results, not time spent | ADR-0002 D11 = B: correct answers only plus a mastery-gain bonus (C9, `progressBonusRatio`); default reserve cap 60 min |

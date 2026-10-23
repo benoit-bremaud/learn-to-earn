@@ -51,3 +51,4 @@ Open at handover:
 ## 2026-10-23 — Use-case spec follow-ups (PR #2)
 
 - Codex follow-ups on #2 (owner MCDAs): session ends on a target duration, 15 min by default, 10-20 set by the Guardian (A 455 / C 400 / B 360); an interrupted timer is debited by device time since its start, capped, with a full debit if the clock went backwards (D 455 / B 400 / A 380 / C 260); expiry warnings show the real day.
+- Domain model (#3) aligned with these decisions: `sessionTargetMinutes`, timer debit from device time since `startedAt` (`elapsedSeconds` removed), base level scores, dotted `SkillId`, encryption at rest as an adapter concern (#11).
