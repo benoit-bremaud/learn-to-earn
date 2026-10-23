@@ -9,10 +9,10 @@ A node is a pure-domain object. Decisions it implements: C3 (V1.0 scope), C4 (ba
 
 ## Fields (all required)
 
-- `id`: stable kebab-case (`mult-table-7`).
+- `id`: stable `<grade>.<name>`, the format of the V1.0 graph in `docs/curriculum/CE1-maths.md`: grade prefix `c1` / `cp` / `ce1`, then a lowercase name, hyphenated if needed (`ce1.table7`, `ce1.mental-addsub`).
 - `strand`, `period`: from `docs/curriculum/CE1-maths.md` (or CP / cycle 1 for lower nodes). Cite the source row.
 - `prerequisites`: ids of the nodes it depends on. The graph is a DAG: no cycles, and every CE1 node must reach a cycle 1 or CP node.
-- `baseLevel`: Easy / Medium / Hard / Very hard, taken from the official schedule (for example x2/x5/x10 easy, x7 to x9 hard), then modifiers for number size and carries. No flat operation bonus.
+- `baseLevel`: Easy / Medium / Hard / Very hard (scored 0 / 2 / 3 / 5 in the difficulty formula), taken from the official schedule (for example x2/x5/x10 easy, x7 to x9 hard), then modifiers for number size and carries. No flat operation bonus.
 - `fluenceTarget`: official benchmark if one exists, otherwise none.
 - `generator`: rule-based exercise generator (no LLM, no child data). Include a visual hint chain concrete, then picture, then symbol.
 

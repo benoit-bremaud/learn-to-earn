@@ -56,21 +56,21 @@ The skill graph is a DAG of prerequisites that goes down through CP to cycle 1 (
 
 V1.0 nodes and prerequisite edges (stable IDs; a node is reached only after its prerequisites; R4 walks these edges back):
 
-| ID | Skill | Grade | Prerequisites |
-|---|---|---|---|
-| `c1.count` | Count and compare collections up to 10 | Cycle 1 | — |
-| `c1.decompose10` | Compose and decompose numbers up to 10 | Cycle 1 | `c1.count` |
-| `cp.add10` | Addition facts up to 10 | CP | `c1.decompose10` |
-| `cp.sub10` | Subtraction facts up to 10 | CP | `c1.decompose10` |
-| `cp.tens` | Tens and units | CP | `c1.count` |
-| `cp.skipcount` | Count by 2, 5 and 10 | CP | `cp.tens` |
-| `cp.doubles` | Doubles and halves | CP | `cp.add10` |
-| `cp.add20` | Addition facts up to 20 | CP | `cp.add10`, `cp.tens` |
-| `cp.sub20` | Subtraction facts up to 20 | CP | `cp.sub10`, `cp.tens` |
-| `ce1.mental-addsub` | Mental +/- with small numbers | CE1 | `cp.add20`, `cp.sub20` |
-| `ce1.table2` | Table x2 | CE1 | `cp.doubles`, `cp.skipcount` |
-| `ce1.table5` | Table x5 | CE1 | `cp.skipcount` |
-| `ce1.table10` | Table x10 | CE1 | `cp.tens`, `cp.skipcount` |
+| ID | Skill | Grade | Base | Prerequisites |
+|---|---|---|---|---|
+| `c1.count` | Count and compare collections up to 10 | Cycle 1 | Easy | — |
+| `c1.decompose10` | Compose and decompose numbers up to 10 | Cycle 1 | Easy | `c1.count` |
+| `cp.add10` | Addition facts up to 10 | CP | Easy | `c1.decompose10` |
+| `cp.sub10` | Subtraction facts up to 10 | CP | Easy | `c1.decompose10` |
+| `cp.tens` | Tens and units | CP | Easy | `c1.count` |
+| `cp.skipcount` | Count by 2, 5 and 10 | CP | Easy | `cp.tens` |
+| `cp.doubles` | Doubles and halves | CP | Easy | `cp.add10` |
+| `cp.add20` | Addition facts up to 20 | CP | Easy | `cp.add10`, `cp.tens` |
+| `cp.sub20` | Subtraction facts up to 20 | CP | Easy | `cp.sub10`, `cp.tens` |
+| `ce1.mental-addsub` | Mental +/- with small numbers | CE1 | Medium | `cp.add20`, `cp.sub20` |
+| `ce1.table2` | Table x2 | CE1 | Easy | `cp.doubles`, `cp.skipcount` |
+| `ce1.table5` | Table x5 | CE1 | Easy | `cp.skipcount` |
+| `ce1.table10` | Table x10 | CE1 | Easy | `cp.tens`, `cp.skipcount` |
 
 Later nodes (posed calculation with carries, other tables, two-step problems) are added with their edges by the skill-node procedure, in V1.1+.
 
@@ -78,7 +78,7 @@ The programme asks for revision "as you go, only for pupils who need it", and fo
 
 ## Consequences for the engine
 
-1. Each skill carries a base difficulty level taken from this table (decision C4 = A): for example ×2, ×5 and ×10 easy, ×3/×4 medium, ×7 to ×9 hard, then modifiers for number size and carries. No flat operation bonus.
+1. Each skill carries a base difficulty level taken from this table (decision C4 = A; base category to score: Easy 0, Medium 2, Hard 3, Very hard 5, the lower bound of each level band in `docs/CADRAGE.md`, so a skill with no modifier stays at its own level): for example ×2, ×5 and ×10 easy, ×3/×4 medium, ×7 to ×9 hard, then modifiers for number size and carries. No flat operation bonus.
 2. Fluence benchmarks define "automatised" in the dashboard; scoring stays relative to the child using the app.
 3. Skills unlock along the calendar ceiling set by the parent plus mastery, with prudent look-ahead probes inside the challenge share (C1 = A).
 4. Remediation is reactive (R4 = C): the 3-error rule or failed reviews walk back the DAG, the weak prerequisite enters the 20 % review share, and the parent has a "go back to X" button. No placement test.
