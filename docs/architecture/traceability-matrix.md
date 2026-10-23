@@ -25,11 +25,11 @@ Proves coverage: every use case traces to product decisions, a diagram and a roa
 | UC-P5 | Review the traffic-light dashboard | Guardian | V1.0 | P2, C2 | parent-space | — | — | SkillProgress, Skill, FluenceRecord (V1.1), FluenceBenchmark (V1.1) | — | — |
 | UC-P6 | Review alerts and the to-do-together list | Guardian | V1.1 | P2, M4, T1, C1 | parent-space | — | — | ParentNote, SkillProgress | — | — |
 | UC-P7 | Send the child back to an earlier skill | Guardian | V1.1 | R4 | parent-space | — | — | Remediation (origin GUARDIAN), Skill | — | — |
-| UC-P8 | Export the child's data | Guardian | V1.0 | S1, §4 | parent-space | — | — | Installation and its parts | — | — |
+| UC-P8 | Export the child's data | Guardian | V1.0 | S1, §4, ADR-0003 | parent-space | — | — | Installation and its parts | — | — |
 | UC-P9 | Erase all data | Guardian | V1.0 | S1, V1, §4 | parent-space | — | — | Installation and its parts (scope OQ-5) | — | — |
 | UC-P10 | Change the PIN | Guardian | V1.0 | P1 | parent-space | — | — | ParentCredential | — | — |
 | UC-P11 | Choose anonymous crash reporting | Guardian | V1.1 | V4 | parent-space | — | — | PrivacySettings | — | — |
 | UC-P12 | Set the parent PIN | Guardian | V1.0 | P1 | parent-space | — | — | ParentCredential | — | — |
 | UC-P13 | Request keypad re-calibration | Guardian | V1.2 | T1 | parent-space | — | — | KeypadProfile (recalibrationRequestedAt) | — | — |
-| UC-P14 | Set up the app for a child | Guardian | V1.0 | P0, P1, V3, V4, §4 | parent-space | — | — | Installation, ParentCredential, ChildProfile, PrivacySettings | — | — |
-| UC-P15 | Restore the child's data from a file | Guardian | V1.0 | S1 | parent-space | — | — | Installation and its parts (guard OQ-5) | — | — |
+| UC-P14 | Set up the app for a child | Guardian | V1.0 | P0, P1, V3, V4, §4, ADR-0003 | parent-space | — | — | Installation, ParentCredential, ChildProfile, PrivacySettings | — | — |
+| UC-P15 | Restore the child's data from a file | Guardian | V1.0 | S1, ADR-0003 | parent-space | — | — | Installation and its parts (guard OQ-5) | — | — |

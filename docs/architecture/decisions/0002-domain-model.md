@@ -172,6 +172,6 @@ Honest limits found by the adversarial review: D1 option C, D3 option B and D5 o
 - Thresholds (80 % success zone, 0.6 / 0.3 confidence, 70 % unlock, caps, multipliers) stay in configuration, not as class constants.
 - CADRAGE §3 must be edited for D9 and for the weighted-minutes currency (D8).
 - Operations, ports and design-level generalizations (generators, adapters) are decided in the design class diagram, after the sequences.
-- All persisted aggregates, `ParentCredential.pinHash` included, are encrypted at rest (owner requirement, issue #11): a storage adapter concern, not a domain attribute.
+- All persisted aggregates, `ParentCredential.pinHash` included, are encrypted at rest (owner requirement, ADR-0003): a storage adapter concern, not a domain attribute.
 - 2026-10-23 alignment with the use-case spec: `ScreenTimeRules.sessionTargetMinutes` (session end), `/usedMinutes` derived from device time since `startedAt` with a full debit on a backwards clock (`elapsedSeconds` removed), base level scores and the dotted `SkillId` format stated in the diagram notes.
 - Open: OQ-5 (scope of erase and restore), recorded in the diagram notes.

@@ -35,7 +35,7 @@ Primary user: the owner's daughter (CE1). Secondary: other parents, later (distr
 | P2 | Parent dashboard | Traffic-light view per skill (green ≥ 80 %, orange 50–79 %, red < 50 % or falling), alerts, "to do together" line | 465 |
 | P3 | Validation | Reserve → child asks → parent PIN → timer → 5-min warning → alarm → reserve debited | 395 |
 | P0 | Profiles | In-app child/parent profiles (base) + dedicated OS session where available (Android user, Ubuntu session) | 405 |
-| S1 | Data | Local-first (export/import); optional encrypted sync in V1.5 | 425 |
+| S1 | Data | Local-first (encrypted export/import, ADR-0003); optional encrypted sync in V1.5 | 425 |
 | S2 | Distribution | Family first, decision deferred (decide after 4–6 weeks of real use); open source is the likely next step | 425 |
 | V1 | Retention | Detailed answers 90 days, then weekly aggregates | 420 |
 | V3 | Identity | First name or pseudonym + birth year; no surname, photo or child e-mail | 435 |

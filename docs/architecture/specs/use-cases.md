@@ -280,14 +280,17 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   3. The app schedules it.
 
 ### UC-P8 — Export the child's data
-- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, §4 privacy baseline.
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, §4 privacy baseline, ADR-0003 D3.
 - Preconditions: parent space unlocked.
-- Success guarantee: a complete file the Guardian can keep.
+- Success guarantee: a complete encrypted file the Guardian can keep; the app never uploads it.
 - Main success scenario:
   1. Guardian asks for an export.
-  2. The app builds the file.
-  3. The app hands the file to the Guardian.
-- Extensions: 2a. Export fails: nothing is changed and the app says so.
+  2. Guardian chooses a passphrase of at least 12 characters, or accepts one the app suggests, and types it twice.
+  3. The app builds the file, encrypted with a key derived from the passphrase.
+  4. The app hands the file to the Guardian and reminds the Guardian that a forgotten passphrase makes it unreadable.
+- Extensions:
+  - 2a. The two entries differ or the passphrase is shorter than 12 characters: the app asks again.
+  - 3a. Export fails: nothing is changed and the app says so.
 
 ### UC-P9 — Erase all data
 - Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, V1, §4 privacy baseline.
@@ -332,8 +335,8 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   2. The app marks the next launch to run UC-L7. The two use cases are linked by data, not by a UML relationship.
 
 ### UC-P14 — Set up the app for a child
-- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: P0, P1, V3, V4, §4 parental consent.
-- Preconditions: first launch.
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: P0, P1, V3, V4, §4 parental consent, ADR-0003.
+- Preconditions: first launch, or the database key is lost (storage rule).
 - Success guarantee: a PIN, a child profile and the privacy defaults exist. The app opens on the child profile.
 - Main success scenario:
   1. The app explains what it stores, that nothing leaves the device, and asks the Guardian to confirm they are the child's parent or legal guardian.
@@ -341,19 +344,24 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   3. Guardian creates the child profile (include UC-P2).
   4. The app sets crash reports to off (changeable in UC-P11).
   5. *(V1.2)* The app proposes the keypad calibration (UC-L7) for the child.
+- Extensions: 1a. The database key is lost: the unreadable database is set aside, never deleted, before the set-up starts (ADR-0003 D3).
 - Extensions: 1a. Guardian declines: the app stays closed and stores nothing.
 - Relationships: «include» UC-P12, UC-P2.
 
 ### UC-P15 — Restore the child's data from a file
-- Level: user goal. Primary actor: Guardian. Version: V1.0. Decision: S1.
-- Preconditions: parent space unlocked, an export file from UC-P8.
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: S1, ADR-0003 D3.
+- Preconditions: an export file from UC-P8, and either the parent space is unlocked or the database key is lost (see the storage rule below).
 - Success guarantee: the data from the file replaces the current data, or nothing changes.
 - Main success scenario:
   1. Guardian chooses an export file.
-  2. The app checks the file and shows what it contains.
-  3. Guardian confirms with the PIN.
-  4. The app replaces the data.
-- Extensions: 2a. The file is invalid or from a newer version: the app refuses and nothing changes.
+  2. Guardian types the passphrase of that file.
+  3. The app decrypts and checks the file and shows what it contains.
+  4. Guardian confirms with the PIN.
+  5. The app replaces the data and encrypts it with the device key (a new key is generated if it was lost).
+- Extensions:
+  - 3a. Wrong passphrase: nothing changes and the Guardian can try again.
+  - 3b. The file is invalid or from a newer version: the app refuses and nothing changes.
+  - 4a. The database key was lost: the PIN to type is the one stored in the file. Without an unlocked parent space, the passphrase is the only proof that the actor is the Guardian (risk noted in ADR-0003).
 
 ## Covered elsewhere (not use cases)
 
@@ -374,8 +382,11 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 - Timers, expiry and the daily cap use elapsed time measured by the app, not the wall clock alone. While the app is not running (suspended, closed, device restarted), elapsed time is the device time since the stored start, which also covers an interrupted timer (UC-S3 *a). A backwards change of the device clock freezes expiry and the daily cap, debits a running timer in full and creates a neutral note for the Guardian. Expiry days shown to the Learner (UC-L8) are computed from the earning time with this same rule.
 
+- Storage (ADR-0003): the whole database is encrypted with a random key kept in the device key store; the app refuses to open a database that SQLCipher does not protect. A key-store error is retried first. If the key is definitely missing or does not open the database, the unreadable database is set aside, never deleted, and the app shows only two choices: restore from a file (UC-P15) or set up again (UC-P14). The PIN lives in the encrypted database, so it cannot gate this screen (risk and OQ-6 in ADR-0003). The web build stores no child data.
+
 ## Open questions
 
 - OQ-1 PIN recovery without letting the child reset it.
 - OQ-2 Remote approval on the parent's phone (V2): new use case or variant of UC-S2.
 - OQ-3 Several children per Guardian (not in scope now).
+- OQ-6 Device-level protection of the app (pinning, Android user or parental controls) against reinstalling it or setting it up again after a key loss.

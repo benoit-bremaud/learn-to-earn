@@ -36,8 +36,9 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 7 | Reviews | [reviews/](reviews/) | see log |
 | 8 | Domain model approach | [decisions/0002-domain-model.md](decisions/0002-domain-model.md) | proposed |
 | 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed three times (incl. adversarial) and jointly with the owner |
-| 10 | Sequence, component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
-| 11 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
+| 10 | Encryption of stored data | [decisions/0003-encryption-at-rest.md](decisions/0003-encryption-at-rest.md) | accepted |
+| 11 | Sequence, component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
+| 12 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
 
 ## Planned studies (order)
 
