@@ -7,7 +7,7 @@
 
 ## Context
 
-Everything the Guardian does inside the PIN-protected parent space. Approving a request and the screen-time rules are in the `screen-time` diagram. Every use case here except UC-P1, UC-P12 and UC-P14 has the precondition "parent space unlocked" (UC-P1).
+Everything the Guardian does inside the PIN-protected parent space. Approving a request and the screen-time rules are in the `screen-time` diagram. Every use case here except UC-P1, UC-P2, UC-P12 and UC-P14 has the precondition "parent space unlocked" (UC-P1).
 
 ## Diagram
 
@@ -40,7 +40,6 @@ flowchart LR
     end
   end
   Guardian --- P14
-  Guardian --- P12
   Guardian --- P1
   Guardian --- P10
   Guardian --- P2
@@ -60,8 +59,9 @@ flowchart LR
 
 ## Notes
 
-- The only relationships are UC-P14 «include» UC-P12 and UC-P2 (first-launch set-up always performs both). Shared access is expressed as the precondition "parent space unlocked" (ADR-0001 D2). UC-P4 and UC-P6 were extensions in a first draft and became standalone goals after review pass 1 (extension points were navigation or states, not points of a scenario).
+- The only relationships are UC-P14 «include» UC-P12 and UC-P2 (first-launch set-up always performs both). UC-P12 has no direct Guardian link: it is only reached through UC-P14 (ADR-0001 D2, D12). UC-P2 keeps its link because the Guardian can also start it from the unlocked parent space (ADR-0001 D10). Shared access is expressed as the precondition "parent space unlocked" (ADR-0001 D2). UC-P4 and UC-P6 were extensions in a first draft and became standalone goals after review pass 1 (extension points were navigation or states, not points of a scenario).
 - UC-P13 and UC-L7 (learning domain) are linked by data, not by a UML relationship.
+- UC-P9 erases everything the app stored and restarts on UC-P14; UC-P15 never restores the screen-time reserve (ADR-0002 D12, D13).
 - UC-P8 (export) and UC-P9 (erase) are legal baselines (privacy by design), not optional features. Exports are encrypted with a Guardian passphrase, and when the database key is lost the app offers only UC-P15 or UC-P14 (ADR-0003 D3).
 - Open point: PIN recovery without letting the child reset it (OQ-1).
 - Versions: UC-P3, UC-P4, UC-P6, UC-P7, UC-P11 in V1.1, UC-P13 in V1.2, the others in V1.0 (UC-P14 and UC-P15 included).

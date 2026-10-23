@@ -28,7 +28,7 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | # | Item | Location | Status |
 |---|---|---|---|
 | 1 | Use-case modelling approach | [decisions/0001-use-case-modelling.md](decisions/0001-use-case-modelling.md) | proposed |
-| 2 | Use-case specifications (29 use cases) | [specs/use-cases.md](specs/use-cases.md) | reviewed twice, awaiting owner validation |
+| 2 | Use-case specifications (28 use cases) | [specs/use-cases.md](specs/use-cases.md) | reviewed twice, awaiting owner validation |
 | 3 | Use-case diagram, learning | [diagrams/learning/01-use-case.md](diagrams/learning/01-use-case.md) | reviewed twice, awaiting owner validation |
 | 4 | Use-case diagram, screen-time | [diagrams/screen-time/01-use-case.md](diagrams/screen-time/01-use-case.md) | reviewed twice, awaiting owner validation |
 | 5 | Use-case diagram, parent-space | [diagrams/parent-space/01-use-case.md](diagrams/parent-space/01-use-case.md) | reviewed twice, awaiting owner validation |
@@ -37,8 +37,9 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 8 | Domain model approach | [decisions/0002-domain-model.md](decisions/0002-domain-model.md) | proposed |
 | 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed three times (incl. adversarial) and jointly with the owner |
 | 10 | Encryption of stored data | [decisions/0003-encryption-at-rest.md](decisions/0003-encryption-at-rest.md) | accepted |
-| 11 | Sequence, component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
+| 11 | Sequence diagrams (session, confidence, remediation, screen time, erase, restore) | `diagrams/<feature>/02-sequence-*.md` and following | in review, awaiting owner validation |
 | 12 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
+| 13 | Component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
 
 ## Planned studies (order)
 
@@ -46,7 +47,7 @@ Order follows Larman (Unified Process) and ICONIX: an analysis-level domain mode
 
 1. Use cases (done, in review).
 2. Domain model: analysis class diagram, concepts, attributes, associations, multiplicities, no methods (done, in review).
-3. Sequence diagrams for non-trivial flows only: learning session with adaptive choice, screen-time request and approval, remediation walk-back, confidence scoring.
+3. Sequence diagrams for non-trivial flows only: learning session with adaptive choice, screen-time request and approval, remediation walk-back, confidence scoring, plus erase and restore (OQ-5) (in review).
 4. Component diagram (layers and boundaries: UI, application, domain, adapters for storage, clock, TTS, OS).
 5. Design class diagram: operations, ports and adapters, dependencies, generalization where real.
 6. State diagrams (session, screen-time request, reserve lifecycle).
