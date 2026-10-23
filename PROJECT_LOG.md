@@ -52,3 +52,8 @@ Open at handover:
 
 - Codex follow-ups on #2 (owner MCDAs): session ends on a target duration, 15 min by default, 10-20 set by the Guardian (A 455 / C 400 / B 360); an interrupted timer is debited by device time since its start, capped, with a full debit if the clock went backwards (D 455 / B 400 / A 380 / C 260); expiry warnings show the real day.
 - Domain model (#3) aligned with these decisions: `sessionTargetMinutes`, timer debit from device time since `startedAt` (`elapsedSeconds` removed), base level scores, dotted `SkillId`, encryption at rest as an adapter concern (#11).
+- Dependabot #12 merged (c09fe79): coverage 7.6.1 → 7.16.2, local gate green.
+
+## 2026-10-23 — Encryption at rest (ADR-0003, issue #11)
+
+- Owner MCDAs: native whole-database SQLCipher with a start-up `cipher_version` guard (A 445 / C 320 / B 250); no child data stored on web (A 480 / B 260 / C 185); random key in Keystore/Keychain plus a passphrase-encrypted local export for recovery (C 450 / A 400 / B 230).
