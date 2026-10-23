@@ -394,6 +394,6 @@ Between aggregates the consistency is eventual: closing a session credits the re
 - `GradeLevel.CYCLE1` names a cycle, not a class level; a child profile only uses CP or CE1.
 - Navigability is left out at analysis level; it is decided in the design class diagram. `{ordered}` and `{unique}` are drawn as association labels because Mermaid cannot place a constraint at an association end.
 - Thresholds and multipliers live in configuration, not in these classes.
-- Not in the model: the exported file (an adapter artefact), the clock, TTS and the timer-end alarm scheduled with the OS (adapters), the OS (external), and encryption at rest (a storage adapter concern, issue #11).
+- Not in the model: the exported file (an adapter artefact), the clock, TTS and the timer-end alarm scheduled with the OS (adapters), the OS (external), and encryption at rest (a storage adapter concern, ADR-0003).
 - Known limits, accepted (YAGNI): `answer` is an integer (fractions come later); a Strand has no subject until reading arrives in V2.
 - Open question OQ-5: does UC-P9 (erase) also remove the PIN, the consent and the rules, or only the child's data? And a restore (UC-P15) of an old export would bring back minutes already spent: the sequence study must decide the guard (refuse an export older than the current data, or replay the balance against TimeGuard).
