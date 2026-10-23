@@ -46,3 +46,4 @@ Open at handover:
 - Owner decision (MCDA A 450 / B 375 / C 195): one umbrella issue. GitHub Project "learn-to-earn" (#65), milestone "V0 conception", label `ci`, tracking issues #6-#8 for PRs #1-#3, Copilot review requested on #4.
 - This PR: project `CLAUDE.md`, Dependabot (github-actions, pip), dependency review workflow. Ruleset on main and LICENSE are separate owner decisions.
 - LICENSE: owner decision (MCDA A all rights reserved 445 / D PolyForm Noncommercial 385 / B MIT 320 / C AGPL-3.0 305), compatible with going private at the first production deployment.
+- Codex follow-up on #1 (owner MCDA A 480 / B 390 / C 270): base category scored Easy 0 / Medium 2 / Hard 3 / Very hard 5, Base column in the V1.0 graph; node IDs use the dotted `<grade>.<name>` format.
