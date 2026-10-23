@@ -67,9 +67,9 @@ Clean Architecture (dependency rule, proportional layering), SOLID, no anti-patt
 ## 3. Engine rules (all values configurable)
 
 Difficulty score = base level of the skill (C4, from `docs/curriculum/CE1-maths.md`) + size of largest number (≤20: 0, ≤100: 2, ≤1000: 3) + 1 per carry/borrow/tens crossing + 2 per extra step − 1 for round numbers. There is no operation term: the operation is already in the skill's base level (the former "+0, −1, ×3" term is removed, 2026-10-21).
-Levels: 0–1 Easy, 2 Medium, 3–4 Hard, 5+ Very hard. A level unlocks once the previous one reaches 70 % mastery. The engine picks the level, the child only picks within the 10 % challenge share.
+Levels: 0–1 Easy, 2 Medium, 3–4 Hard, 5+ Very hard. A level unlocks once the skill mastery reaches 70 % at the previous level (one mastery per skill, ADR-0002 D9). The engine picks the level, the child only picks within the 10 % challenge share.
 
-Confidence score (starts at 1.0): −0.2 answer faster than 40 % of her own average (and under 1.5 s); −0.2 three fast errors in a row; −0.2 repeated identical answer; −0.1 success on new but failure on review; +0.05 per plausible correct answer. Below 0.6: points × confidence, easier exercise, neutral message. Below 0.3: 2-minute pause and parent note. Slow is never a signal.
+Confidence score (starts at 1.0): −0.2 answer faster than 40 % of her own average (and under 1.5 s); −0.2 three fast errors in a row; −0.2 repeated identical answer; −0.1 success on new but failure on review; +0.05 per plausible correct answer. Below 0.6: weighted minutes × confidence (ADR-0002 D8: the reserve is fed by weighted minutes = time × difficulty multiplier × confidence factor; the 20-minute full-rate threshold counts per day, D10), easier exercise, neutral message. Below 0.3: 2-minute pause and parent note. Slow is never a signal.
 
 Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key errors, reversed or mirrored digits, self-correction. It is a skill like any other. Statistics only, never a diagnosis and never health data; persistent signals show up as a neutral note to the parent.
 
