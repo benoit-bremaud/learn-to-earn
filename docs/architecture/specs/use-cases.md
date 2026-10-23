@@ -291,7 +291,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Main success scenario:
   1. Guardian asks to erase everything. The app offers an export first (UC-P8).
   2. Guardian confirms in one PIN-protected gesture.
-  3. The app deletes the database, every set-aside database and the database key, then shows a confirmation and restarts on UC-P14 step 1.
+  3. The app deletes the database key first, then the database and every set-aside database, so a crash leaves nothing readable and the next start finishes the erase. It shows a confirmation, says that export files already saved outside the app are not erased, and restarts on UC-P14 step 1.
 - Extensions: 2a. Guardian cancels: nothing is deleted.
 
 ### UC-P10 — Change the PIN
