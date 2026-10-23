@@ -47,3 +47,7 @@ Open at handover:
 - This PR: project `CLAUDE.md`, Dependabot (github-actions, pip), dependency review workflow. Ruleset on main and LICENSE are separate owner decisions.
 - LICENSE: owner decision (MCDA A all rights reserved 445 / D PolyForm Noncommercial 385 / B MIT 320 / C AGPL-3.0 305), compatible with going private at the first production deployment.
 - Codex follow-up on #1 (owner MCDA A 480 / B 390 / C 270): base category scored Easy 0 / Medium 2 / Hard 3 / Very hard 5, Base column in the V1.0 graph; node IDs use the dotted `<grade>.<name>` format.
+
+## 2026-10-23 — Use-case spec follow-ups (PR #2)
+
+- Codex follow-ups on #2 (owner MCDAs): session ends on a target duration, 15 min by default, 10-20 set by the Guardian (A 455 / C 400 / B 360); an interrupted timer is debited by device time since its start, capped, with a full debit if the clock went backwards (D 455 / B 400 / A 380 / C 260); expiry warnings show the real day.

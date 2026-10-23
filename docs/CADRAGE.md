@@ -18,7 +18,7 @@ Primary user: the owner's daughter (CE1). Secondary: other parents, later (distr
 | Q2 | Platform | Expo (React Native): Android, iOS, web (Ubuntu PC runs the web build) | 440 |
 | Q3 | V1 subject | Arithmetic (CE1). Reading comes in V2 on the same engine | 460 |
 | Q4 | Points | Capped savings, weekly expiry (7 days) | 450 |
-| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day | 430 |
+| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day, reserve cap 60 min (owner 2026-10-21: work, not stored screen time; MCDA 60 min 400 = 120 min 400 > 210 min 320, 60 min chosen as incentive to work weighs ≥ 35 %). Only correct answers earn minutes, plus a bonus when mastery rises (owner 2026-10-21, MCDA 380 vs progress only 345 vs time spent 330) | 430 |
 | M1 | Mastery | 0–100 % score per skill, weighted moving average (correctness + speed) | 400 |
 | M2 | Response time | Compared with the child's own average on that skill; only after a correct answer; never removes points | 450 |
 | M3 | Next exercise | 70 % skills being acquired (~80 % success zone), 20 % spaced review, 10 % challenge | 450 |
@@ -60,6 +60,10 @@ Details in `docs/curriculum/CE1-maths.md`.
 
 Multiplication is core CE1 content; two-step problems are CE1 content (corrected).
 
+### Architecture principles (owner rule 2026-10-20)
+
+Clean Architecture (dependency rule, proportional layering), SOLID, no anti-patterns, DRY and YAGNI are binding. Detail in `docs/architecture/README.md`.
+
 ## 3. Engine rules (all values configurable)
 
 Difficulty score = base level of the skill (C4, from `docs/curriculum/CE1-maths.md`) + size of largest number (≤20: 0, ≤100: 2, ≤1000: 3) + 1 per carry/borrow/tens crossing + 2 per extra step − 1 for round numbers. There is no operation term: the operation is already in the skill's base level (the former "+0, −1, ×3" term is removed, 2026-10-21).
@@ -81,7 +85,7 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 |---|---|
 | V0 | Repository, CI, Expo structure, UML validated, exercise generator + mastery engine unit-tested without UI |
 | V1.0 | Profiles + PIN, framed session, mental additive core (decompositions to 10, facts to 20, +/- small numbers) and tables x2/x5/x10 (C3), prerequisite nodes of cycle 1 and CP, free numeric entry (no multiple choice), simple minimum-time rule, mastery score, points and reserve, parent validation + timer, minimal traffic-light view, local storage |
-| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score |
+| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score, calendar ceiling, alerts, warning before reserve minutes expire, opt-in anonymous crash reports |
 | V1.2 | Keypad comfort + driven format, light companion, audio, effort-first feedback |
 | V1.5 | Sync across devices, keypad mini-games, hidden control questions |
 | V2 | Android automatic blocking, automatic difficulty recalibration, reading |
