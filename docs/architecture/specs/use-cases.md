@@ -41,7 +41,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   1. Learner starts a session.
   2. The app proposes an easy warm-up exercise.
   3. Learner answers it (include UC-L2).
-  4. The app repeats steps 2–3 on the V1.0 skill set (dec. C3). *(V1.1)* Exercises follow the 70 % acquiring / 20 % review / 10 % challenge mix (dec. M3), the base difficulty level of each skill (dec. C4) and the ceiling (dec. C1). In V1.0 there is no ceiling: the fixed skill set stands in for it.
+  4. The app repeats steps 2–3 on the V1.0 skill set (dec. C3) until the session's target duration is reached: 15 minutes by default, set by the Guardian between 10 and 20 (dec. E3), warm-up included and measured as elapsed time by the app. The exercise in progress is finished, then the session moves to step 5. *(V1.1)* Exercises follow the 70 % acquiring / 20 % review / 10 % challenge mix (dec. M3), the base difficulty level of each skill (dec. C4) and the ceiling (dec. C1). In V1.0 there is no ceiling: the fixed skill set stands in for it.
   5. *(V1.1)* At the challenge slot the app offers a challenge exercise (extension point `challenge slot offered`).
   6. The app shows the recap and the earned minutes, and credits the reserve.
 - Extensions:
@@ -132,7 +132,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Main success scenario:
   1. Learner opens the progress view.
   2. The app shows the gauge and the recent progress. *(V1.1)* Personal fluence records are shown, with no countdown. *(V1.2)* The day streak is shown.
-  3. *(V1.1)* Minutes expiring within 2 days are shown neutrally ("use them before Sunday").
+  3. *(V1.1)* Minutes expiring within 2 days are shown neutrally with their real expiry day, 7 days after they were earned ("use them before Tuesday 28").
 - Extensions: 2a. No session yet: the app invites the Learner to start one.
 - Business rule: a broken streak is never shown as a loss.
 
@@ -184,7 +184,9 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   2. Learner plays or watches in another app.
   3. For a timer longer than 5 minutes, the app warns 5 minutes before the end; a shorter timer has no warning.
   4. The timer ends with an alarm (extension point `timer ended`).
-- Extensions: 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian *(V1.1)* in the alerts history (UC-P6).
+- Extensions:
+  - 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian *(V1.1)* in the alerts history (UC-P6).
+  - *a. The app is suspended or killed, or the device restarts, while the timer runs: the timer's start time is stored when it starts. On return or next launch, the elapsed time is the current device time minus that start, capped at the approved minutes, and it is debited; a timer whose end has passed is closed with that debit. Closing the app therefore never stops the countdown. If the device time went backwards, the full approved minutes are debited and a neutral note is created for the Guardian.
 - Extension points: `timer ended`.
 - Postcondition: the reserve is debited.
 - Business rule: in V1 the app cannot block other apps (declarative, dec. Q1). The child could stop the timer and keep playing: this residual risk is accepted in V1 and removed by UC-S4 in V2.

@@ -1,31 +1,35 @@
-# Local review — learn-to-earn (branch docs/uml-use-cases vs docs/curriculum-decisions)
+# Local review — learn-to-earn (CI workflow, issue #5)
 
-- Date: 2026-10-20
-- Commit: 891464d
-- Scope: branch diff docs/curriculum-decisions...HEAD (stacked on PR #1), mode `--push` (no QA pass)
-- Checks run: secrets, diff read, link check, Mermaid render (`mmdc`, 3/3), doc consistency. Content quality was covered by two independent review passes and a re-check (`docs/architecture/reviews/`). Design, tests and security agents skipped: the diff holds no code.
-- Verdict: ship · Must 0 · Should 0 · Nice 0
+- Date: 2026-10-22
+- Commit: on top of beee542 (`chore/sonarqube-setup`)
+- Scope: `.github/workflows/ci.yml`, `Makefile` (`ci` target), README and PROJECT_LOG lines
+- Checks run: security + correctness (opus subagent) · design, docs, tests inline (tooling-only diff, no code under test)
+- Verdict: ship after fixes · Must 1 (fixed) · Should 3 (2 fixed) · Nice 3 (1 fixed)
 
-## Pre-merge gate (not a merge candidate yet)
+## Pre-merge gate (push mode, QA step not applicable)
 | Step | Result |
 |---|---|
-| 1 Tests | n.a. (no code yet) |
-| 2 Coverage | n.a. (no code yet) |
-| 3 SonarQube | n.a. (no code, no Sonar project) |
-| 4 Secrets | gitleaks clean (docs/curriculum-decisions..HEAD) · no tracked .env · diff read: nothing sensitive, no local paths |
-| 5 QA pass | skipped (`--push`) |
+| 1 Tests | ✅ unit tests of `scripts/` · ✅ Mermaid render · ✅ `check_docs.py` 0 errors |
+| 2 Coverage | tests 100 % lines / 100 % branches (floor 80) · docs n/a (no new code) |
+| 3 SonarQube | ✅ PASSED (local instance) |
+| 4 Secrets | ✅ gitleaks git (34 commits) and dir clean · no tracked .env · diff read: only a public SHA-256 |
+| 5 QA pass | n/a — tooling diff; the workflow itself is proven by its first run on PR #4 |
 
 ## 🔴 Must Have
-_None._
+- `.github/workflows/ci.yml` `[security]` · gitleaks downloaded without checksum · **fixed**: SHA-256 from the release's checksums.txt, `sha256sum -c`.
 
 ## 🟡 Should Have
-_None._
+- `.github/workflows/ci.yml` `[correctness]` · extract to `/usr/local/bin` without sudo · **fixed**: `$RUNNER_TEMP/bin` + `$GITHUB_PATH`.
+- `.github/workflows/ci.yml` `[security]` · puppeteer downloads its own Chrome · **fixed**: `PUPPETEER_SKIP_DOWNLOAD=true`.
+- `requirements-dev.txt` `[security]` · no hash pinning, no npm lockfile for mermaid-cli · open: follow-up, low risk (one pinned package, exact mermaid-cli version).
 
 ## 🔵 Nice to Have
-_None._
+- `.github/workflows/ci.yml` `[correctness]` · workflow name in the concurrency group · **fixed**.
+- `.github/workflows/ci.yml` `[correctness]` · explicit `PUPPETEER_EXECUTABLE_PATH` redundant · **fixed** (removed, the script finds Chrome).
+- `scripts/render_mermaid.sh:9` `[docs]` · comment could cite the Ubuntu 24.04 AppArmor reason for `--no-sandbox` · open.
 
 ## ⚪ Disagree / Intentional
-- `docs/architecture/reviews/use-cases-review-1.md` row 30 · long labels in Mermaid circles kept: all diagrams render cleanly.
+- SonarQube not in CI · owner decision on issue #5 (MCDA B 440).
 
 ## Per-dimension summary
-- Design: n.a. (principles recorded in the dossier README) · Docs: 0 broken relative links, counts consistent (29 use cases) · Tests: n.a. · Security: no secrets · Correctness: reviewed twice plus re-check, no open Must.
+- Design: one job, no duplication with `make check` (reuses targets) · Docs: README + log updated · Tests: workflow runs the existing suite · Security: least-privilege, SHA-pinned actions, verified binary · Correctness: first CI run on PR #4 is the proof.
