@@ -41,7 +41,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   1. Learner starts a session.
   2. The app proposes an easy warm-up exercise.
   3. Learner answers it (include UC-L2).
-  4. The app repeats steps 2–3 on the V1.0 skill set (dec. C3) until the session's target duration is reached: 15 minutes by default, set by the Guardian between 10 and 20 (dec. E3), warm-up included and measured as elapsed time by the app. The exercise in progress is finished, then the session moves to step 5. *(V1.1)* Exercises follow the 70 % acquiring / 20 % review / 10 % challenge mix (dec. M3), the base difficulty level of each skill (dec. C4) and the ceiling (dec. C1). In V1.0 there is no ceiling: the fixed skill set stands in for it.
+  4. After the warm-up, the app keeps proposing exercises that the Learner answers (step 3) on the V1.0 skill set (dec. C3) until the session's target duration is reached: 15 minutes (dec. E3), fixed in V1.0 and set by the Guardian between 10 and 20 in UC-S5 *(V1.1)*, counted from the start of the warm-up as elapsed time measured by the app. The exercise in progress is finished, then the session moves to step 5. *(V1.1)* Exercises follow the 70 % acquiring / 20 % review / 10 % challenge mix (dec. M3), the base difficulty level of each skill (dec. C4) and the ceiling (dec. C1). In V1.0 there is no ceiling: the fixed skill set stands in for it.
   5. *(V1.1)* At the challenge slot the app offers a challenge exercise (extension point `challenge slot offered`).
   6. The app shows the recap and the earned minutes, and credits the reserve.
 - Extensions:
@@ -138,12 +138,11 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 ### UC-L9 — Customise the companion
 - Level: user goal. Primary actor: Learner. Version: V1.2. Decision: E1.
-- Preconditions: at least one item is unlocked by a day streak.
+- Preconditions: at least one item is unlocked by a day streak; the wardrobe entry is not shown before that.
 - Main success scenario:
   1. Learner opens the companion wardrobe.
-  2. Learner picks an unlocked item.
+  2. Learner picks an unlocked item. Only unlocked items are shown, plus the next one to unlock with the streak days still missing.
   3. The app shows the companion with the item.
-- Extensions: 2a. Learner picks a locked item: the app shows how many streak days are missing.
 
 ## Screen-time domain
 
@@ -156,7 +155,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   3. Learner taps "Ask".
   4. The app records a pending request for the Guardian.
 - Extensions:
-  - 2a. Reserve is 0: the app suggests starting a session (UC-L1) and no request is created.
+  - 2a. Reserve is 0: the request controls are not shown; the app only suggests starting a session (UC-L1) and no request is created.
   - 2b. The daily cap (30 min of screen) is reached: the app says "enough for today".
 - Business rule: later sessions the same day keep crediting the reserve up to its cap, but spending is limited by the daily cap.
 
@@ -183,7 +182,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   1. Learner starts the timer.
   2. Learner plays or watches in another app.
   3. For a timer longer than 5 minutes, the app warns 5 minutes before the end; a shorter timer has no warning.
-  4. The timer ends with an alarm (extension point `timer ended`).
+  4. The timer ends with an alarm (extension point `timer ended`). The alarm is scheduled with the OS when the timer starts, so it rings even if the app was suspended or closed.
 - Extensions:
   - 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian *(V1.1)* in the alerts history (UC-P6).
   - *a. The app is suspended or killed, or the device restarts, while the timer runs: the timer's start time is stored when it starts. On return or next launch, the elapsed time is the current device time minus that start, capped at the approved minutes, and it is debited; a timer whose end has passed is closed with that debit. Closing the app therefore never stops the countdown. If the device time went backwards, the full approved minutes are debited and a neutral note is created for the Guardian.
@@ -206,7 +205,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Preconditions: parent space unlocked.
 - Main success scenario:
   1. Guardian opens the rules.
-  2. Guardian edits conversion rate, daily cap, reserve cap or expiry (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, reserve cap 60 min, 7 days; the V1.0 engine uses these defaults before this screen exists).
+  2. Guardian edits conversion rate, daily cap, reserve cap, expiry or session duration (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, reserve cap 60 min, 7 days, 15 min session within 10–20; the V1.0 engine uses these defaults before this screen exists).
   3. The app saves the rules.
 - Extensions: 2a. A value is outside safe bounds: the app refuses and explains.
 
@@ -373,7 +372,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 - Parent settings (UC-P3, UC-P4, UC-P11, UC-S5) share one flow: open, edit, check bounds, save. The parent-space auto-lock applies. Not modelled as a generalization (ADR-0001 D7).
 
-- Timers, expiry and the daily cap use elapsed time measured by the app, not the wall clock alone. A backwards change of the device clock freezes expiry and the daily cap and creates a neutral note for the Guardian.
+- Timers, expiry and the daily cap use elapsed time measured by the app, not the wall clock alone. While the app is not running (suspended, closed, device restarted), elapsed time is the device time since the stored start, which also covers an interrupted timer (UC-S3 *a). A backwards change of the device clock freezes expiry and the daily cap, debits a running timer in full and creates a neutral note for the Guardian. Expiry days shown to the Learner (UC-L8) are computed from the earning time with this same rule.
 
 ## Open questions
 
