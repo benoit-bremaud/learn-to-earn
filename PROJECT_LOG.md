@@ -32,3 +32,11 @@ Open at handover:
 ## 2026-10-22 — GitHub Actions CI
 
 - Owner decision (MCDA B 440 / C CI + SonarCloud 410 / A local `make check` as CI 250): minimal workflow `.github/workflows/ci.yml` running `make ci` (unit tests with coverage, Mermaid render, MCDA and link checks, full-history gitleaks) on every push to main and every PR. SonarQube stays local through `make check`, so the merge question still needs a local gate run. Issue #5, delivered in PR #4.
+
+- PR #4 merged 2026-10-23 (9fc03a7) after three Codex rounds (gate serialised under make -j, nested .env guard, unclosed Mermaid fence guard, check_docs docstrings 9/9). Codex quota ran out on the last head; merged on the owner's conditional approval with the local gate green (13 tests, 100 % coverage, SonarQube PASSED) and CI green.
+
+## 2026-10-22 — Repository conformity (issue #9)
+
+- Owner decision (MCDA A 450 / B 375 / C 195): one umbrella issue. GitHub Project "learn-to-earn" (#65), milestone "V0 conception", label `ci`, tracking issues #6-#8 for PRs #1-#3, Copilot review requested on #4.
+- This PR: project `CLAUDE.md`, Dependabot (github-actions, pip), dependency review workflow. Ruleset on main and LICENSE are separate owner decisions.
+- LICENSE: owner decision (MCDA A all rights reserved 445 / D PolyForm Noncommercial 385 / B MIT 320 / C AGPL-3.0 305), compatible with going private at the first production deployment.

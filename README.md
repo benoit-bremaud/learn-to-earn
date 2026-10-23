@@ -6,4 +6,4 @@ Status: design phase. The project brief is in [docs/CADRAGE.md](docs/CADRAGE.md)
 
 Quality: `make check` runs every test, the secrets scan, then the SonarQube gate on the local instance. GitHub Actions runs the same checks without SonarQube (`make ci`).
 
-Privacy by design: local-first storage, no trackers, no child data sent to third parties. No licence has been chosen yet, so all rights are reserved by default until it is.
+Privacy by design: local-first storage, no trackers, no child data sent to third parties. All rights reserved, see [LICENSE](LICENSE).
