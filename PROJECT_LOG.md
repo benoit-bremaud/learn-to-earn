@@ -77,3 +77,9 @@ Open at handover:
 - Main decisions: earning uses a standard time per level, never the real response time (D1 B 445); cold start at 70 % below the class level (D2 A 400); the 3-error rule counts exercises failed at the first try (D3 A 435); V1.0 rules without a minimum-time rule (D4 A 450); progress bonus of 2 min per new best mastery (D6 B 465); trusted time from monotonic elapsed time (D9 A 405); interrupted session resumable until the end of its day (D10 A 430); PIN lockout, scrambled pad and recovery code, OQ-1 closed (D13–D15); minimal parent note list in V1.0 (D16 A 430); streak active day = 10 correct answers (D18 B 455).
 - CADRAGE, curriculum, use-case spec, domain model, sequences, traceability matrix and README updated; ADR-0002 D3, D8, D11 and ADR-0003 D3 point to the decisions that supersede them.
 - Two totals shown in the chat were miscounted: D5 B shown 360 and D6 A shown 345, correct 355 and 335. Winners unchanged.
+
+## 2026-10-24 — Design backlog cleared (issue #26)
+
+- One docs PR for #16–#20 and #24, before the component diagram. Owner decisions in ADR-0005: an approved request no longer covered is shortened to what is left, the child sees only the gauge and one Start button, nothing left closes it with a neutral sentence, REQUEST_NOT_COVERED note (D1 A 440 / B 400 / C 350); key-store errors tried 3 times, 1 s then 2 s apart (D2 A 400); start-screen sentence when the set-aside database is deleted with no new set-up (D3 A 400); `appSeconds` on Session for resumed sessions (D4 A 470).
+- Restore rules moved to Reserve and Installation inside one transaction; key-loss start checks the erase marker; traceability cells for UC-P8 and UC-P14; QA-3, QA-5, QA-6, QA-7, QA-9, N1, N3 fixed; Prerequisite reified in the domain model.
+- Renders: `docs/architecture/qa/2026-10-24-design-backlog/`.

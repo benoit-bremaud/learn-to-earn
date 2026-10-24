@@ -39,6 +39,7 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed three times (incl. adversarial) and jointly with the owner, awaiting owner validation (ADR-0002) |
 | 10 | Encryption of stored data | [decisions/0003-encryption-at-rest.md](decisions/0003-encryption-at-rest.md) | accepted |
 | 10b | Product story review decisions | [decisions/0004-product-story-review.md](decisions/0004-product-story-review.md) | accepted (owner, 2026-10-24) |
+| 10c | Design backlog decisions (#17, #18, #24) | [decisions/0005-design-backlog.md](decisions/0005-design-backlog.md) | accepted (owner, 2026-10-24) |
 | 11 | Sequence diagrams (session, confidence, remediation, crediting, request, approval, use, erase, restore, key-loss start) | `diagrams/<feature>/02-sequence-*.md` and following | validated by the owner 2026-10-24, pending ADR-0001/0002 validation |
 | 12 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
 | 13 | Component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |

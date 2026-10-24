@@ -16,10 +16,10 @@ flowchart LR
   Guardian["«actor» Guardian - parent"]
   subgraph SYSTEM ["Learn To Earn"]
     subgraph Access ["Access"]
-      P14(("UC-P14 Set up the app for a child"))
-      P12(("UC-P12 Set the parent PIN"))
       P1(("UC-P1 Unlock the parent space"))
       P10(("UC-P10 Change the PIN"))
+      P12(("UC-P12 Set the parent PIN"))
+      P14(("UC-P14 Set up the app for a child"))
     end
     subgraph Plan ["Learning plan"]
       P2(("UC-P2 Create the child profile"))
@@ -39,9 +39,9 @@ flowchart LR
       P15(("UC-P15 Restore the child's data from a file"))
     end
   end
-  Guardian --- P14
   Guardian --- P1
   Guardian --- P10
+  Guardian --- P14
   Guardian --- P2
   Guardian --- P3
   Guardian --- P4

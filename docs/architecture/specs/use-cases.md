@@ -54,7 +54,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   - 4c. *(V1.1)* The confidence score falls below 0.3: the app pauses for 2 minutes and leaves a neutral note for the Guardian (dec. T2).
   - 5a. The offer is taken up: UC-L6 runs, starting with its own acceptance step. 5b. Learner declines or ignores the offer: the slot is filled by an ordinary exercise and the session resumes at step 4.
   - *a. Learner stops early: the partial recap is shown and minutes for the work done are credited.
-  - *b. The session is interrupted (app closed, call, battery): answers are kept and the session length stops counting. On a launch the same LocalDay the app offers to resume or shows the partial recap; after the end of its LocalDay the session is closed as stopped early and credited (ADR-0004 D10).
+  - *b. The session is interrupted (app closed, call, battery): answers are kept and the session length stops counting; the app time already spent is saved, so a resumed session keeps its target (ADR-0005 D4). On a launch the same LocalDay the app offers to resume or shows the partial recap; after the end of its LocalDay the session is closed as stopped early and credited (ADR-0004 D10).
 - Business rule: only correct answers earn work minutes: the base standard time, weighted by difficulty, confidence and hints, never her real response time (ADR-0004 D1; V1.0 uses multiplier 1 and confidence factor 1, D4). Standard times are set so a 15-minute session at 80 % success earns about 15 minutes (D5); the base standard time is 35 s per correct answer in configuration (24 correct out of 30 in 15 min, 900 s / 24 is about 37 s, rounded to 35); from V1.1 it is multiplied by the difficulty multiplier (Medium 52.5 s, Hard 70 s, Very hard 105 s credited), which reflects the longer exercises, so the session earns about 15 min at any level; V1.0 uses 35 s for every skill. Each skill whose mastery beats its own best by 5 points or more during the session adds a fixed progress bonus, 2 minutes by default (D6); the best starts at the skill's initial mastery (70 for a cold-started skill, 0 otherwise) and is updated at each final close (owner 2026-10-21: the goal is learning results that are good and rising, not time spent). Minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap. The 20-minute threshold counts the work of the whole day, across sessions, so splitting the work into several sessions never changes the minutes earned.
 - Extension points: `weak prerequisite detected`, `challenge slot offered`.
 - Postcondition: mastery scores updated, reserve credited.
@@ -169,7 +169,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Business rule: later sessions the same day keep crediting the reserve up to its cap, but spending is limited by the daily cap.
 
 ### UC-S2 — Approve a screen-time request
-- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: P1, P3.
+- Level: user goal. Primary actor: Guardian. Version: V1.0. Decisions: P1, P3, ADR-0005 D1.
 - Stakeholder: Learner wants her time quickly.
 - Preconditions: a pending request exists.
 - Success guarantee: the request is approved or refused, never silently lost.
@@ -179,12 +179,14 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   3. The app shows the child, the duration and the reserve.
   4. Guardian approves.
   5. The timer is ready for UC-S3.
-- Extensions: 4a. Guardian refuses: the reserve is unchanged and the Learner sees a neutral message.
+- Extensions:
+  - 3a. The balance or the daily cap left no longer covers the request (ADR-0005 D1): the app shows the minutes still possible, and approving grants only those. With nothing left, the request closes as expired with no debit, the Learner sees "No more screen time today" with one OK button, and a note is raised for the Guardian.
+  - 4a. Guardian refuses: the reserve is unchanged and the Learner sees a neutral message.
 - Business rules: wrong-PIN handling is owned by UC-P1. One open request at a time (pending, approved or in use), so an approved request cannot be followed by a second one against the same reserve. From its start, the timer holds the requested minutes, so an expiry during the timer cannot lower them. A request not answered, or approved but not started, expires at the end of the day, with no debit.
 - Relationships: «include» UC-P1. V2 note: approval on the parent's phone is open (OQ-2).
 
 ### UC-S3 — Use approved screen time
-- Level: user goal. Primary actor: Learner. Version: V1.0 (extension 4a V2). Decisions: Q1, P3, P0.
+- Level: user goal. Primary actor: Learner. Version: V1.0 (extension 4a V2). Decisions: Q1, P3, P0, ADR-0005 D1.
 - Secondary actor: DeviceOS *(V2)*.
 - Preconditions: an approved request.
 - Success guarantee: the used time is debited from the reserve.
@@ -194,6 +196,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   3. For a timer longer than 5 minutes, the app warns 5 minutes before the end; a shorter timer has no warning.
   4. The timer ends with an alarm. The alarm is scheduled with the OS when the timer starts, so it rings even if the app was suspended or closed.
 - Extensions:
+  - 1a. The balance or the daily cap left no longer covers the approved minutes (ADR-0005 D1): the gauge shows the minutes still possible with one Start button, and the timer runs for those, with no new PIN because less than approved is granted. With nothing left, the screen says "No more screen time today" with one OK button and the request closes as expired with no debit. Either case raises a note for the Guardian. The Learner is never asked a question.
   - 2a. Learner stops early: only the time used is debited and the stop is visible to the Guardian *(V1.1)* in the alerts history (UC-P6).
   - 4a. *(V2)* Blocking permission was granted on this Android user: the app asks DeviceOS to block the other apps for the child's user, and DeviceOS confirms. If DeviceOS refuses, the declarative alarm stays the only signal (ADR-0001 D8, dec. Q1, P0).
   - *a. The app is suspended or killed, or the device restarts, while the timer runs: the timer's start time is stored when it starts. On return or next launch, the elapsed time is the current trusted time minus that start (ADR-0004 D9), capped at the approved minutes, and it is debited; a timer whose end has passed is closed with that debit. Closing the app therefore never stops the countdown. If the device clock went backwards, the full approved minutes are debited and a neutral note is created for the Guardian.
@@ -348,7 +351,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   4. The app sets crash reports to off (changeable in UC-P11).
   5. *(V1.2)* The app proposes the keypad calibration (UC-L7) for the child.
 - Extensions:
-  - *a. The database key is lost: the unreadable database is set aside before the set-up starts (ADR-0003 D3). Each start retries opening it for 30 days; if it does not open, it is deleted at day 30 and a note is raised (ADR-0004 D17).
+  - *a. The database key is lost: the unreadable database is set aside before the set-up starts (ADR-0003 D3). Each start retries opening it for 30 days; if it does not open, it is deleted at day 30 and a note is raised (ADR-0004 D17). If no set-up or restore was completed by then, there is no database for the note: a flag in a set-aside status file outside the database (not the erase marker) makes the start screen show "The old data could not be opened and was deleted." until the next set-up or restore (ADR-0005 D3).
   - *a1. The set-aside database opens again within the 30 days: the start screen offers "Bring back the old data". Guardian confirms with the PIN stored in the old database, or with that credential's recovery code instead, then sets a new PIN (its own credential, the same lockout applies). The old database replaces the current data in one transaction with the same rules as UC-P15 (reserve forfeited, open requests closed, trusted time = the later of both, ADR-0002 D13), and the replaced data is deleted. If no new set-up was completed yet, the old database simply becomes the database again. UC-P15 is not used: it needs a file and a passphrase.
   - 1a. Guardian declines: the app stays closed and stores nothing.
 - Relationships: «include» UC-P12, UC-P2.
@@ -388,7 +391,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 - Timers, expiry and the daily cap use trusted time (ADR-0004 D9): the last trusted instant advanced by the device's monotonic elapsed time, not the wall clock. The LocalDay changes only when trusted time passes midnight. A forward jump of the device clock of more than 10 minutes is ignored and creates a neutral note. Trusted time follows monotonic uptime, so a backwards wall-clock change has no effect while the uptime reference holds. Only after a device restart (no monotonic reference), when the device time is earlier than the last trusted instant, expiry and the daily cap freeze until the device clock catches up, a running timer is debited in full and a neutral note is created; otherwise the device time is accepted (residual risk, covered by the note). An interrupted timer (UC-S3 *a) is debited by trusted time since its stored start. A session length counts only while the app is open (UC-L1 *b). Expiry days shown to the Learner (UC-L8) are computed from the earning time with this same rule.
 
-- Storage (ADR-0003): the whole database is encrypted with a random key kept in the device key store; the app refuses to open a database that SQLCipher does not protect. A key-store error is retried first. If the key is definitely missing or does not open the database, the unreadable database is set aside (the next key is created under a new key-store alias; the old alias is kept for the 30 days and deleted with the set-aside database, or the new one is deleted if the old data is brought back) (retried at each start for 30 days, if it opens again, the Guardian can bring the old data back with the old PIN (UC-P14 *a1); otherwise deleted with a note, ADR-0004 D17), and the app shows only two choices: restore from a file (UC-P15) or set up again (UC-P14). The PIN lives in the encrypted database, so it cannot gate this screen (risk and OQ-6 in ADR-0003). The web build stores no child data.
+- Storage (ADR-0003): the whole database is encrypted with a random key kept in the device key store; the app refuses to open a database that SQLCipher does not protect. A key-store error is tried 3 times in all, 1 s then 2 s apart (ADR-0005 D2). If the key is definitely missing or does not open the database, the unreadable database is set aside (the next key is created under a new key-store alias; the old alias is kept for the 30 days and deleted with the set-aside database, or the new one is deleted if the old data is brought back) (retried at each start for 30 days, if it opens again, the Guardian can bring the old data back with the old PIN (UC-P14 *a1); otherwise deleted with a note, ADR-0004 D17), and the app shows only two choices: restore from a file (UC-P15) or set up again (UC-P14). The PIN lives in the encrypted database, so it cannot gate this screen (risk and OQ-6 in ADR-0003). The web build stores no child data.
 
 ## Open questions
 
