@@ -78,7 +78,7 @@ The following are triggers or behaviours inside scenarios, never ovals (UML 2.5,
 
 ## D5 — Goal level
 
-Each use case states its Cockburn level. *Subfunction* use cases (UC-L2, UC-L3, UC-L4) are kept as ovals only because each traces to its own product decision (answering, read-aloud E4, hints M4). UC-P1 is a user goal (entering the parent space) that UC-S2 also includes. UC-P14 includes UC-P12 and UC-P2 at first launch. All others are user goals, or conditional goal segments inheriting the actor of their base (UC-L5, UC-S4).
+Each use case states its Cockburn level. *Subfunction* use cases (UC-L2, UC-L3, UC-L4) are kept as ovals only because each traces to its own product decision (answering, read-aloud E4, hints M4). UC-P1 is a user goal (entering the parent space) that UC-S2 also includes. UC-P14 includes UC-P12 and UC-P2 at first launch. All others are user goals, or conditional goal segments inheriting the actor of their base (UC-L5). UC-P12 is a subfunction reached only through UC-P14 (D12).
 
 ## D6 — Version tags
 
@@ -99,9 +99,68 @@ UML allows actor generalization (a child actor inherits all goals of its parent)
 C violates UML: Learner and Guardian share no goal. Sensitivity: with information 40, readability 15, YAGNI 10, B wins (375 vs 345). The owner chose A on 2026-10-20.
 **Decision: A.** No generalization in the use-case model. The shared settings flow is the cross-cutting rule "Parent settings" in the spec. Inheritance is studied again in the class diagram (exercise generators, adapters).
 
+## D8 — UC-S4, blocking other apps when the timer ends (issue #13)
+
+UC-S4 had the Learner as primary actor, but the goal belongs to the Guardian and the trigger is the timer end, a system event.
+
+| Criterion (weight) | A. Keep the Learner (inherited actor) | B. Guardian as primary actor | C. Fold into UC-S3 as extension 4a (V2), DeviceOS secondary |
+|---|---|---|---|
+| UML and Cockburn conformance, a use case is an actor-initiated goal (40) | 2 | 3 | 5 |
+| Simplicity (25) | 3 | 3 | 5 |
+| Traceability of Q1 in V2 (20) | 5 | 5 | 4 |
+| Change cost (15) | 5 | 4 | 3 |
+| **Total /500** | 330 | 355 | **450** |
+
+B names the goal owner but the Guardian starts nothing. Sensitivity: C leads unless change cost weighs more than about 60.
+**Decision: C** (owner, 2026-10-23). The number UC-S4 is retired, not reused.
+
+## D9 — UC-L1, the 10 % challenge share and the challenge slot (issue #13)
+
+| Criterion (weight) | A. Same thing: the share is served only through challenge slots | B. Two separate mechanisms | C. Drop the share, keep the slot |
+|---|---|---|---|
+| Consistency with M3 and the UC-L6 rule (40) | 5 | 2 | 1 |
+| Simplicity (30) | 5 | 2 | 4 |
+| Child agency (30) | 4 | 5 | 3 |
+| **Total /500** | **470** | 290 | 250 |
+
+Sensitivity: A leads under any plausible weighting. **Decision: A** (owner, 2026-10-23). A declined slot is filled by an ordinary exercise.
+
+## D10 — UC-P2 precondition at first launch (issue #13)
+
+| Criterion (weight) | A. Explicit precondition in UC-P2 (unlocked, or included by UC-P14) | B. Keep the rule in the conventions only | C. Split UC-P2 in two |
+|---|---|---|---|
+| Clarity where the use case is read (45) | 5 | 2 | 4 |
+| DRY (30) | 4 | 5 | 2 |
+| Change cost (25) | 5 | 5 | 1 |
+| **Total /500** | **470** | 365 | 265 |
+
+Sensitivity: B wins only if DRY weighs more than about 70. **Decision: A** (owner, 2026-10-23).
+
+## D11 — Who owns "accepts the offer" (UC-L1 5a or UC-L6 step 1, issue #13)
+
+| Criterion (weight) | A. UC-L6 step 1 owns it, UC-L1 5a points to UC-L6 | B. Extend condition in UC-L1, UC-L6 starts at the proposal | C. Keep both |
+|---|---|---|---|
+| UML conformance (40) | 4 | 5 | 3 |
+| DRY (30) | 5 | 5 | 0 |
+| UC-L6 readable on its own (30) | 5 | 3 | 5 |
+| **Total /500** | **460** | 440 | 270 |
+
+Sensitivity: near tie, B wins if UML conformance weighs more than about 50. A keeps the actor's own gesture as the first step of a user goal. **Decision: A** (owner, 2026-10-23).
+
+## D12 — Guardian link to UC-P12 (issue #13)
+
+| Criterion (weight) | A. Remove the direct link | B. Keep it | C. Keep it with a note |
+|---|---|---|---|
+| Conformance to D2 (an actor link only if the actor can start it alone) (50) | 5 | 1 | 3 |
+| Diagram readability (30) | 5 | 3 | 2 |
+| Change cost (20) | 4 | 5 | 3 |
+| **Total /500** | **480** | 240 | 270 |
+
+Sensitivity: A leads under any plausible weighting. **Decision: A** (owner, 2026-10-23). UC-P12 becomes a subfunction included by UC-P14 only.
+
 ## Decision outcome
 
-D1 = B (440), D2 = A (410), D3 = C (430), D4 = table above, D5 = levels as stated, D6 = versions in specs and matrix, D7 = A (390, owner choice).
+D1 = B (440), D2 = A (410), D3 = C (430), D4 = table above, D5 = levels as stated, D6 = versions in specs and matrix, D7 = A (390, owner choice). Issue #13 (2026-10-23): D8 = C (450), D9 = A (470), D10 = A (470), D11 = A (460), D12 = A (480).
 
 ## Consequences
 

@@ -57,3 +57,11 @@ Open at handover:
 ## 2026-10-23 — Encryption at rest (ADR-0003, issue #11)
 
 - Owner MCDAs: native whole-database SQLCipher with a start-up `cipher_version` guard (A 445 / C 320 / B 250); no child data stored on web (A 480 / B 260 / C 185); random key in Keystore/Keychain plus a passphrase-encrypted local export for recovery (C 450 / A 400 / B 230).
+
+## 2026-10-23 — Sequence study and use-case review points (issue #13)
+
+- Owner MCDAs on the #13 points (ADR-0001): UC-S4 folded into UC-S3 as V2 extension 4a, number retired (C 450 / B 355 / A 330); the 10 % challenge share is served only through challenge slots (A 470 / B 290 / C 250); UC-P2 states its own precondition (A 470 / B 365 / C 265); UC-L6 step 1 owns the acceptance (A 460 / B 440 / C 270); no direct Guardian link to UC-P12, now a subfunction of UC-P14 (A 480 / C 270 / B 240).
+- OQ-5 closed (ADR-0002): erase removes everything, set-aside databases and key included, then restarts on the set-up (B 460 / A 360 / C 345); restore never brings back the reserve (credits kept as forfeited history, open requests closed), trusted time never moves back (C 420 / B 380 / A 310).
+- Joint sequence review with the owner (2026-10-24): a wrong answer is retried on the same exercise; after the third hint the correct answer is shown with its worked step and earns nothing (ADR-0002 D14, A 440 / C 280 / B 260); a correct answer after hints earns a decreasing configured fraction (D15, B 425 / A 340 / C 215); an open request shows only its status.
+- Ten analysis-level sequence diagrams (at most 7 lifelines each, `sd` titles, PII flagged): learning session, confidence scoring, remediation, crediting, screen-time request, approval, use, erase, restore, key-loss start. Spec (28 use cases), use-case diagrams, traceability matrix and README updated.
+- Owner validated the ten sequence diagrams (2026-10-24).

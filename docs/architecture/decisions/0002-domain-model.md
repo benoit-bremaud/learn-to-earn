@@ -160,9 +160,61 @@ Raised by the owner after D8: the goal is to make the child work and learn, with
 Sensitivity: C leads only if learning results weigh more than about 50 % (others scaled); a plateau would then earn nothing, against "effort first".
 **Decision (owner, 2026-10-21): B.** It refines D8 (one currency, weighted minutes): a wrong attempt earns 0, and at session end each skill whose mastery rose adds `progressBonusRatio` x the weighted minutes earned on it. The same day the owner set the default reserve cap to 60 min (reserve-cap matrix: 60 min 400, 120 min 400, 210 min 320; the 60/120 tie was broken by the incentive to work).
 
+## D12 — Scope of the erase (UC-P9, OQ-5 part 1)
+
+| Criterion (weight) | A. Child data only (PIN, consent, rules kept) | B. Everything, set-aside databases and key included, then back to UC-P14 | C. The Guardian chooses at erase time |
+|---|---|---|---|
+| Privacy and completeness (35) | 3 | 5 | 5 |
+| Consistent states (`Installation` serves 1..* children) (25) | 3 | 5 | 2 |
+| Progressive disclosure, few controls (20) | 5 | 5 | 1 |
+| Guardian convenience (20) | 4 | 3 | 5 |
+| **Total /500** | 360 | **460** | 345 |
+
+A leaves an Installation with no child and a consent given for another child. Sensitivity: A leads only if convenience weighs more than about 55.
+**Decision: B** (owner, 2026-10-23). The erase deletes the database, every database set aside after a key loss, and the key, then restarts on the set-up.
+
+## D13 — Restore guard (UC-P15, OQ-5 part 2)
+
+An old export holds minutes that may have been spent since.
+
+| Criterion (weight) | A. Refuse an export older than the current data | B. Replay the balance against TimeGuard | C. Restore without the reserve (balance 0, progress restored) |
+|---|---|---|---|
+| No minute spent twice (35) | 2 | 3 | 5 |
+| Fairness on a genuine restore (20) | 4 | 5 | 2 |
+| Simplicity (25) | 4 | 3 | 5 |
+| Consistency with the domain (20) | 3 | 5 | 4 |
+| **Total /500** | 310 | 380 | **420** |
+
+A is void after a key loss (no current data to compare). B still brings back minutes spent after the export. C loses at most the reserve cap (60 min by default) in a rare case. Sensitivity: B leads if fairness weighs more than about 45.
+**Decision: C** (owner, 2026-10-23). The file's credits are kept as history with all their remaining minutes moved to `forfeitedMinutes` (balance 0), so the crediting checkpoints (C7) and the day's full-rate and cap counters survive and an interrupted session is never credited twice. Open requests are closed: PENDING or APPROVED become EXPIRED, an IN_USE request is closed with its full minutes debited. `TimeGuard.lastTrustedAt` becomes the later of the file's and the device's, so a restore can never move trusted time back.
+
+## D14 — Answer still wrong after the third hint (UC-L4, sequence review)
+
+| Criterion (weight) | A. Show the correct answer with the worked step, then move on, no point | B. Retry until correct | C. Move on silently |
+|---|---|---|---|
+| Learning value (40) | 5 | 2 | 1 |
+| No frustration (30) | 4 | 1 | 4 |
+| Simplicity (15) | 4 | 5 | 5 |
+| Resistance to gaming (15) | 4 | 5 | 3 |
+| **Total /500** | **440** | 260 | 280 |
+
+Sensitivity: A leads under any plausible weighting. **Decision: A** (owner, 2026-10-24).
+
+## D15 — Earning of a correct answer after hints (sequence review)
+
+| Criterion (weight) | A. 0, only a first-try answer earns | B. Decreasing fraction per hint stage, in configuration (×0.5, ×0.25, 0) | C. Full value |
+|---|---|---|---|
+| Pushes real learning, the product goal (40) | 3 | 5 | 1 |
+| Resistance to guessing through hints (25) | 5 | 4 | 0 |
+| Recognises the child's effort (20) | 1 | 4 | 5 |
+| Simplicity (15) | 5 | 3 | 5 |
+| **Total /500** | 340 | **425** | 215 |
+
+A discourages the hints, which are the learning tool. Sensitivity: A leads only if resistance to gaming weighs more than about 45. **Decision: B** (owner, 2026-10-24). The factor is a frozen part of `Attempt.weightedMinutes` (C9).
+
 ## Decision outcome
 
-D1 = A (475), D2 = C (430), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380), D11 = B (380).
+D1 = A (475), D2 = C (430), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380), D11 = B (380), D12 = B (460), D13 = C (420), D14 = A (440), D15 = B (425).
 
 Honest limits found by the adversarial review: D1 option C, D3 option B and D5 option C were weak alternatives (D3 B contradicts CADRAGE and should have been excluded, not scored); D6 is a layout choice that did not need a matrix. They do not change their outcomes. Aggregate boundaries, the time policy and the retention scopes are now part of the model (see "Aggregates" in the diagram file) and should get their own ADR when the component diagram fixes the storage boundary.
 
@@ -174,4 +226,4 @@ Honest limits found by the adversarial review: D1 option C, D3 option B and D5 o
 - Operations, ports and design-level generalizations (generators, adapters) are decided in the design class diagram, after the sequences.
 - All persisted aggregates, `ParentCredential.pinHash` included, are encrypted at rest (owner requirement, ADR-0003): a storage adapter concern, not a domain attribute.
 - 2026-10-23 alignment with the use-case spec: `ScreenTimeRules.sessionTargetMinutes` (session end), `/usedMinutes` derived from device time since `startedAt` with a full debit on a backwards clock (`elapsedSeconds` removed), base level scores and the dotted `SkillId` format stated in the diagram notes.
-- Open: OQ-5 (scope of erase and restore), recorded in the diagram notes.
+- OQ-5 closed by D12 and D13 (sequence study, issue #13).

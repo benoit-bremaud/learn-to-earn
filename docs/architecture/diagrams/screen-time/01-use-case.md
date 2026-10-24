@@ -1,8 +1,8 @@
-# Use case diagram — screen-time — request, approve, use, enforce
+# Use case diagram — screen-time — request, approve, use
 
 > **Feature**: screen-time domain of Learn To Earn (reward conversion and control)
-> **Source specs**: `docs/architecture/specs/use-cases.md` (UC-S1 to UC-S5, UC-P1)
-> **Related ADRs**: ADR-0001
+> **Source specs**: `docs/architecture/specs/use-cases.md` (UC-S1, UC-S2, UC-S3, UC-S5, UC-P1)
+> **Related ADRs**: ADR-0001 (D8)
 > **Decisions captured**: Q1, Q4, Conversion, P0, P1, P3
 
 ## Context
@@ -21,7 +21,6 @@ flowchart LR
       S1(("UC-S1 Request screen time"))
       S2(("UC-S2 Approve a screen-time request"))
       S3(("UC-S3 Use approved screen time"))
-      S4(("UC-S4 Enforce the end of screen time on the device"))
       S5(("UC-S5 Configure screen-time rules"))
     end
     subgraph PS ["Parent space"]
@@ -32,15 +31,14 @@ flowchart LR
   Learner --- S3
   Guardian --- S2
   Guardian --- S5
-  S4 --- DeviceOS
+  S3 --- DeviceOS
   S2 -.->|"«include»"| P1
-  S4 -.->|"«extend» timer ended and blocking permission granted"| S3
 ```
 
 ## Notes
 
 - UC-S1 and UC-S2 are linked by data (a pending request), not by a UML relationship: two actors pursue two separate goals.
 - UC-S5 has the precondition "parent space unlocked" (ADR-0001 D2), so no include arrow is drawn.
-- UC-S4 is an extension with no direct Learner link (actor inherited from UC-S3, the Guardian is the beneficiary). DeviceOS is its secondary actor. It ships in V2. In V1 the timer is declarative.
-- The extension point `timer ended` is declared on UC-S3. The 5-minute warning, the alarm and the reserve debit are steps or postconditions of UC-S3, not use cases (ADR-0001 D4).
+- Blocking other apps when the timer ends is extension 4a of UC-S3 (V2), with DeviceOS as secondary actor. It was use case UC-S4 until ADR-0001 D8: the timer end is a system event, not a goal an actor starts, so it is not a use case. The number UC-S4 is retired, not reused. In V1 the timer is declarative.
+- The 5-minute warning, the alarm and the reserve debit are steps or postconditions of UC-S3, not use cases (ADR-0001 D4).
 - Open point: remote approval on the parent's phone (OQ-2).
