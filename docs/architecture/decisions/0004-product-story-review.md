@@ -20,7 +20,7 @@ Scores: 0–5, weights sum to 100, total out of 500. Scores are estimates. Sensi
 | **Total /500** | 400 | **445** | 260 |
 
 B vs A: A still pays slowness up to the cap, B pays the exercise and not the clock, which matches "slow is never a signal". Sensitivity: B scores at least as high as A and C on every criterion, so no reweighting changes the winner.
-**Decision: B** (owner, 2026-10-24). Weighted minutes of a correct answer = standard time of its difficulty level × difficulty multiplier × confidence factor × hint factor. Supersedes the "response time" term of ADR-0002 D8.
+**Decision: B** (owner, 2026-10-24). Weighted minutes of a correct answer = base standard time × difficulty multiplier × confidence factor × hint factor. Supersedes the "response time" term of ADR-0002 D8.
 
 ## D2 — Cold start (finding 2)
 
@@ -34,6 +34,7 @@ B vs A: A still pays slowness up to the cap, B pays the exercise and not the clo
 
 A vs B: B is more accurate but is a placement test in disguise; A starts the child on her own class and lets real errors correct the guess. Sensitivity: B leads only if accuracy weighs more than about 47 %.
 **Decision: A** (owner, 2026-10-24).
+Clarification (review 2026-10-24): in V1.0 the walk-down is the step-down rule of D4 (prerequisites still at their seeded starting mastery drop to 60 % after 3 first-try failures in a row on a skill); R4 applies from V1.1.
 
 ## D3 — What counts as an error for the 3-error rule (finding 3)
 
@@ -60,7 +61,7 @@ A vs B: B waits until three exercises end on the shown answer, which is late for
 
 A vs C: the 1-s floor adds a rule that the V1.1 confidence score replaces anyway; V1.0 is a family test. Sensitivity: C leads only if anti-gaming weighs more than about 47 %.
 **Decision: A** (owner, 2026-10-24). The "simple minimum-time rule" of the V1.0 roadmap is removed.
-Clarification (re-review 2026-10-24): "mastered" means mastery at 70 % or more; ties for the lowest unmastered skill are broken by lowest grade, then graph depth, then table order; in V1.0 the picker itself does the walk-down (a skill under 70 % is again the lowest unmastered one), R4 and UC-L5 apply from V1.1.
+Clarification (re-review 2026-10-24): "mastered" means mastery at 70 % or more; ties for the lowest unmastered skill are broken by lowest grade, then graph depth, then table order; R4 and UC-L5 apply from V1.1. V1.0 step-down rule (review 2026-10-24): after 3 exercises in a row failed at the first try on a skill (D3 counting), each of its prerequisites that still holds its seeded starting mastery (no real attempt yet) drops to 60 %, below mastered, so the picker serves the lowest of them next; no parent alert or Remediation in V1.0. Prerequisites start at 70 and a failed CE1 target only lowers that target, so without this rule the picker would never walk down.
 
 ## D5 — Earning volume (finding 5)
 
@@ -74,7 +75,7 @@ Clarification (re-review 2026-10-24): "mastered" means mastery at 70 % or more; 
 
 A vs B: B cuts screen time to fix an earning problem; A fixes the earning itself. Sensitivity: C leads only if simplicity weighs more than about 56 %.
 **Decision: A** (owner, 2026-10-24).
-Clarification (review 2026-10-24): Initial standard times (configuration, not Guardian-editable): Easy 35 s, Medium 50 s, Hard 70 s, Very hard 90 s per correct answer, before the V1.1 multiplier. Derivation: an easy exercise takes about 30 s, so a 15-min session at 80 % success gives 24 correct answers out of 30, and 900 s / 24 is about 37 s, rounded to 35; the other levels scale up. To be calibrated after one week of real use.
+Clarification (review 2026-10-24): One base standard time of 35 s per correct answer (configuration, not Guardian-editable); from V1.1 it is multiplied by the D2 difficulty multiplier (Medium 52.5 s, Hard 70 s, Very hard 105 s credited), which reflects the longer exercises, so a 15-min session at 80 % success earns about 15 min at any level; V1.0 uses 35 s for every skill. Derivation: an easy exercise takes about 30 s, so a 15-min session at 80 % success gives 24 correct answers out of 30, and 900 s / 24 is about 37 s, rounded to 35. To be calibrated after one week of real use.
 
 ## D6 — Progress bonus (finding 6)
 
@@ -267,6 +268,6 @@ D1 = B (445), D2 = A (400), D3 = A (435), D4 = A (450), D5 = A (435), D6 = B (46
 ## Consequences
 
 - ADR-0002 D3 (confidence per session), D8 (response time term) and D11 (bonus ratio) are superseded in part by D7, D1 and D6; ADR-0003 D3 (set-aside database kept) by D17. Those ADRs keep their text and point here.
-- `ScreenTimeRules` holds `bonusMinutes` (replacing `progressBonusRatio`) and the standard time per level lives in configuration with the multipliers; `SkillProgress` holds `bestMastery`; `ParentCredential` holds `recoveryCodeHash`; `TimeGuard` holds a monotonic reference (domain model).
+- `ScreenTimeRules` holds `bonusMinutes` (replacing `progressBonusRatio`) and the base standard time lives in configuration with the multipliers; `SkillProgress` holds `bestMastery`; `ParentCredential` holds `recoveryCodeHash`; `TimeGuard` holds a monotonic reference (domain model).
 - V1.0 grows by a minimal note list (D16), the PIN recovery code (D15), the scrambled PIN pad (D14) and the lockout numbers (D13); it loses the minimum-time rule (D4).
-- Standard times are calibrated against D5 (about 15 min earned for a 15-min session at 80 % success), then re-checked after one week of real use (CADRAGE §6).
+- The base standard time is calibrated against D5 (about 15 min earned for a 15-min session at 80 % success), then re-checked after one week of real use (CADRAGE §6).

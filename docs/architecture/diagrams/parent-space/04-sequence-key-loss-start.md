@@ -29,6 +29,7 @@ sequenceDiagram
   end
   Keys-->>Start: missing, or the key does not open the database
   Start->>Store: set the unreadable database aside (retried at each start for 30 days)
+  Start->>Keys: create the new database key under a new alias, the old alias is kept
   Start->>PUI: show only Restore from a file and Set up again
   alt Guardian taps Restore from a file
     Guardian->>PUI: tap Restore from a file
@@ -42,4 +43,5 @@ sequenceDiagram
 ## Notes
 
 - At each later start the set-aside database is retried with the key store; if it opens again within the 30 days, the app offers "Bring back the old data" (UC-P14 *a1: PIN of the old database, its own lockout, one transaction with the UC-P15 rules, replaced data deleted; if no new set-up was completed it simply becomes the database again), otherwise it keeps waiting; after 30 days it is deleted and a SET_ASIDE_DELETED note is raised (ADR-0004 D17).
+- Key lifecycle: the old alias is kept for the 30-day window and deleted together with the set-aside database; if "Bring back the old data" succeeds, the new alias is deleted instead. The Guardian may give the old credential's recovery code instead of its PIN, then sets a new PIN (same lockout).
 - A database that SQLCipher does not protect is refused at start-up (ADR-0003 D1), never opened in clear.

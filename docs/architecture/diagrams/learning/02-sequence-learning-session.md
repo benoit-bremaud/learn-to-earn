@@ -74,7 +74,7 @@ sequenceDiagram
 
 - A stop (UC-L1 *a) or an interruption (UC-L1 *b) closes the Session as STOPPED_EARLY or INTERRUPTED and runs the same crediting reference.
 - On a launch the same LocalDay an INTERRUPTED session shows two buttons only: resume or see the partial recap. Time while the app is closed does not count, and after the end of its LocalDay the session is closed STOPPED_EARLY and credited (ADR-0004 D10).
-- Weighted minutes of a correct answer use the standard time of its level, never the real response time (ADR-0004 D1); in V1.0 multiplier and confidence factor are 1 and the picker takes the lowest unmastered skill whose prerequisites are all at 70 % or more (D4).
+- Weighted minutes of a correct answer use the base standard time, never the real response time (ADR-0004 D1); in V1.0 multiplier and confidence factor are 1 and the picker takes the lowest unmastered skill whose prerequisites are all at 70 % or more, with the step-down rule after 3 first-try failures in a row (D4).
 - *(V1.1)* A skill the Guardian scheduled (UC-P7) opens the session with a 5-exercise block right after the warm-up, see 04-sequence-remediation (ADR-0004 D11).
 - A correct answer after hints earns a decreasing fraction of its weighted minutes (ADR-0002 D15, factors in configuration, 0 after the third hint).
 - The ExercisePicker owns the 70/20/10 mix. The 10 % challenge share exists only as offered slots (ADR-0001 D9), so the child chooses only within it (UC-L6 rule).

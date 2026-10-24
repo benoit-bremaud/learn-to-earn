@@ -36,11 +36,11 @@ sequenceDiagram
     Reserve->>Reserve: convert (full rate up to fullRateMinutes for the day, then reducedRatio)
     Reserve->>Reserve: cut to reserveCapMinutes headroom, the rest to forfeitedMinutes
   end
-  Ctl->>Store: save Reserve (credits and checkpoint in one write)
+  Ctl->>Store: save Reserve and Progress in one transaction (credits, checkpoint, bonus, bestMastery)
 ```
 
 ## Notes
 
-- Idempotent (C7): `(sourceSession, weightedUpTo)` is unique, so a retry after a kill writes nothing twice. The bonus is its own credit at the final close, so killing the app never multiplies it.
+- Idempotent (C7): `(sourceSession, weightedUpTo)` is unique, so a retry after a kill writes nothing twice. The bonus credit and the bestMastery update are written in the same transaction as the final close, so a crash cannot award the same bonus twice.
 - The full-rate threshold counts the whole day across sessions, so splitting work never changes the minutes earned.
 - `expiresAt` is frozen per credit from its own earning day (C10).
