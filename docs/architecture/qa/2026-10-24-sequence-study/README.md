@@ -27,7 +27,7 @@ Post-merge check on `main` at ac943f9. PR #15 was merged before this pass and be
 
 ## Findings
 
-Every finding is tracked as a GitHub issue on project #65 (see Backlog below).
+Every open finding is tracked as a GitHub issue on project #65 (see Backlog below). QA-8 is a process finding closed by this pass itself.
 
 | ID | Level | Finding |
 |---|---|---|
