@@ -56,21 +56,25 @@ The skill graph is a DAG of prerequisites that goes down through CP to cycle 1 (
 
 V1.0 nodes and prerequisite edges (stable IDs; a node is reached only after its prerequisites; R4 walks these edges back):
 
-| ID | Skill | Grade | Base | Prerequisites |
-|---|---|---|---|---|
-| `c1.count` | Count and compare collections up to 10 | Cycle 1 | Easy | — |
-| `c1.decompose10` | Compose and decompose numbers up to 10 | Cycle 1 | Easy | `c1.count` |
-| `cp.add10` | Addition facts up to 10 | CP | Easy | `c1.decompose10` |
-| `cp.sub10` | Subtraction facts up to 10 | CP | Easy | `c1.decompose10` |
-| `cp.tens` | Tens and units | CP | Easy | `c1.count` |
-| `cp.skipcount` | Count by 2, 5 and 10 | CP | Easy | `cp.tens` |
-| `cp.doubles` | Doubles and halves | CP | Easy | `cp.add10` |
-| `cp.add20` | Addition facts up to 20 | CP | Easy | `cp.add10`, `cp.tens` |
-| `cp.sub20` | Subtraction facts up to 20 | CP | Easy | `cp.sub10`, `cp.tens` |
-| `ce1.mental-addsub` | Mental +/- with small numbers | CE1 | Medium | `cp.add20`, `cp.sub20` |
-| `ce1.table2` | Table x2 | CE1 | Easy | `cp.doubles`, `cp.skipcount` |
-| `ce1.table5` | Table x5 | CE1 | Easy | `cp.skipcount` |
-| `ce1.table10` | Table x10 | CE1 | Easy | `cp.tens`, `cp.skipcount` |
+| ID | Skill | Grade | Base | Period | Prerequisites |
+|---|---|---|---|---|---|
+| `c1.count` | Count and compare collections up to 10 | Cycle 1 | Easy | — | — |
+| `c1.decompose10` | Compose and decompose numbers up to 10 | Cycle 1 | Easy | — | `c1.count` |
+| `cp.add10` | Addition facts up to 10 | CP | Easy | — | `c1.decompose10` |
+| `cp.sub10` | Subtraction facts up to 10 | CP | Easy | — | `c1.decompose10` |
+| `cp.tens` | Tens and units | CP | Easy | — | `c1.count` |
+| `cp.skipcount` | Count by 2, 5 and 10 | CP | Easy | — | `cp.tens` |
+| `cp.doubles` | Doubles and halves | CP | Easy | — | `cp.add10` |
+| `cp.add20` | Addition facts up to 20 | CP | Easy | — | `cp.add10`, `cp.tens` |
+| `cp.sub20` | Subtraction facts up to 20 | CP | Easy | — | `cp.sub10`, `cp.tens` |
+| `ce1.mental-addsub` | Mental +/- with small numbers | CE1 | Medium | 1 | `cp.add20`, `cp.sub20` |
+| `ce1.table2` | Table x2 | CE1 | Easy | 1 | `cp.doubles`, `cp.skipcount` |
+| `ce1.table5` | Table x5 | CE1 | Easy | 1 | `cp.skipcount` |
+| `ce1.table10` | Table x10 | CE1 | Easy | 1 | `cp.tens`, `cp.skipcount` |
+
+Period: the school period (P1–P5) from which a CE1 node is open under the default ceiling (ADR-0004 D19); the default ceiling is the period of the current date in a fixed table in configuration (P1 Sep–Oct, P2 Nov–Dec, P3 Jan–Feb, P4 Mar–Apr, P5 May–Aug: July and August stay in P5 until the Guardian changes the class level or the ceiling), and the Guardian can change it (UC-P3). Cycle 1 and CP nodes have no period: they are below the class and always open. The four V1.0 CE1 nodes take the first period of their livret range (tables of 1–6 and 10 in P1–P2, mental +/- the whole year), so all are P1.
+
+Cold start (ADR-0004 D2): skills of a grade below the child's class level start at 70 % mastery (the unlock threshold), so a CE1 child starts on CE1 nodes; real errors walk down these edges: in V1.0 the step-down rule does it (after 3 exercises in a row failed at the first try on a skill, each of its prerequisites still at its seeded starting mastery drops to 60 % and the picker serves the lowest next, ADR-0004 D4), R4 applies from V1.1.
 
 Later nodes (posed calculation with carries, other tables, two-step problems) are added with their edges by the skill-node procedure, in V1.1+.
 
@@ -80,8 +84,8 @@ The programme asks for revision "as you go, only for pupils who need it", and fo
 
 1. Each skill carries a base difficulty level taken from this table (decision C4 = A; base category to score: Easy 0, Medium 2, Hard 3, Very hard 5, the lower bound of each level band in `docs/CADRAGE.md`, so a skill with no modifier stays at its own level): for example ×2, ×5 and ×10 easy, ×3/×4 medium, ×7 to ×9 hard, then modifiers for number size and carries. No flat operation bonus.
 2. Fluence benchmarks define "automatised" in the dashboard; scoring stays relative to the child using the app.
-3. Skills unlock along the calendar ceiling set by the parent plus mastery, with prudent look-ahead probes inside the challenge share (C1 = A).
-4. Remediation is reactive (R4 = C): the 3-error rule or failed reviews walk back the DAG, the weak prerequisite enters the 20 % review share, and the parent has a "go back to X" button. No placement test.
+3. Skills unlock along the calendar ceiling set by the parent plus mastery, with prudent look-ahead probes inside a challenge slot (ADR-0001 D9) (C1 = A).
+4. Remediation is reactive (R4 = C, from V1.1; in V1.0 the step-down rule does the walk-down: after the 3-error rule fires on a skill, its prerequisites still at their seeded starting mastery drop to 60 %, with no parent alert): the 3-error rule (3 exercises in a row failed at the first try, ADR-0004 D3) or failed reviews walk back the DAG, the weak prerequisite enters the 20 % review share, and the parent has a "go back to X" button. No placement test: the cold start gives the skills below the class level a starting mastery of 70 % instead (ADR-0004 D2).
 5. V1.0 skills (C3 = C): mental additive core (decompositions to 10, facts to 20, +/- small numbers) and tables x2/x5/x10, with the prerequisite nodes of cycle 1 and CP already modelled. Posed calculation, other tables and two-step problems follow in V1.1+.
 6. Problems need a bar-model UI and wording with distractors (V1.1 or later).
 7. Spaced revisiting of tables matches the 20 % review share.

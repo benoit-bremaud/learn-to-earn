@@ -63,5 +63,5 @@ flowchart LR
 - UC-P13 and UC-L7 (learning domain) are linked by data, not by a UML relationship.
 - UC-P9 erases everything the app stored and restarts on UC-P14; UC-P15 never restores the screen-time reserve (ADR-0002 D12, D13).
 - UC-P8 (export) and UC-P9 (erase) are legal baselines (privacy by design), not optional features. Exports are encrypted with a Guardian passphrase, and when the database key is lost the app offers only UC-P15 or UC-P14 (ADR-0003 D3).
-- Open point: PIN recovery without letting the child reset it (OQ-1).
-- Versions: UC-P3, UC-P4, UC-P6, UC-P7, UC-P11 in V1.1, UC-P13 in V1.2, the others in V1.0 (UC-P14 and UC-P15 included).
+- OQ-1 (PIN recovery) is closed by ADR-0004 D15: a recovery code shown once at set-up, used in UC-P1 extension 1b.
+- Versions: UC-P3, UC-P4, UC-P7, UC-P11 in V1.1, UC-P6 minimal in V1.0 and full in V1.1 (ADR-0004 D16), UC-P13 in V1.2, the others in V1.0 (UC-P14 and UC-P15 included).

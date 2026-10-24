@@ -70,3 +70,10 @@ Open at handover:
 
 - PR #15 was merged before `review-local` and the visual QA, against the pre-merge rule. Made up for on `main`: 18 renders inspected (13, plus the 5 domain model blocks after the Codex review), `review-local` run (`make check` green, Must 0, Should 4, Nice 3).
 - Report and renders: `docs/architecture/qa/2026-10-24-sequence-study/`. Findings filed as issues #16–#20 on project #65.
+
+## 2026-10-24 — Product story review (issue #22)
+
+- Adversarial end-to-end read of the dossier (child's first week, then the parent's path): 35 findings in `docs/architecture/reviews/product-story-review-1.md`. 16 fixed directly, 19 decided by the owner in ADR-0004 (D1–D19).
+- Main decisions: earning uses a standard time per level, never the real response time (D1 B 445); cold start at 70 % below the class level (D2 A 400); the 3-error rule counts exercises failed at the first try (D3 A 435); V1.0 rules without a minimum-time rule (D4 A 450); progress bonus of 2 min per new best mastery (D6 B 465); trusted time from monotonic elapsed time (D9 A 405); interrupted session resumable until the end of its day (D10 A 430); PIN lockout, scrambled pad and recovery code, OQ-1 closed (D13–D15); minimal parent note list in V1.0 (D16 A 430); streak active day = 10 correct answers (D18 B 455).
+- CADRAGE, curriculum, use-case spec, domain model, sequences, traceability matrix and README updated; ADR-0002 D3, D8, D11 and ADR-0003 D3 point to the decisions that supersede them.
+- Two totals shown in the chat were miscounted: D5 B shown 360 and D6 A shown 345, correct 355 and 335. Winners unchanged.

@@ -2,7 +2,7 @@
 
 > **Feature**: learning domain, crediting step of UC-L1 (main scenario step 6, extensions *a and *b)
 > **Source specs**: `docs/architecture/specs/use-cases.md` (UC-L1 business rule)
-> **Related ADRs**: ADR-0002 (D2, D8, D10, D11)
+> **Related ADRs**: ADR-0002 (D2, D8, D10, D11), ADR-0004 (D1, D6, D10)
 > **Decisions captured**: Conversion, Q4
 
 ## Context
@@ -27,8 +27,8 @@ sequenceDiagram
   Ctl->>Practice: attempts after the checkpoint
   Practice-->>Ctl: weighted minutes split per LocalDay of answeredAt
   opt final close (COMPLETED or STOPPED_EARLY), never at an interruption
-    Ctl->>Progress: skills whose mastery rose during the session
-    Progress-->>Ctl: progress bonus (progressBonusRatio, D11)
+    Ctl->>Progress: skills whose mastery beats bestMastery by 5 points or more
+    Progress-->>Ctl: progress bonus (bonusMinutes per skill, ADR-0004 D6)
   end
   Ctl->>Clock: trusted now
   loop each LocalDay with uncredited minutes
@@ -36,11 +36,11 @@ sequenceDiagram
     Reserve->>Reserve: convert (full rate up to fullRateMinutes for the day, then reducedRatio)
     Reserve->>Reserve: cut to reserveCapMinutes headroom, the rest to forfeitedMinutes
   end
-  Ctl->>Store: save Reserve (credits and checkpoint in one write)
+  Ctl->>Store: save Reserve and Progress in one transaction (credits, checkpoint, bonus, bestMastery)
 ```
 
 ## Notes
 
-- Idempotent (C7): `(sourceSession, weightedUpTo)` is unique, so a retry after a kill writes nothing twice. The bonus is its own credit at the final close, so killing the app never multiplies it.
+- Idempotent (C7): `(sourceSession, weightedUpTo)` is unique, so a retry after a kill writes nothing twice. The bonus credit and the bestMastery update are written in the same transaction as the final close, so a crash cannot award the same bonus twice.
 - The full-rate threshold counts the whole day across sessions, so splitting work never changes the minutes earned.
 - `expiresAt` is frozen per credit from its own earning day (C10).

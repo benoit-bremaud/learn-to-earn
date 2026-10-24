@@ -59,7 +59,7 @@ Sensitivity: A stays first for any realistic weighting.
 | Simplicity (15) | 5 | 3 | 3 |
 | **Total /500** | 400 | 230 | **450** |
 
-C vs A: A loses the whole progression when the tablet breaks or is replaced, which would discourage a reluctant child; C costs one screen in the parent space. B is out: a 4-digit PIN has 10,000 values and is brute-forced within seconds on a copied database (our estimate), and the child would need the PIN at each launch.
+C vs A: A loses the whole progression when the tablet breaks or is replaced, which would discourage a reluctant child; C costs one screen in the parent space. B is out: a 6-digit PIN (P1) has 10^6 values and is still brute-forced offline on a copied database (our estimate: minutes to hours, whatever the lockout), and the child would need the PIN at each launch.
 Sensitivity: moving s points from recovery to simplicity gives A = 400 + 5s and C = 450 − s; A overtakes C only when recovery weighs less than about 12.
 **Decision: C.**
 
@@ -67,12 +67,13 @@ Sensitivity: moving s points from recovery to simplicity gives A = 400 + 5s and 
 - Android Auto Backup is disabled for the app, so the database is never restored to a device without its key.
 - In the parent space, "Export a backup" asks for a passphrase of at least 12 characters (the app can suggest a generated one), derives a key with Argon2id (at least 64 MiB, 3 passes, tuned on the target tablet) and writes the file with authenticated encryption (XChaCha20-Poly1305 or AES-256-GCM). A header holds the format version, the Argon2id settings, the random salt and the nonce, and is authenticated with the content, so a tampered or truncated file is rejected. The file is written straight to the place the parent picks, never as a plain temporary file, and the app never uploads it.
 - "Restore" on a new device reads the file and the passphrase. A forgotten passphrase means that backup cannot be read.
-- Key loss: a key-store error at start-up is retried first. Only when the key is definitely missing or does not open the database does the app show the key-loss screen, with two choices: restore (UC-P15) or set up again (UC-P14). The unreadable database is renamed and kept, never deleted, until a restore succeeds or the Guardian erases it later. The PIN hash lives in the encrypted database, so the PIN cannot gate this screen.
+- Key loss: a key-store error at start-up is retried first. Only when the key is definitely missing or does not open the database does the app show the key-loss screen, with two choices: restore (UC-P15) or set up again (UC-P14). The unreadable database is renamed and kept, never deleted, until a restore succeeds or the Guardian erases it later. Superseded by ADR-0004 D17: retried at each start for 30 days, then deleted with a note; bringing it back uses UC-P14 *a1. The PIN hash lives in the encrypted database, so the PIN cannot gate this screen.
+Clarification (review 2026-10-24): "Set up again" creates the new database key under a new key-store alias. The old alias is kept for the 30-day window and deleted together with the set-aside database, or, once UC-P14 *a1 succeeds, the new alias is deleted instead (whichever key is replaced).
 
 ## Risks
 
-- Key-loss take-over: on the key-loss screen, the child could choose "set up again" and pick a new PIN. This is the same risk as uninstalling and reinstalling the app, which no in-app control can stop; it is covered by the device-level protection of the app (OQ-1, OQ-6). The old database is kept, so the parent can still restore from an export.
-- Restore after key loss brings back the PIN stored in the file, which ties into OQ-1 (PIN recovery).
+- Key-loss take-over: on the key-loss screen, the child could choose "set up again" and pick a new PIN. This is the same risk as uninstalling and reinstalling the app, which no in-app control can stop; it is covered by the device-level protection of the app (OQ-1, OQ-6). The old database is kept (30 days, ADR-0004 D17), so the parent can still restore from an export.
+- Restore after key loss brings back the PIN stored in the file, which ties into OQ-1 (PIN recovery, closed by ADR-0004 D15: the file's credential carries its recovery code hash).
 
 ## Decision outcome
 

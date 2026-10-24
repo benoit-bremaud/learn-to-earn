@@ -2,7 +2,7 @@
 
 > **Feature**: screen-time domain, UC-S2 (with UC-P1)
 > **Source specs**: `docs/architecture/specs/use-cases.md` (UC-S2, UC-P1)
-> **Related ADRs**: ADR-0001 (D8), ADR-0002 (D2)
+> **Related ADRs**: ADR-0001 (D8), ADR-0002 (D2), ADR-0004 (D13, D14)
 > **Decisions captured**: Q1, Q4, P0, P1, P3, Conversion
 
 ## Context
@@ -25,12 +25,12 @@ sequenceDiagram
   participant UI as «boundary» ScreenTimeScreen
 
   Guardian->>PUI: open the pending request
-  PUI->>Guardian: ask for the PIN
+  PUI->>Guardian: ask for the PIN (scrambled pad)
   Guardian->>PUI: PIN
   PUI->>Ctl: unlock (UC-P1)
   Ctl->>Inst: check PIN, lockout
   alt wrong PIN
-    Ctl-->>PUI: progressive lockout, nothing changes
+    Ctl-->>PUI: progressive lockout (3 free tries, then 30 s to 15 min), nothing changes
   else PIN correct
     Ctl->>Reserve: balance and daily cap left still cover the request
     Ctl->>PUI: child, duration, reserve, then Approve and Refuse
