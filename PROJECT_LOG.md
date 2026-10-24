@@ -68,5 +68,5 @@ Open at handover:
 
 ## 2026-10-24 — Post-merge QA of the sequence study (PR #15, ac943f9)
 
-- PR #15 was merged before `review-local` and the visual QA, against the pre-merge rule. Made up for on `main`: 13 renders inspected, `review-local` run (`make check` green, Must 0, Should 4, Nice 3).
+- PR #15 was merged before `review-local` and the visual QA, against the pre-merge rule. Made up for on `main`: 18 renders inspected (13, plus the 5 domain model blocks after the Codex review), `review-local` run (`make check` green, Must 0, Should 4, Nice 3).
 - Report and renders: `docs/architecture/qa/2026-10-24-sequence-study/`. Findings filed as issues #16–#20 on project #65.
