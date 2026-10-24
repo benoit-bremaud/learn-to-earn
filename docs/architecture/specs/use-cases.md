@@ -55,7 +55,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   - 5a. The offer is taken up: UC-L6 runs, starting with its own acceptance step. 5b. Learner declines or ignores the offer: the slot is filled by an ordinary exercise and the session resumes at step 4.
   - *a. Learner stops early: the partial recap is shown and minutes for the work done are credited.
   - *b. The session is interrupted (app closed, call, battery): answers are kept and the session length stops counting. On a launch the same LocalDay the app offers to resume or shows the partial recap; after the end of its LocalDay the session is closed as stopped early and credited (ADR-0004 D10).
-- Business rule: only correct answers earn work minutes: the standard time of the exercise's level, weighted by difficulty, confidence and hints, never her real response time (ADR-0004 D1; V1.0 uses multiplier 1 and confidence factor 1, D4). Standard times are set so a 15-minute session at 80 % success earns about 15 minutes (D5). Each skill whose mastery beats its own best by 5 points or more during the session adds a fixed progress bonus, 2 minutes by default (D6); the best starts at the skill's initial mastery (70 for a cold-started skill, 0 otherwise) and is updated at each final close (owner 2026-10-21: the goal is learning results that are good and rising, not time spent). Minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap. The 20-minute threshold counts the work of the whole day, across sessions, so splitting the work into several sessions never changes the minutes earned.
+- Business rule: only correct answers earn work minutes: the standard time of the exercise's level, weighted by difficulty, confidence and hints, never her real response time (ADR-0004 D1; V1.0 uses multiplier 1 and confidence factor 1, D4). Standard times are set so a 15-minute session at 80 % success earns about 15 minutes (D5); initial values in configuration: Easy 35 s, Medium 50 s, Hard 70 s, Very hard 90 s per correct answer (24 correct out of 30 in 15 min, 900 s / 24 is about 37 s, rounded to 35). Each skill whose mastery beats its own best by 5 points or more during the session adds a fixed progress bonus, 2 minutes by default (D6); the best starts at the skill's initial mastery (70 for a cold-started skill, 0 otherwise) and is updated at each final close (owner 2026-10-21: the goal is learning results that are good and rising, not time spent). Minutes credited follow the degressive conversion (1 min of work = 1 min of screen up to 20 min of work, then 2:1), up to the reserve cap. The 20-minute threshold counts the work of the whole day, across sessions, so splitting the work into several sessions never changes the minutes earned.
 - Extension points: `weak prerequisite detected`, `challenge slot offered`.
 - Postcondition: mastery scores updated, reserve credited.
 - Relationships: «include» UC-L2. «extend» from UC-L5 and UC-L6.
@@ -110,7 +110,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   2. Learner answers them (UC-L2).
   3. After at least 5 exercises, the prerequisite mastery is back at 70 % (the unlock threshold) and the session returns to the target skill, or, for a skill the Guardian scheduled, to the normal mix (no target, ADR-0004 D11, D12).
 - Extensions:
-  - 3a. After at least 5 exercises the prerequisite is still below 70 %: the app goes one more node down the graph and an alert is raised for the Guardian.
+  - 3a. After at least 5 exercises the prerequisite is still below 70 %: the app goes one more node down the graph, restarts the exercise count at 0 (each node gets at least 5 exercises) and an alert is raised for the Guardian.
   - 3b. After at least 5 exercises the prerequisite is still below 70 % and has no prerequisite of its own (graph floor): the app stays on it and raises a "to do together" note for the Guardian (ADR-0004 D12).
 
 ### UC-L6 — Take on a challenge exercise
@@ -205,7 +205,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Preconditions: parent space unlocked.
 - Main success scenario:
   1. Guardian opens the rules.
-  2. Guardian edits conversion rate, daily cap, reserve cap, expiry or session duration (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, reserve cap 60 min, 7 days, 15 min session within 10–20; the V1.0 engine uses these defaults before this screen exists). The standard time per level and the progress bonus (2 min) are configuration, like the multipliers, not Guardian settings in V1 (ADR-0004 D1, D5, D6).
+  2. Guardian edits conversion rate, daily cap, reserve cap, expiry or session duration (defaults: 1:1 up to 20 min of work then 2:1, 30 min a day, reserve cap 60 min, 7 days, 15 min session within 10–20; the V1.0 engine uses these defaults before this screen exists). The standard time per level (Easy 35 s, Medium 50 s, Hard 70 s, Very hard 90 s) and the progress bonus (2 min) are configuration, like the multipliers, not Guardian settings in V1 (ADR-0004 D1, D5, D6).
   3. The app saves the rules.
 - Extensions: 2a. A value is outside safe bounds: the app refuses and explains.
 
@@ -241,7 +241,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   1. Guardian opens the calendar.
   2. Guardian selects the school period (1–5) the class is at.
   3. The app saves the ceiling.
-- Extensions: 2a. Guardian never sets it: the default is the period of the current date in a fixed table in configuration (P1 Sep–Oct, P2 Nov–Dec, P3 Jan–Feb, P4 Mar–Apr, P5 May–Jun, ADR-0004 D19).
+- Extensions: 2a. Guardian never sets it: the default is the period of the current date in a fixed table in configuration (P1 Sep–Oct, P2 Nov–Dec, P3 Jan–Feb, P4 Mar–Apr, P5 May–Aug: July and August stay in P5, the year just finished, until the Guardian changes the class level or the ceiling, ADR-0004 D19).
 
 ### UC-P4 — Allow skills beyond the class period
 - Level: user goal. Primary actor: Guardian. Version: V1.1. Decision: C1.
@@ -348,7 +348,8 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
   4. The app sets crash reports to off (changeable in UC-P11).
   5. *(V1.2)* The app proposes the keypad calibration (UC-L7) for the child.
 - Extensions:
-  - *a. The database key is lost: the unreadable database is set aside before the set-up starts (ADR-0003 D3). Each start retries opening it for 30 days; if it opens again, the app offers the Guardian to restore it through the UC-P15 path (PIN of the current credential), otherwise it keeps waiting until day 30, then deletes it and raises a note (ADR-0004 D17).
+  - *a. The database key is lost: the unreadable database is set aside before the set-up starts (ADR-0003 D3). Each start retries opening it for 30 days; if it does not open, it is deleted at day 30 and a note is raised (ADR-0004 D17).
+  - *a1. The set-aside database opens again within the 30 days: the start screen offers "Bring back the old data". Guardian confirms with the PIN stored in the old database (its own credential, the lockout applies). The old database replaces the current data in one transaction with the same rules as UC-P15 (reserve forfeited, open requests closed, trusted time = the later of both, ADR-0002 D13), and the replaced data is deleted. If no new set-up was completed yet, the old database simply becomes the database again. UC-P15 is not used: it needs a file and a passphrase.
   - 1a. Guardian declines: the app stays closed and stores nothing.
 - Relationships: «include» UC-P12, UC-P2.
 
@@ -387,7 +388,7 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 
 - Timers, expiry and the daily cap use trusted time (ADR-0004 D9): the last trusted instant advanced by the device's monotonic elapsed time, not the wall clock. The LocalDay changes only when trusted time passes midnight. A forward jump of the device clock of more than 10 minutes is ignored and creates a neutral note. Trusted time follows monotonic uptime, so a backwards wall-clock change has no effect while the uptime reference holds. Only after a device restart (no monotonic reference), when the device time is earlier than the last trusted instant, expiry and the daily cap freeze until the device clock catches up, a running timer is debited in full and a neutral note is created; otherwise the device time is accepted (residual risk, covered by the note). An interrupted timer (UC-S3 *a) is debited by trusted time since its stored start. A session length counts only while the app is open (UC-L1 *b). Expiry days shown to the Learner (UC-L8) are computed from the earning time with this same rule.
 
-- Storage (ADR-0003): the whole database is encrypted with a random key kept in the device key store; the app refuses to open a database that SQLCipher does not protect. A key-store error is retried first. If the key is definitely missing or does not open the database, the unreadable database is set aside (retried at each start for 30 days, restorable through UC-P15 if it opens again, then deleted with a note, ADR-0004 D17), and the app shows only two choices: restore from a file (UC-P15) or set up again (UC-P14). The PIN lives in the encrypted database, so it cannot gate this screen (risk and OQ-6 in ADR-0003). The web build stores no child data.
+- Storage (ADR-0003): the whole database is encrypted with a random key kept in the device key store; the app refuses to open a database that SQLCipher does not protect. A key-store error is retried first. If the key is definitely missing or does not open the database, the unreadable database is set aside (retried at each start for 30 days, if it opens again, the Guardian can bring the old data back with the old PIN (UC-P14 *a1); otherwise deleted with a note, ADR-0004 D17), and the app shows only two choices: restore from a file (UC-P15) or set up again (UC-P14). The PIN lives in the encrypted database, so it cannot gate this screen (risk and OQ-6 in ADR-0003). The web build stores no child data.
 
 ## Open questions
 

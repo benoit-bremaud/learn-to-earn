@@ -1,6 +1,6 @@
 # Sequence diagram — parent-space — key-loss start
 
-> **Feature**: parent-space domain, start-up when the database key is lost (storage rule, UC-P14 *a, UC-P15)
+> **Feature**: parent-space domain, start-up when the database key is lost (storage rule, UC-P14 *a and *a1, UC-P15)
 > **Source specs**: `docs/architecture/specs/use-cases.md` (storage rule, UC-P14, UC-P15)
 > **Related ADRs**: ADR-0003 (D1, D3), ADR-0004 (D17)
 > **Decisions captured**: S1
@@ -41,5 +41,5 @@ sequenceDiagram
 
 ## Notes
 
-- At each later start the set-aside database is retried with the key store; if it opens again within the 30 days, the app offers to restore it through the UC-P15 path (PIN of the current credential), otherwise it keeps waiting; after 30 days it is deleted and a SET_ASIDE_DELETED note is raised (ADR-0004 D17).
+- At each later start the set-aside database is retried with the key store; if it opens again within the 30 days, the app offers "Bring back the old data" (UC-P14 *a1: PIN of the old database, its own lockout, one transaction with the UC-P15 rules, replaced data deleted; if no new set-up was completed it simply becomes the database again), otherwise it keeps waiting; after 30 days it is deleted and a SET_ASIDE_DELETED note is raised (ADR-0004 D17).
 - A database that SQLCipher does not protect is refused at start-up (ADR-0003 D1), never opened in clear.

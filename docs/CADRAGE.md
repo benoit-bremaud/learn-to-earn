@@ -18,7 +18,7 @@ Primary user: the owner's daughter (CE1). Secondary: other parents, later (distr
 | Q2 | Platform | Expo (React Native): Android, iOS, web (Ubuntu PC runs the web build) | 440 |
 | Q3 | V1 subject | Arithmetic (CE1). Reading comes in V2 on the same engine | 460 |
 | Q4 | Earned minutes | Capped savings, rolling 7-day expiry (each minute expires 7 days after it was earned) | 450 |
-| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day, reserve cap 60 min (owner 2026-10-21: work, not stored screen time; MCDA 60 min 400 = 120 min 400 > 210 min 320, 60 min chosen as incentive to work weighs ≥ 35 %). Only correct answers earn minutes, plus a bonus when mastery rises (owner 2026-10-21, MCDA 380 vs progress only 345 vs time spent 330). A correct answer earns the standard time of its level, not her real time (ADR-0004 D1); standard times are set so a 15-min session at 80 % success earns about 15 min (D5); the bonus is a fixed 2 min per skill that beats its own best mastery by 5 points or more (D6) | 430 |
+| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day, reserve cap 60 min (owner 2026-10-21: work, not stored screen time; MCDA 60 min 400 = 120 min 400 > 210 min 320, 60 min chosen as incentive to work weighs ≥ 35 %). Only correct answers earn minutes, plus a bonus when mastery rises (owner 2026-10-21, MCDA 380 vs progress only 345 vs time spent 330). A correct answer earns the standard time of its level, not her real time (ADR-0004 D1); standard times are set so a 15-min session at 80 % success earns about 15 min (D5; initial values Easy 35 s, Medium 50 s, Hard 70 s, Very hard 90 s per correct answer in configuration, from about 30 s per easy exercise: 24 correct out of 30 in 15 min, 900 s / 24 is about 37 s, rounded to 35); the bonus is a fixed 2 min per skill that beats its own best mastery by 5 points or more (D6) | 430 |
 | M1 | Mastery | 0–100 % score per skill, weighted moving average (correctness + speed) | 400 |
 | M2 | Response time | Compared with the child's own average on that skill; only after a correct answer; never removes earned minutes | 450 |
 | M3 | Next exercise | 70 % skills being acquired (~80 % success zone), 20 % spaced review, 10 % challenge | 450 |
@@ -52,7 +52,7 @@ Details in `docs/curriculum/CE1-maths.md`.
 
 | # | Topic | Decision | Score |
 |---|---|---|---|
-| C1 | Unlocking | Parent sets the calendar ceiling (default from a fixed 5-period table in configuration, ADR-0004 D19); mastery unlocks below it; prudent look-ahead probes (skill of a period above the ceiling) only inside a challenge slot; never label giftedness, neutral parent note only | 430 |
+| C1 | Unlocking | Parent sets the calendar ceiling (default from a fixed 5-period table in configuration, July and August mapping to P5 until the Guardian changes the class level or the ceiling, ADR-0004 D19); mastery unlocks below it; prudent look-ahead probes (skill of a period above the ceiling) only inside a challenge slot; never label giftedness, neutral parent note only | 430 |
 | C2 | Fluence | Hybrid: score relative to the child using the app; official benchmarks as dashboard milestones | 480 |
 | C3 | V1.0 skills | Additive core + tables x2/x5/x10 + prerequisite graph down to cycle 1/CP | 400 |
 | C4 | Difficulty | Base level per skill (official table schedule) + modifiers | 425 |

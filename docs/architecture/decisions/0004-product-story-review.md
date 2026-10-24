@@ -74,6 +74,7 @@ Clarification (re-review 2026-10-24): "mastered" means mastery at 70 % or more; 
 
 A vs B: B cuts screen time to fix an earning problem; A fixes the earning itself. Sensitivity: C leads only if simplicity weighs more than about 56 %.
 **Decision: A** (owner, 2026-10-24).
+Clarification (review 2026-10-24): Initial standard times (configuration, not Guardian-editable): Easy 35 s, Medium 50 s, Hard 70 s, Very hard 90 s per correct answer, before the V1.1 multiplier. Derivation: an easy exercise takes about 30 s, so a 15-min session at 80 % success gives 24 correct answers out of 30, and 900 s / 24 is about 37 s, rounded to 35; the other levels scale up. To be calibrated after one week of real use.
 
 ## D6 — Progress bonus (finding 6)
 
@@ -230,6 +231,7 @@ A vs B: V1.0 already writes CLOCK_CHANGED notes; B hides them. Sensitivity: B le
 
 A vs B: B throws away a database a returning key could still open; A gives it a month. Sensitivity: B leads if simplicity weighs more than about 32 %.
 **Decision: A** (owner, 2026-10-24). Supersedes "kept, never deleted, until a restore succeeds or the Guardian erases it" of ADR-0003 D3.
+Clarification (review 2026-10-24): bringing it back is its own flow (UC-P14 *a1) with the PIN of the old database, not UC-P15.
 
 ## D18 — Streak active day (finding 24)
 
@@ -246,7 +248,7 @@ B vs A: an interrupted but real day of work still counts with B. Sensitivity: A 
 
 ## D19 — Period calendar for the default ceiling (finding 34)
 
-| Criterion (weight) | A. Fixed table of 5 periods in configuration (Sep–Oct, Nov–Dec, Jan–Feb, Mar–Apr, May–Jun), the Guardian can change the ceiling; each V1.0 node gets its period | B. The Guardian picks the ceiling at set-up | C. Real school calendar of the zone |
+| Criterion (weight) | A. Fixed table of 5 periods in configuration (Sep–Oct, Nov–Dec, Jan–Feb, Mar–Apr, May–Aug), the Guardian can change the ceiling; each V1.0 node gets its period | B. The Guardian picks the ceiling at set-up | C. Real school calendar of the zone |
 |---|---|---|---|
 | Accuracy (30) | 4 | 4 | 5 |
 | Simplicity (30) | 5 | 4 | 2 |
@@ -256,6 +258,7 @@ B vs A: an interrupted but real day of work still counts with B. Sensitivity: A 
 
 A vs C: C needs the school zone and a yearly data update for a few days of accuracy. Sensitivity: C leads only if accuracy weighs more than about 74 %.
 **Decision: A** (owner, 2026-10-24).
+Clarification (review 2026-10-24): July and August map to P5 (the year just finished) until the Guardian changes the class level or the ceiling.
 
 ## Decision outcome
 

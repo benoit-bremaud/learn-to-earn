@@ -57,7 +57,7 @@ sequenceDiagram
 
 ## Notes
 
-- The step-down and the TO_DO_TOGETHER branches fire only after at least 5 exercises (exercisesDone >= 5) still below 70 %; the TO_DO_TOGETHER note is raised once per remediation.
+- `exercisesDone` resets to 0 at each step-down, so every node gets at least 5 exercises. The step-down and the TO_DO_TOGETHER branches fire only after at least 5 exercises (exercisesDone >= 5) still below 70 %; the TO_DO_TOGETHER note is raised once per remediation.
 - The walk-back never leaves the 20 % review share, so the session mix is unchanged, except the 5-exercise opening block of a Guardian request (ADR-0004 D11).
 - The 3-error rule counts exercises, not tries: the hint loop of one exercise is one error (ADR-0004 D3).
 - An open Remediation survives the end of the session and continues in the next one.

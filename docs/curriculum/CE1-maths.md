@@ -72,7 +72,7 @@ V1.0 nodes and prerequisite edges (stable IDs; a node is reached only after its 
 | `ce1.table5` | Table x5 | CE1 | Easy | 1 | `cp.skipcount` |
 | `ce1.table10` | Table x10 | CE1 | Easy | 1 | `cp.tens`, `cp.skipcount` |
 
-Period: the school period (P1–P5) from which a CE1 node is open under the default ceiling (ADR-0004 D19); the default ceiling is the period of the current date in a fixed table in configuration (P1 Sep–Oct, P2 Nov–Dec, P3 Jan–Feb, P4 Mar–Apr, P5 May–Jun), and the Guardian can change it (UC-P3). Cycle 1 and CP nodes have no period: they are below the class and always open. The four V1.0 CE1 nodes take the first period of their livret range (tables of 1–6 and 10 in P1–P2, mental +/- the whole year), so all are P1.
+Period: the school period (P1–P5) from which a CE1 node is open under the default ceiling (ADR-0004 D19); the default ceiling is the period of the current date in a fixed table in configuration (P1 Sep–Oct, P2 Nov–Dec, P3 Jan–Feb, P4 Mar–Apr, P5 May–Aug: July and August stay in P5 until the Guardian changes the class level or the ceiling), and the Guardian can change it (UC-P3). Cycle 1 and CP nodes have no period: they are below the class and always open. The four V1.0 CE1 nodes take the first period of their livret range (tables of 1–6 and 10 in P1–P2, mental +/- the whole year), so all are P1.
 
 Cold start (ADR-0004 D2): skills of a grade below the child's class level start at 70 % mastery (the unlock threshold), so a CE1 child starts on CE1 nodes; real errors walk down these edges: in V1.0 the picker itself does it (a skill dropping under 70 % is again the lowest unmastered one), R4 applies from V1.1.
 
