@@ -31,6 +31,7 @@ sequenceDiagram
     Progress-->>Ctl: progress bonus (bonusMinutes per skill, ADR-0004 D6)
   end
   Ctl->>Clock: trusted now
+  Clock-->>Ctl: creditedAt
   loop each LocalDay with uncredited minutes
     Ctl->>Reserve: credit(day, weighted minutes, weightedUpTo)
     Reserve->>Reserve: convert (full rate up to fullRateMinutes for the day, then reducedRatio)

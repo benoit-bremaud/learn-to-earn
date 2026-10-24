@@ -42,28 +42,29 @@ sequenceDiagram
         Ctl->>UI: effort-first feedback
       else wrong, a hint stage is left
         Ctl->>UI: show next hint stage (concrete, picture, symbol), keypad kept
-        Note over UI: the hint appears only after a wrong answer
       else wrong after the third hint (ADR-0002 D14)
         Ctl->>UI: show the correct answer with the worked step, nothing earned
       end
     end
-    Ctl->>Sel: next exercise (V1.0 lowest unmastered skill, V1.1 mix 70/20/10 and ceiling)
-    alt V1.1 challenge slot comes up (about one in ten, ADR-0001 D9)
-      Sel-->>Ctl: challenge slot
-      Ctl->>UI: offer one Challenge button
-      alt Learner accepts (UC-L6 step 1)
-        Learner->>UI: tap Challenge
-        UI->>Ctl: accept
-        Ctl->>Sel: exercise one notch higher, look-ahead (period above the ceiling) allowed only here
-        Sel-->>Ctl: challenge exercise (slot CHALLENGE)
-      else declined or ignored
-        Ctl->>Sel: fill the slot
-        Sel-->>Ctl: ordinary exercise
+    Ctl->>Clock: session app time so far (appSeconds, ADR-0005 D4)
+    opt app time still below sessionTargetMinutes
+      Ctl->>Sel: next exercise (V1.0 lowest unmastered skill, V1.1 mix 70/20/10 and ceiling)
+      alt V1.1 challenge slot comes up (about one in ten, ADR-0001 D9)
+        Sel-->>Ctl: challenge slot
+        Ctl->>UI: offer one Challenge button
+        alt Learner accepts (UC-L6 step 1)
+          Learner->>UI: tap Challenge
+          UI->>Ctl: accept
+          Ctl->>Sel: exercise one notch higher, look-ahead (period above the ceiling) allowed only here
+          Sel-->>Ctl: challenge exercise (slot CHALLENGE)
+        else declined or ignored
+          Ctl->>Sel: fill the slot
+          Sel-->>Ctl: ordinary exercise
+        end
+      else ordinary slot
+        Sel-->>Ctl: exercise (CORE or REVIEW)
       end
-    else ordinary slot
-      Sel-->>Ctl: exercise (CORE or REVIEW)
     end
-    Ctl->>Clock: session app time so far
   end
   Ctl->>Practice: close (COMPLETED, finish the exercise in progress first)
   Note over Ctl,Progress: ref sd Credit the reserve, see 05-sequence-crediting
@@ -73,6 +74,7 @@ sequenceDiagram
 ## Notes
 
 - A stop (UC-L1 *a) or an interruption (UC-L1 *b) closes the Session as STOPPED_EARLY or INTERRUPTED and runs the same crediting reference.
+- The app time is checked before the next exercise is picked, so the final pass picks nothing. `appSeconds` is saved with each write, so a resumed session keeps its target (ADR-0005 D4).
 - On a launch the same LocalDay an INTERRUPTED session shows two buttons only: resume or see the partial recap. Time while the app is closed does not count, and after the end of its LocalDay the session is closed STOPPED_EARLY and credited (ADR-0004 D10).
 - Weighted minutes of a correct answer use the base standard time, never the real response time (ADR-0004 D1); in V1.0 multiplier and confidence factor are 1 and the picker takes the lowest unmastered skill whose prerequisites are all at 70 % or more, with the step-down rule after 3 first-try failures in a row (D4).
 - *(V1.1)* A skill the Guardian scheduled (UC-P7) opens the session with a 5-exercise block right after the warm-up, see 04-sequence-remediation (ADR-0004 D11).

@@ -27,8 +27,10 @@ sequenceDiagram
   Guardian->>PUI: tap Erase everything
   PUI->>Guardian: offer an export first (UC-P8), Erase anyway, Cancel
   alt Guardian cancels
+    Guardian->>PUI: tap Cancel
     PUI-->>Guardian: nothing deleted
   else Guardian exports first
+    Guardian->>PUI: tap Export first
     Note over PUI: UC-P8 runs, then the erase screen comes back
   else Guardian taps Erase anyway
     PUI->>Guardian: ask for the PIN

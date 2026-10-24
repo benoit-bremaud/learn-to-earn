@@ -18,12 +18,12 @@ sequenceDiagram
   title sd — UC-L5 Rework an earlier skill (UC-L1 4a, 4b)
   autonumber
   actor Learner
+  participant UI as «boundary» SessionScreen
   participant Ctl as «control» RunSession
   participant Sel as «control» ExercisePicker
   participant Progress as «entity» Progress aggregate
   participant Graph as «entity» Skill graph (static)
   participant Notes as «entity» ParentNote
-  participant UI as «boundary» SessionScreen
 
   alt 3 exercises in a row failed at the first try, or a failed review (4a)
     Ctl->>Graph: weakest prerequisite of the target skill
@@ -46,7 +46,7 @@ sequenceDiagram
         Ctl->>Notes: REMEDIATION_COMPLETED note
       end
     else at least 5 exercises, still below 70 % and current has no prerequisite (UC-L5 3b)
-      Ctl->>Notes: TO_DO_TOGETHER note, practice stays on current
+      Ctl->>Notes: TO_DO_TOGETHER note (once), practice stays on current until the session ends, Remediation kept open
     else at least 5 exercises and still below 70 % (UC-L5 3a)
       Ctl->>Graph: one more node down (cycle 1, CP or CE1)
       Ctl->>Progress: move current down
@@ -60,5 +60,6 @@ sequenceDiagram
 - `exercisesDone` resets to 0 at each step-down, so every node gets at least 5 exercises. The step-down and the TO_DO_TOGETHER branches fire only after at least 5 exercises (exercisesDone >= 5) still below 70 %; the TO_DO_TOGETHER note is raised once per remediation.
 - The walk-back never leaves the 20 % review share, so the session mix is unchanged, except the 5-exercise opening block of a Guardian request (ADR-0004 D11).
 - The 3-error rule counts exercises, not tries: the hint loop of one exercise is one error (ADR-0004 D3).
+- At the graph floor (UC-L5 3b) the loop ends only with the session; the Remediation stays open for the Guardian (UC-P6), so the walk-back never goes below the floor.
 - An open Remediation survives the end of the session and continues in the next one.
 - The graph is static data (curriculum), read only.
