@@ -10,6 +10,7 @@ Conception comes first (UML-first): code conforms to this dossier, never the rev
 - Every study is reviewed at least twice before it is considered stable. Review logs live in `reviews/`: pass 1 checks UML and method conformance, pass 2 checks traceability and coverage against the product decisions. Every diagram is also rendered (`mmdc`) and inspected visually before each commit: overlapping titles, unreadable labels and crossing arrows are defects. A study is "validated" only after both passes have no open Must Have and the owner has approved it.
 - An adversarial review (a reviewer asked to break the model, not to check notation) follows the two passes on every study.
 - Before every pull request, the owner and the assistant hold a joint critical review: a questionnaire where each significant choice is kept, refuted or improved, with a scored recommended answer (owner rule 2026-10-21). Its outcome is logged in `reviews/`.
+- Sequence diagrams are analysis level (ICONIX boundary, control, entity, plus ports): at most 7 lifelines and about 25 messages each, titled `sd — <UC> <name>`. A reply is drawn only when its value matters to the flow; a query whose result is named in the message has an implicit reply. Personal data crossing a port is flagged `PII:`. Mermaid has no `ref` fragment, so a reference is a note `ref sd <name>`.
 - Language: English.
 
 ## Design principles (binding, owner rule 2026-10-20)
@@ -37,7 +38,7 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 8 | Domain model approach | [decisions/0002-domain-model.md](decisions/0002-domain-model.md) | proposed |
 | 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed three times (incl. adversarial) and jointly with the owner |
 | 10 | Encryption of stored data | [decisions/0003-encryption-at-rest.md](decisions/0003-encryption-at-rest.md) | accepted |
-| 11 | Sequence diagrams (session, confidence, remediation, screen time, erase, restore) | `diagrams/<feature>/02-sequence-*.md` and following | in review, awaiting owner validation |
+| 11 | Sequence diagrams (session, confidence, remediation, crediting, request, approval, use, erase, restore, key-loss start) | `diagrams/<feature>/02-sequence-*.md` and following | in review, awaiting owner validation |
 | 12 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
 | 13 | Component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
 

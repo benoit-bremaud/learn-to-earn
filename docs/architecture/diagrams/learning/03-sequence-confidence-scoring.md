@@ -15,6 +15,7 @@ Progressive disclosure: the neutral message appears only when confidence is belo
 
 ```mermaid
 sequenceDiagram
+  title sd — UC-L2 Confidence scoring (3b, 3c) and UC-L1 4c
   autonumber
   actor Learner
   participant UI as «boundary» SessionScreen
@@ -23,7 +24,6 @@ sequenceDiagram
   participant Practice as «entity» Session aggregate
   participant Progress as «entity» Progress aggregate
   participant Notes as «entity» ParentNote
-  participant Clock as «port» Clock and TimeGuard
 
   Learner->>UI: type answer, tap OK
   UI->>Ctl: answer and responseTimeMs
@@ -39,7 +39,7 @@ sequenceDiagram
     Ctl->>Practice: status PAUSED
     Ctl->>Notes: LOW_CONFIDENCE_PAUSE note (neutral wording)
     Ctl->>UI: 2-minute calm pause, no button but the timer
-    Ctl->>Clock: wait 2 minutes of app time
+    Note over Ctl,UI: 2 minutes of app time (clock port)
     Ctl->>Practice: status RUNNING
   else confidence below 0.6
     Ctl->>UI: neutral message, next exercise easier

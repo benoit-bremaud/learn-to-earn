@@ -1,6 +1,6 @@
 # Sequence study — adversarial review 1 (2026-10-23)
 
-Scope: issue #13 resolutions (ADR-0001 D8–D12), OQ-5 (ADR-0002 D12, D13) and the six sequence diagrams. Reviewer: adversarial subagent (Opus), asked to break the design. All Must and Should findings are fixed in the same PR.
+Scope: issue #13 resolutions (ADR-0001 D8–D12), OQ-5 (ADR-0002 D12, D13) and the sequence diagrams (six, split into ten by the joint review). Reviewer: adversarial subagent (Opus), asked to break the design. All Must and Should findings are fixed in the same PR.
 
 | ID | Level | Finding | Fix |
 |---|---|---|---|

@@ -15,6 +15,7 @@ Progressive disclosure: the child sees only "warming up" and the usual exercise 
 
 ```mermaid
 sequenceDiagram
+  title sd — UC-L5 Rework an earlier skill (UC-L1 4a, 4b)
   autonumber
   actor Learner
   participant Ctl as «control» RunSession

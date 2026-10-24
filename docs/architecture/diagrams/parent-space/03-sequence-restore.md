@@ -11,25 +11,24 @@ OQ-5 part 2 is decided by ADR-0002 D13: a restore brings back everything except 
 
 Progressive disclosure: after a key loss the start screen shows only "Restore from a file" and "Set up again". The passphrase field appears once a file is chosen, the content summary once it decrypts, the PIN only after "Restore".
 
+The key-loss start screen is in [04-sequence-key-loss-start.md](04-sequence-key-loss-start.md).
+
 ## Diagram
 
 ```mermaid
 sequenceDiagram
+  title sd — UC-P15 Restore the child's data from a file
   autonumber
   actor Guardian
   participant PUI as «boundary» ParentScreen
-  participant Start as «control» StartUp
   participant Ctl as «control» RestoreFromFile
   participant File as «port» Export file
   participant Store as «port» Storage
   participant Keys as «port» Key store
   participant Clock as «port» Clock and TimeGuard
 
-  alt database key lost at start-up
-    Start->>Keys: read the database key (retried on error)
-    Keys-->>Start: missing, or does not open the database
-    Start->>Store: set the unreadable database aside
-    Start->>PUI: show only Restore from a file and Set up again (UC-P14)
+  alt after a key loss
+    Note over Guardian,PUI: ref sd Key-loss start, see 04-sequence-key-loss-start
   else parent space unlocked
     Guardian->>PUI: open Restore
   end
@@ -38,6 +37,7 @@ sequenceDiagram
   Guardian->>PUI: passphrase
   PUI->>Ctl: decrypt and check
   Ctl->>File: decrypt with the key derived from the passphrase
+  File-->>Ctl: content (PII: displayName, birthYear, results) or failure
   alt wrong passphrase, invalid or newer file
     Ctl-->>PUI: refused, nothing changes
   else valid file

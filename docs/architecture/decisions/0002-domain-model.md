@@ -188,9 +188,33 @@ An old export holds minutes that may have been spent since.
 A is void after a key loss (no current data to compare). B still brings back minutes spent after the export. C loses at most the reserve cap (60 min by default) in a rare case. Sensitivity: B leads if fairness weighs more than about 45.
 **Decision: C** (owner, 2026-10-23). The file's credits are kept as history with all their remaining minutes moved to `forfeitedMinutes` (balance 0), so the crediting checkpoints (C7) and the day's full-rate and cap counters survive and an interrupted session is never credited twice. Open requests are closed: PENDING or APPROVED become EXPIRED, an IN_USE request is closed with its full minutes debited. `TimeGuard.lastTrustedAt` becomes the later of the file's and the device's, so a restore can never move trusted time back.
 
+## D14 — Answer still wrong after the third hint (UC-L4, sequence review)
+
+| Criterion (weight) | A. Show the correct answer with the worked step, then move on, no point | B. Retry until correct | C. Move on silently |
+|---|---|---|---|
+| Learning value (40) | 5 | 2 | 1 |
+| No frustration (30) | 4 | 1 | 4 |
+| Simplicity (15) | 4 | 5 | 5 |
+| Resistance to gaming (15) | 4 | 5 | 3 |
+| **Total /500** | **440** | 260 | 280 |
+
+Sensitivity: A leads under any plausible weighting. **Decision: A** (owner, 2026-10-24).
+
+## D15 — Earning of a correct answer after hints (sequence review)
+
+| Criterion (weight) | A. 0, only a first-try answer earns | B. Decreasing fraction per hint stage, in configuration (×0.5, ×0.25, 0) | C. Full value |
+|---|---|---|---|
+| Pushes real learning, the product goal (40) | 3 | 5 | 1 |
+| Resistance to guessing through hints (25) | 5 | 4 | 0 |
+| Recognises the child's effort (20) | 1 | 4 | 5 |
+| Simplicity (15) | 5 | 3 | 5 |
+| **Total /500** | 340 | **425** | 215 |
+
+A discourages the hints, which are the learning tool. Sensitivity: A leads only if resistance to gaming weighs more than about 45. **Decision: B** (owner, 2026-10-24). The factor is a frozen part of `Attempt.weightedMinutes` (C9).
+
 ## Decision outcome
 
-D1 = A (475), D2 = C (430), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380), D11 = B (380), D12 = B (460), D13 = C (420).
+D1 = A (475), D2 = C (430), D3 = A (460), D4 = A (460), D5 = A (470), D6 = B (455), D7 = A (460), D8 = A (435), D9 = A (420), D10 = A (380), D11 = B (380), D12 = B (460), D13 = C (420), D14 = A (440), D15 = B (425).
 
 Honest limits found by the adversarial review: D1 option C, D3 option B and D5 option C were weak alternatives (D3 B contradicts CADRAGE and should have been excluded, not scored); D6 is a layout choice that did not need a matrix. They do not change their outcomes. Aggregate boundaries, the time policy and the retention scopes are now part of the model (see "Aggregates" in the diagram file) and should get their own ADR when the component diagram fixes the storage boundary.
 

@@ -89,9 +89,12 @@ Not actors: the clock, the engine, the TTS library, storage (internal), any LLM 
 - Success guarantee: the Learner retries without a punishing signal.
 - Main success scenario:
   1. The app shows a hint (concrete, then picture, then symbol).
-  2. Learner tries again (back to UC-L2 step 2).
-- Extensions: 2a. *(V1.1)* Three errors in a row: UC-L1 extension 4a.
-- Business rule: no harsh red, no punishing sound.
+  2. Learner tries again on the same exercise (back to UC-L2 step 2).
+- Extensions:
+  - 2a. The answer is still wrong and a hint stage is left: back to step 1 with the next stage.
+  - 2b. The answer is still wrong after the third hint: the app shows the correct answer with the worked step, no point is earned, and the session moves on (ADR-0002 D14).
+  - 2c. *(V1.1)* Three errors in a row: UC-L1 extension 4a.
+- Business rules: no harsh red, no punishing sound. A correct answer after hints earns a decreasing fraction of its weighted minutes, set in configuration (default ×0.5 after one hint, ×0.25 after two, 0 after three, ADR-0002 D15).
 
 ### UC-L5 — Rework an earlier skill
 - Level: user goal segment. Primary actor: Learner (actor inherited from UC-L1). Version: V1.1. Decisions: R4, M4, C3.

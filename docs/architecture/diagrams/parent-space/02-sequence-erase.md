@@ -15,6 +15,7 @@ Progressive disclosure: the screen first shows one "Erase everything" button. Th
 
 ```mermaid
 sequenceDiagram
+  title sd — UC-P9 Erase all data
   autonumber
   actor Guardian
   participant PUI as «boundary» ParentScreen
@@ -39,7 +40,7 @@ sequenceDiagram
     else PIN correct
       Ctl->>Store: write the marker "erase in progress" outside the database
       Ctl->>Keys: delete the database key
-      Ctl->>Store: delete the database and every set-aside database
+      Ctl->>Store: delete the database and every set-aside database (PII: all child data)
       Ctl->>Store: remove the marker
       Ctl->>PUI: confirmation, then restart on UC-P14 step 1
     end
