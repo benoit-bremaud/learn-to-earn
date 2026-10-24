@@ -1,6 +1,6 @@
 # QA pass — sequence study (PR #15), 2026-10-24
 
-Post-merge check on `main` at ac943f9. PR #15 was merged before this pass and before the `review-local` gate, against the pre-merge rule; this pass makes up for it. No running product exists yet (design phase), so the QA is the no-UI variant: every diagram touched by PR #15 is rendered with `mmdc` (width 1400, white background) and inspected visually, then checked against the spec and the domain model. The renders are the PNG files of this folder.
+Post-merge check on `main` at ac943f9. PR #15 was merged before this pass and before the `review-local` gate, against the pre-merge rule; this pass makes up for it. No running product exists yet (design phase), so the QA is the no-UI variant: every diagram touched by PR #15 (plus `learning/01-use-case`, unchanged, as a baseline) is rendered with `mmdc` (width 1400, white background) and inspected visually, then checked against the spec and the domain model. The renders are the PNG files of this folder.
 
 ## Inspected
 
@@ -19,6 +19,11 @@ Post-merge check on `main` at ac943f9. PR #15 was merged before this pass and be
 | parent-space-02-sequence-erase | clean |
 | parent-space-03-sequence-restore | the first `alt` label overlaps the Guardian actor name |
 | parent-space-04-sequence-key-loss-start | clean |
+| domain-01-class-domain-model-1 (learning content and progress) | the `Skill requires Skill` self-association ends on an empty point at the right |
+| domain-01-class-domain-model-2 (practice) | clean |
+| domain-01-class-domain-model-3 (reserve and screen time) | clean, `forfeitedMinutes` present on ReserveCredit |
+| domain-01-class-domain-model-4 (streak) | clean |
+| domain-01-class-domain-model-5 (parent space) | the C14 and C15 notes sit far from LearningPlan and ParentNote, so their anchor is ambiguous |
 
 ## Findings
 
@@ -33,6 +38,7 @@ Every finding is tracked as a GitHub issue on project #65 (see Backlog below).
 | QA-5 | Should | Remediation: lifeline order makes the Learner and UI arrows cross the whole diagram |
 | QA-6 | Nice | Visual overlaps: session hint label and note, restore `alt` label over the actor, parent-space «include» arrow over UC-P1 |
 | QA-7 | Nice | Erase: the Cancel and Export branches have no Guardian message; crediting: `trusted now` result is not named (creditedAt) |
+| QA-9 | Nice | Domain model: dangling `requires` self-association end, C14 and C15 notes far from their class |
 | QA-8 | Process | PR #15 merged without `review-local` and without this visual QA |
 
 ## review-local gate (on `main` at ac943f9)
@@ -57,6 +63,6 @@ Every finding is tracked as a GitHub issue on project #65 (see Backlog below).
 | [#17](https://github.com/benoit-bremaud/learn-to-earn/issues/17) | QA-2, RL-S1 (needs an owner MCDA) |
 | [#18](https://github.com/benoit-bremaud/learn-to-earn/issues/18) | RL-S3, QA-4, RL-N2 |
 | [#19](https://github.com/benoit-bremaud/learn-to-earn/issues/19) | RL-S2 |
-| [#20](https://github.com/benoit-bremaud/learn-to-earn/issues/20) | QA-3, QA-5, QA-6, QA-7, RL-N1, RL-N3 |
+| [#20](https://github.com/benoit-bremaud/learn-to-earn/issues/20) | QA-3, QA-5, QA-6, QA-7, QA-9, RL-N1, RL-N3 |
 
 QA-8 (process) is fixed by this pass and the PROJECT_LOG entry.
