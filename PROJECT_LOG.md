@@ -65,3 +65,8 @@ Open at handover:
 - Joint sequence review with the owner (2026-10-24): a wrong answer is retried on the same exercise; after the third hint the correct answer is shown with its worked step and earns nothing (ADR-0002 D14, A 440 / C 280 / B 260); a correct answer after hints earns a decreasing configured fraction (D15, B 425 / A 340 / C 215); an open request shows only its status.
 - Ten analysis-level sequence diagrams (at most 7 lifelines each, `sd` titles, PII flagged): learning session, confidence scoring, remediation, crediting, screen-time request, approval, use, erase, restore, key-loss start. Spec (28 use cases), use-case diagrams, traceability matrix and README updated.
 - Owner validated the ten sequence diagrams (2026-10-24).
+
+## 2026-10-24 — Post-merge QA of the sequence study (PR #15, ac943f9)
+
+- PR #15 was merged before `review-local` and the visual QA, against the pre-merge rule. Made up for on `main`: 13 renders inspected, `review-local` run (`make check` green, Must 0, Should 4, Nice 3).
+- Report and renders: `docs/architecture/qa/2026-10-24-sequence-study/`. Findings filed as issues #16–#20 on project #65.
