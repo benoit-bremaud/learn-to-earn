@@ -52,7 +52,7 @@ Sensitivity (totals recomputed after review of PR #3; the first version read 375
 
 Repeated low-confidence sessions already reach the Guardian through notes, so A loses little detection power.
 Sensitivity: C overtakes A only if detection power weighs more than about 48 % (others scaled: A = 500 − 2d, C ≈ 312 + 1.9d).
-**Decision: A.** At analysis level the score is a session attribute `confidence` (a one-attribute class would be YAGNI); it exists from V1.1.
+**Decision: A.** At analysis level the score is a session attribute `confidence` (a one-attribute class would be YAGNI); it exists from V1.1. The start value is superseded by ADR-0004 D7 (only the first session of a LocalDay starts at 1.0).
 
 ## D4 — How the prerequisite graph is modelled
 
@@ -120,7 +120,7 @@ With D2 = C, credits and uses are both reserve movements, but they share no rule
 | Testability of the engine (15) | 4 | 5 | 2 |
 | **Total /500** | **435** | 330 | 165 |
 
-**Decision: A.** Each attempt stores two frozen snapshots, `confidenceAtAnswer` and `weightedMinutes`, because the confidence changes during the session (snapshots taken at event time are the stated exception to "derive, never store"). The conversion uses the weighted minutes of the day.
+**Decision: A.** Each attempt stores two frozen snapshots, `confidenceAtAnswer` and `weightedMinutes`, because the confidence changes during the session (snapshots taken at event time are the stated exception to "derive, never store"). The conversion uses the weighted minutes of the day. The response-time term is superseded by ADR-0004 D1 (standard time per level).
 
 ## D9 — Rule for unlocking a difficulty level (owner, 2026-10-21)
 
@@ -158,7 +158,7 @@ Raised by the owner after D8: the goal is to make the child work and learn, with
 | **Total /500** | 330 | **380** | 345 |
 
 Sensitivity: C leads only if learning results weigh more than about 50 % (others scaled); a plateau would then earn nothing, against "effort first".
-**Decision (owner, 2026-10-21): B.** It refines D8 (one currency, weighted minutes): a wrong attempt earns 0, and at session end each skill whose mastery rose adds `progressBonusRatio` x the weighted minutes earned on it. The same day the owner set the default reserve cap to 60 min (reserve-cap matrix: 60 min 400, 120 min 400, 210 min 320; the 60/120 tie was broken by the incentive to work).
+**Decision (owner, 2026-10-21): B.** It refines D8 (one currency, weighted minutes): a wrong attempt earns 0, and at session end each skill whose mastery rose adds `progressBonusRatio` x the weighted minutes earned on it (bonus rule superseded by ADR-0004 D6: `bonusMinutes` per skill that beats its best mastery). The same day the owner set the default reserve cap to 60 min (reserve-cap matrix: 60 min 400, 120 min 400, 210 min 320; the 60/120 tie was broken by the incentive to work).
 
 ## D12 — Scope of the erase (UC-P9, OQ-5 part 1)
 
@@ -222,7 +222,7 @@ Honest limits found by the adversarial review: D1 option C, D3 option B and D5 o
 
 - These classes form the pure domain layer: no Expo, storage or OS type may appear in them.
 - Thresholds (80 % success zone, 0.6 / 0.3 confidence, 70 % unlock, caps, multipliers) stay in configuration, not as class constants.
-- CADRAGE §3 must be edited for D9 and for the weighted-minutes currency (D8).
+- CADRAGE §3 edited for D9 and for the weighted-minutes currency (D8): done.
 - Operations, ports and design-level generalizations (generators, adapters) are decided in the design class diagram, after the sequences.
 - All persisted aggregates, `ParentCredential.pinHash` included, are encrypted at rest (owner requirement, ADR-0003): a storage adapter concern, not a domain attribute.
 - 2026-10-23 alignment with the use-case spec: `ScreenTimeRules.sessionTargetMinutes` (session end), `/usedMinutes` derived from device time since `startedAt` with a full debit on a backwards clock (`elapsedSeconds` removed), base level scores and the dotted `SkillId` format stated in the diagram notes.

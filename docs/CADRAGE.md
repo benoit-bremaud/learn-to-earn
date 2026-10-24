@@ -17,22 +17,22 @@ Primary user: the owner's daughter (CE1). Secondary: other parents, later (distr
 | Q1 | Screen-time control | Staged: V1 declarative (parent validates), V2 automatic Android blocking | 415 |
 | Q2 | Platform | Expo (React Native): Android, iOS, web (Ubuntu PC runs the web build) | 440 |
 | Q3 | V1 subject | Arithmetic (CE1). Reading comes in V2 on the same engine | 460 |
-| Q4 | Points | Capped savings, weekly expiry (7 days) | 450 |
-| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day, reserve cap 60 min (owner 2026-10-21: work, not stored screen time; MCDA 60 min 400 = 120 min 400 > 210 min 320, 60 min chosen as incentive to work weighs ≥ 35 %). Only correct answers earn minutes, plus a bonus when mastery rises (owner 2026-10-21, MCDA 380 vs progress only 345 vs time spent 330) | 430 |
+| Q4 | Earned minutes | Capped savings, rolling 7-day expiry (each minute expires 7 days after it was earned) | 450 |
+| — | Conversion | Degressive: 1 min work = 1 min screen up to 20 min of work, then 2:1, cap 30 min screen/day, reserve cap 60 min (owner 2026-10-21: work, not stored screen time; MCDA 60 min 400 = 120 min 400 > 210 min 320, 60 min chosen as incentive to work weighs ≥ 35 %). Only correct answers earn minutes, plus a bonus when mastery rises (owner 2026-10-21, MCDA 380 vs progress only 345 vs time spent 330). A correct answer earns the standard time of its level, not her real time (ADR-0004 D1); standard times are set so a 15-min session at 80 % success earns about 15 min (D5); the bonus is a fixed 2 min per skill that beats its own best mastery by 5 points or more (D6) | 430 |
 | M1 | Mastery | 0–100 % score per skill, weighted moving average (correctness + speed) | 400 |
-| M2 | Response time | Compared with the child's own average on that skill; only after a correct answer; never removes points | 450 |
+| M2 | Response time | Compared with the child's own average on that skill; only after a correct answer; never removes earned minutes | 450 |
 | M3 | Next exercise | 70 % skills being acquired (~80 % success zone), 20 % spaced review, 10 % challenge | 450 |
-| M4 | Stuck | After 3 errors in a row: drop one level, visual hint, encouraging message, parent alert | 450 |
+| M4 | Stuck | After 3 exercises in a row failed at the first try (ADR-0004 D3): drop one level, visual hint, encouraging message, parent alert | 450 |
 | D1 | Difficulty | Rule-based scale (below), coefficients configurable, empirical recalibration in V2 | 415 |
 | D2 | Multipliers | Easy 1 / Medium 1.5 / Hard 2 / Very hard 3 | 400 |
 | T1 | Answer format | Format driven by numeric-keypad comfort (detection V1, keypad mini-games V1.5) | 440 |
 | T2 | Anti-cheat | Multi-signal confidence score in V1; hidden control questions added later | 415 |
-| E1 | Universe | Light companion: mascot, always-visible screen-time gauge, modest customisation unlocked by day streaks | 410 |
-| E2 | Feedback | Effort and progress first, errors = hint + retry, no harsh red or sound, points in the background | 440 |
-| E3 | Session | Short framed session (10–20 min): easy warm-up, core, final challenge, recap with screen time earned | 455 |
+| E1 | Universe | Light companion: mascot, always-visible screen-time gauge, modest customisation unlocked by day streaks (an active day is 10 correct answers in the LocalDay, ADR-0004 D18) | 410 |
+| E2 | Feedback | Effort and progress first, errors = hint + retry, no harsh red or sound, earned minutes in the background | 440 |
+| E3 | Session | Short framed session (10–20 min): easy warm-up, core with challenge slots spread through the session (ADR-0001 D9), recap with screen time earned | 455 |
 | E4 | Audio | Optional read-aloud button on every statement (native French TTS) | 475 |
-| P1 | Parent space | 6-digit PIN, progressive lockout; validation on the parent's phone targeted for V2 | 385 |
-| P2 | Parent dashboard | Traffic-light view per skill (green ≥ 80 %, orange 50–79 %, red < 50 % or falling), alerts, "to do together" line | 465 |
+| P1 | Parent space | 6-digit PIN on a scrambled pad with no digit echoed (ADR-0004 D14), progressive lockout: 3 free tries, then 30 s, 1 min, 5 min, capped at 15 min (D13); recovery code shown once at set-up (D15); validation on the parent's phone targeted for V2 | 385 |
+| P2 | Parent dashboard | Traffic-light view per skill (green 80 % or more unless falling, orange 50–79 %, red below 50 % or falling; no colour before 5 attempts on the skill), alerts, "to do together" line | 465 |
 | P3 | Validation | Reserve → child asks → parent PIN → timer → 5-min warning → alarm → reserve debited | 395 |
 | P0 | Profiles | In-app child/parent profiles (base) + dedicated OS session where available (Android user, Ubuntu session) | 405 |
 | S1 | Data | Local-first (encrypted export/import, ADR-0003); optional encrypted sync in V1.5 | 425 |
@@ -52,11 +52,11 @@ Details in `docs/curriculum/CE1-maths.md`.
 
 | # | Topic | Decision | Score |
 |---|---|---|---|
-| C1 | Unlocking | Parent sets the calendar ceiling; mastery unlocks below it; prudent look-ahead probes in the challenge share; never label giftedness, neutral parent note only | 430 |
+| C1 | Unlocking | Parent sets the calendar ceiling (default from a fixed 5-period table in configuration, ADR-0004 D19); mastery unlocks below it; prudent look-ahead probes (skill of a period above the ceiling) only inside a challenge slot; never label giftedness, neutral parent note only | 430 |
 | C2 | Fluence | Hybrid: score relative to the child using the app; official benchmarks as dashboard milestones | 480 |
 | C3 | V1.0 skills | Additive core + tables x2/x5/x10 + prerequisite graph down to cycle 1/CP | 400 |
 | C4 | Difficulty | Base level per skill (official table schedule) + modifiers | 425 |
-| R4 | Remediation | Reactive, inside the 20 % review share, plus parent "go back to X" button | 460 |
+| R4 | Remediation | Reactive, inside the 20 % review share, plus parent "go back to X" button (next session opens with a 5-exercise block on X, ADR-0004 D11); exit at 70 % after at least 5 exercises, a "to do together" note at the graph floor (D12) | 460 |
 
 Multiplication is core CE1 content; two-step problems are CE1 content (corrected).
 
@@ -69,7 +69,13 @@ Clean Architecture (dependency rule, proportional layering), SOLID, no anti-patt
 Difficulty score = base level of the skill (C4, from `docs/curriculum/CE1-maths.md`) + size of largest number (≤20: 0, ≤100: 2, ≤1000: 3) + 1 per carry/borrow/tens crossing + 2 per extra step − 1 for round numbers. There is no operation term: the operation is already in the skill's base level (the former "+0, −1, ×3" term is removed, 2026-10-21).
 Levels: 0–1 Easy, 2 Medium, 3–4 Hard, 5+ Very hard. A level unlocks once the skill mastery reaches 70 % at the previous level (one mastery per skill, ADR-0002 D9). The engine picks the level, the child only picks within the 10 % challenge share.
 
-Confidence score (starts at 1.0): −0.2 answer faster than 40 % of her own average (and under 1.5 s); −0.2 three fast errors in a row; −0.2 repeated identical answer; −0.1 success on new but failure on review; +0.05 per plausible correct answer. Below 0.6: weighted minutes × confidence (ADR-0002 D8: the reserve is fed by weighted minutes = time × difficulty multiplier × confidence factor; the 20-minute full-rate threshold counts per day, D10), easier exercise, neutral message. Below 0.3: 2-minute pause and parent note. Slow is never a signal.
+Confidence score (starts at 1.0 in the first session of the LocalDay, then each new session of the day starts from the day's last value, ADR-0004 D7): −0.2 answer faster than 40 % of her own average (and under 1.5 s), except on a skill mastered at 80 % or more (D8); −0.2 three fast errors in a row; −0.2 repeated identical answer; −0.1 success on new but failure on review; +0.05 per plausible correct answer. Confidence factor = 1 when confidence is 0.6 or more, else the confidence value. Below 0.6: weighted minutes × that factor (the reserve is fed by weighted minutes = standard time of the level × difficulty multiplier × confidence factor × hint factor, ADR-0004 D1; the 20-minute full-rate threshold counts per day, ADR-0002 D10), easier exercise, neutral message. Below 0.3: 2-minute pause and parent note. Slow is never a signal.
+
+V1.0 engine (ADR-0004 D4): the same weighted-minutes formula with multiplier 1 and confidence factor 1, no minimum-time rule. Exercise picker: an easy warm-up on a mastered skill (mastery at 70 % or more, the unlock threshold), then the lowest unmastered skill (ties: lowest grade, then graph depth, then table order) whose prerequisites are all at 70 % or more. In V1.0 the picker itself does the walk-down: a skill dropping under 70 % is again the lowest unmastered one; R4 and UC-L5 apply from V1.1.
+
+Cold start (ADR-0004 D2): skills of a grade below the child's `classLevel` start at 70 % mastery, the unlock threshold; real errors walk down the graph, by the picker in V1.0 and through R4 from V1.1. No placement test.
+
+Trusted time (ADR-0004 D9): the last trusted instant advanced by the device's monotonic elapsed time. The day changes only when trusted time passes midnight; a forward clock jump of more than 10 min is ignored and noted for the parent. An interrupted session can be resumed until the end of its day (D10).
 
 Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key errors, reversed or mirrored digits, self-correction. It is a skill like any other. Statistics only, never a diagnosis and never health data; persistent signals show up as a neutral note to the parent.
 
@@ -84,8 +90,8 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 | Version | Content |
 |---|---|
 | V0 | Repository, CI, Expo structure, UML validated, exercise generator + mastery engine unit-tested without UI |
-| V1.0 | Profiles + PIN, framed session, mental additive core (decompositions to 10, facts to 20, +/- small numbers) and tables x2/x5/x10 (C3), prerequisite nodes of cycle 1 and CP, free numeric entry (no multiple choice), simple minimum-time rule, mastery score, points and reserve, parent validation + timer, minimal traffic-light view, local storage |
-| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score, calendar ceiling, alerts, warning before reserve minutes expire, opt-in anonymous crash reports |
+| V1.0 | Profiles + PIN, framed session, mental additive core (decompositions to 10, facts to 20, +/- small numbers) and tables x2/x5/x10 (C3), prerequisite nodes of cycle 1 and CP, free numeric entry (no multiple choice), mastery score with cold start (ADR-0004 D2), earned minutes and reserve, parent validation + timer, PIN on a scrambled pad with lockout and recovery code, minimal traffic-light view, minimal parent note list (ADR-0004 D16), local storage |
+| V1.1 | 4-level scale + multipliers, 70/20/10 mix, spaced review, 3-error rule, full confidence score, calendar ceiling, full alerts and to-do-together list, warning before reserve minutes expire, opt-in anonymous crash reports |
 | V1.2 | Keypad comfort + driven format, light companion, audio, effort-first feedback |
 | V1.5 | Sync across devices, keypad mini-games, hidden control questions |
 | V2 | Android automatic blocking, automatic difficulty recalibration, reading |
@@ -95,7 +101,8 @@ Numeric-keypad comfort: measure time to first key, inter-key time, neighbour-key
 - Making the app official later (children's-data regulation, GDPR, store rules): deliberately postponed by the owner until the family-first phase has proven the concept (S2).
 - Device where she plays Roblox (decides the V2 blocking target); no official Linux Roblox client to my knowledge, to be checked.
 - Tablet model (Android multi-user support varies).
-- Success-rate hypotheses used in the multiplier simulation (95/80/65/40 %) and every threshold above are to be calibrated after one week of real use.
+- Success-rate hypotheses used in the multiplier simulation (95/80/65/40 %) and every threshold above, including the standard time per level (ADR-0004 D5), are to be calibrated after one week of real use.
+- Forgotten parent PIN: closed by the recovery code (ADR-0004 D15).
 - Licence if open-sourced (MIT or AGPL).
 
 ## 7. Next steps
