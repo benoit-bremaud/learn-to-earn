@@ -68,7 +68,7 @@ sequenceDiagram
 ## Notes
 
 - Forfeiting the reserve closes the replay hole for every case, key loss included (ADR-0002 D13). Credits stay as history, so the crediting checkpoints (domain C7) and the day's full-rate and cap counters are unchanged and an interrupted session in the file is never credited twice. The cost is at most the reserve cap in a rare case.
-- After a key loss the lockout counter starts from the file's credential; the passphrase is the stronger gate.
-- The set-aside database is deleted only once the restore succeeded (ADR-0003 D3).
+- While unlocked, the current credential (PIN hash, recovery code hash, lockout) is kept; the file's credential applies only after a key loss, and then the lockout counter starts from it. The passphrase is the stronger gate.
+- The set-aside database is deleted once the restore succeeded, or after 30 days (ADR-0004 D17).
 - Trusted time never moves back, so restoring an old file cannot reopen expired days or reset the daily cap.
 - After a key loss, the passphrase is the only proof of the Guardian (risk in ADR-0003, OQ-6).
