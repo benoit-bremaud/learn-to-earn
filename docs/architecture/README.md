@@ -38,7 +38,7 @@ Every diagram and every line of code must respect these principles. Reviews chec
 | 8 | Domain model approach | [decisions/0002-domain-model.md](decisions/0002-domain-model.md) | proposed |
 | 9 | Domain model (analysis class diagrams) | [diagrams/domain/01-class-domain-model.md](diagrams/domain/01-class-domain-model.md) | reviewed three times (incl. adversarial) and jointly with the owner |
 | 10 | Encryption of stored data | [decisions/0003-encryption-at-rest.md](decisions/0003-encryption-at-rest.md) | accepted |
-| 11 | Sequence diagrams (session, confidence, remediation, crediting, request, approval, use, erase, restore, key-loss start) | `diagrams/<feature>/02-sequence-*.md` and following | in review, awaiting owner validation |
+| 11 | Sequence diagrams (session, confidence, remediation, crediting, request, approval, use, erase, restore, key-loss start) | `diagrams/<feature>/02-sequence-*.md` and following | validated by the owner 2026-10-24 |
 | 12 | Local pre-push review report | [review-local.md](review-local.md) | maintained by the review gate |
 | 13 | Component, design class, state, data-flow diagrams | `diagrams/<feature>/` | not started |
 
@@ -48,7 +48,7 @@ Order follows Larman (Unified Process) and ICONIX: an analysis-level domain mode
 
 1. Use cases (done, in review).
 2. Domain model: analysis class diagram, concepts, attributes, associations, multiplicities, no methods (done, in review).
-3. Sequence diagrams for non-trivial flows only: learning session with adaptive choice, screen-time request and approval, remediation walk-back, confidence scoring, plus erase and restore (OQ-5) (in review).
+3. Sequence diagrams for non-trivial flows only: learning session with adaptive choice, screen-time request and approval, remediation walk-back, confidence scoring, plus erase and restore (OQ-5) (done, validated 2026-10-24).
 4. Component diagram (layers and boundaries: UI, application, domain, adapters for storage, clock, TTS, OS).
 5. Design class diagram: operations, ports and adapters, dependencies, generalization where real.
 6. State diagrams (session, screen-time request, reserve lifecycle).
